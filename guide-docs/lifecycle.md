@@ -99,7 +99,7 @@ ford: %core on /~zod/home/0/app/lifecycle/hoon failed:
 ```
 
 ### Resolution
-What happened? This message is telling us that it can't find something in `lib`: `default-agen/hoon`. We'll learn about libraries in the [next lesson](types_libraries.md). For now, check the very first line of our program: we need to change it to:
+What happened? This message is telling us that it can't find something in `lib`: `default-agen/hoon`. We'll learn about libraries in the [next lesson](ford.md). For now, check the very first line of our program: we need to change it to:
 ```
 /+  default-agent
 ```
@@ -432,4 +432,4 @@ We're now ready to explicitly state Gall's compiliation lifecycle.
 
 State transitions can be either actions passed to the system or updates to app state.
 
-[Prev: The 10 Arms of Gaal: App Structure](arms.md) | [Home](overview.md) | [Next: Importing Code and Static Resources](types_libraries.md)
+[Prev: The 10 Arms of Gaal: App Structure](arms.md) | [Home](overview.md) | [Next: Importing Code and Static Resources](ford.md)

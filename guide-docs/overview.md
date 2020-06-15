@@ -9,7 +9,7 @@ This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101
 * [Workflow Setup](workflow.md)
 * [The 10 Arms of Gaal: App Structure](arms.md)
 * [App Lifecycle and State](lifecycle.md)
-* [Importing Code and Static Resources](types_libraries.md)
+* [Importing Code and Static Resources](ford.md)
 * [Poke and Watch](poke.md)
 
 ### Building a Real Application

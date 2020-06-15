@@ -33,6 +33,9 @@ Our code starts with:
 The `/-` rune looks up files in the `sur` directory with a name and `.hoon` extension, and then binds them in the current subject to the name passed. In that sense, it's similar to defining faces in the dojo.  Here 
 
 ## Notes/Scratchpad
+* serve actual static file 
+* explain =,
+
 https://urbit.org/docs/tutorials/arvo/ford/
 
 https://github.com/lukechampine/rote/blob/master/urbit/app/rote.hoon#L588
