@@ -60,27 +60,24 @@ These are types found in `hoon.hoon`, `arvo.hoon`, and `zuse.hoon`
 ```
 
 * `note-arvo` (`sys/zuse.hoon`)
-  - tagged union of the notes that each Arvo va ne can create
+  - tagged union of the notes that each Arvo vane can create
   - format: `[<vane-letter> task:able:<vane-name>]
   - example: `[%g task:able:gall]`
   
 ### Eyre
 ```
+::  app is the Gall app to bind to
 [%connect =binding app=term]
 [%disconnect =binding]
 ```
 ```
 +$  binding
     $:  ::  site: the site to match.
-        ::
         ::    A ~ will match the Urbit's identity site (your.urbit.org). Any
         ::    other value will match a domain literal.
-        ::
         site=(unit @t)
         ::  path: matches this prefix path
-        ::
         ::    /~myapp will match /~myapp or /~myapp/longer/path
-        ::
         path=(list @t)
     ==
 ```

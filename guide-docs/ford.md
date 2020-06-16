@@ -13,26 +13,105 @@ Note: these Ford (`/`) runes only work in Gall apps and generators. They will no
 
 ## Example Code
 ### Types File
-Put the following code in the `/sur` directory in a file called `import.hoon`:
+Put the following code in the `/sur` directory in a file called `fordexample.hoon`:
 ```
 |%
 +$  name  [first=@t  last=@t]
 --
 ```
-
-Put the following code in the `/app` directory in a file called `import.hoon`:
+Put the following code in the `/sur` directory in a file called `fordexample2.hoon`:
 ```
+|%
+++  age  @ud
+--
+```
+
+Put the following code in the `/app` directory in a file called `fordexample.hoon`:
+```
+/-  *fordexample2, fe=fordexample
+/+  default-agent
+|%
++$  versioned-state
+  $%  state-zero
+  ==
+::
++$  state-zero
+  $:  [%0 name:fe =age]
+  ==
+::
++$  card  card:agent:gall
+::
+--
+=|  state=versioned-state
+^-  agent:gall
+|_  =bowl:gall
++*  this      .
+    def   ~(. (default-agent this %|) bowl)
+::
+++  on-init
+  ^-  (quip card _this)
+  =.  state  [%0 [first='Hoon' last='Cool Guy'] age=74]
+  `this
+++  on-save
+  ^-  vase
+  !>(state) 
+++  on-load 
+  |=  old-state=vase
+  ^-  (quip card _this)
+  ~&  >  'on-load'
+  =/  prev  !<(versioned-state old-state)
+  ?-  -.prev
+    %0
+    `this(state prev)
+  ==
+++  on-poke
+  |=  [=mark =vase]
+  ^-  (quip card _this)
+  ?+    mark  (on-poke:def mark vase)
+      %noun
+    ?>  (team:title our.bowl src.bowl)
+    ?+    q.vase  (on-poke:def mark vase)
+        %print-state
+      ~&  >>  state
+      `this
+    ==
+  ==
+::
+++  on-watch  on-watch:def
+++  on-leave  on-leave:def
+++  on-peek   on-peek:def
+++  on-agent  on-agent:def
+++  on-arvo   on-arvo:def
+++  on-fail   on-fail:def
+--
 
 ```
 
 ## `/-` Import Types
 Our code starts with:
 ```
-/-  import
+/-   *fordexample2, fe=fordexample
 ```
-The `/-` rune looks up files in the `sur` directory with a name and `.hoon` extension, and then binds them in the current subject to the name passed. In that sense, it's similar to defining faces in the dojo.  Here 
+The `/-` rune looks up files in the `sur` directory with a name and `.hoon` extension, and then binds them in the current subject to the name passed. In that sense, it's similar to defining faces in the dojo.
+
+The syntax `*fordexample2*` tells Ford to find the file `fordexample2.hoon` in `sur` and put it into the current subject. Essentially this means that it's not "namespaced": we can access the `age` arm from its core directly, as we do in line 9.
+
+The syntax `fe=fordexample` tells Ford to find the file `fordexample.hoon` in `sur` and assign its contents to the face `fe`. To access its `name` arm in line 9, we need to use the syntax `name:fe` (evaluate `name` with `fe` as the subject).
+
+
+## `/+` Import Libraries
+
+## `/*` Import File Contents & Static Resources
+
+## Marks
+
+### grab
+
+### grow
+
 
 ## Notes/Scratchpad
+
 * serve actual static file 
 * explain =,
 

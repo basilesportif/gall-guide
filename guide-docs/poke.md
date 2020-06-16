@@ -10,3 +10,5 @@ see `grab` here:
 https://github.com/yosoyubik/canvas/blob/master/urbit/mar/canvas/view.hoon
 then see how it uses `dejs` here:
 https://github.com/yosoyubik/canvas/blob/master/urbit/lib/canvas.hoon#L10
+
+## poke can use ANY mark--just has to be in `/mar`

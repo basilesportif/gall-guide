@@ -6,3 +6,7 @@
 
 ~&  for printing
 * talk about how it uses `>`, `>>` and `>>>` to change colors.
+
+## irregular forms
+* `/` for path
+* `+` for mark (e.g. s+'timluc' for `[%s 'timluc']`)
