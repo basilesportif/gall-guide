@@ -432,4 +432,6 @@ We're now ready to explicitly state Gall's compiliation lifecycle.
 
 State transitions can be either actions passed to the system or updates to app state.
 
+Because `on-load` is executed after every successful recompilation, it's useful to put a debug print in `on-load` like `'app recompiled successfully'`, so that you can quickly see that things have worked.
+
 [Prev: The 10 Arms of Gaal: App Structure](arms.md) | [Home](overview.md) | [Next: Importing Code and Static Resources](ford.md)

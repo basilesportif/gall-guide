@@ -1,12 +1,18 @@
-/-  fe=fordexample
-/+  srv=server, default-agent
+/-  fordex=fordexample, *fordexample2
+/+  *server, default-agent, base=base64
+/=  html-as-html
+  /:  /===/app/fordexample/example
+    /html/
+/=  html-as-mime
+  /:  /===/app/fordexample/example
+    /mime/
 |%
 +$  versioned-state
   $%  state-zero
   ==
 ::
 +$  state-zero
-  $:  [%0 name:fe]
+  $:  [%0 name:fordex =age]
   ==
 ::
 +$  card  card:agent:gall
@@ -20,7 +26,7 @@
 ::
 ++  on-init
   ^-  (quip card _this)
-  =.  state  [%0 [first='Hoon' last='Cool Guy']]
+  =.  state  [%0 [first='Hoon' last='Cool Guy'] age=74]
   `this
 ++  on-save
   ^-  vase
@@ -43,6 +49,10 @@
     ?+    q.vase  (on-poke:def mark vase)
         %print-state
       ~&  >>  state
+      `this
+        %print-vars
+      ~&  >>  html-as-html
+      ~&  >>  html-as-mime
       `this
     ==
   ==
