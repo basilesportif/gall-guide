@@ -1,11 +1,26 @@
 /-  fordex=fordexample, *fordexample2
 /+  *server, default-agent, base=base64
+::  mark example
 /=  html-as-html
-  /:  /===/app/fordexample/example
-    /html/
+  /^  cord
+  /:  /===/app/fordexample/example  /html/
 /=  html-as-mime
-  /:  /===/app/fordexample/example
-    /mime/
+  /:  /===/app/fordexample/example  /mime/
+/=  html-as-mime-as-html
+  /:  /===/app/fordexample/example  /html/  /mime/
+::  custom mark example
+/=  noun-as-name
+  /:  /===/app/fordexample/example  /fordexample-name/
+/=  html-as-name
+  /:  /===/app/fordexample/example  /fordexample-name/  /html/
+::  importing files for real
+/=  html-as-octs
+  /^  octs
+  /;  as-octs:mimes:html
+  /:  /===/app/fordexample/example  /html/
+/=  multiple-files
+  /^  (map knot @t)
+  /:  /===/app/fordexample  /_  /html/
 |%
 +$  versioned-state
   $%  state-zero
@@ -26,6 +41,7 @@
 ::
 ++  on-init
   ^-  (quip card _this)
+  ~&  >  'app initialized successfully'
   =.  state  [%0 [first='Hoon' last='Cool Guy'] age=74]
   `this
 ++  on-save
@@ -34,7 +50,7 @@
 ++  on-load 
   |=  old-state=vase
   ^-  (quip card _this)
-  ~&  >  'on-load'
+  ~&  >  'app recompiled successfully'
   =/  prev  !<(versioned-state old-state)
   ?-  -.prev
     %0
@@ -50,9 +66,23 @@
         %print-state
       ~&  >>  state
       `this
+        %mark-example
+      ~&  >>  html-as-html
+      ~&  >>  html-as-mime
+      ~&  >>  html-as-mime-as-html
+      `this
+        %custom-mark-example
+      ~&  >>  noun-as-name
+      ~&  >>  html-as-name
+      `this
+        %multiple-files-example
+      ~&  >>  ~(key by multiple-files)
+      `this
         %print-vars
       ~&  >>  html-as-html
       ~&  >>  html-as-mime
+      ~&  >>  html-as-octs
+      ~&  >>  ~(key by multiple-files)
       `this
     ==
   ==
