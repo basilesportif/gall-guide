@@ -1,6 +1,15 @@
 # Poke and Watch
+Back in the [App Structure lesson](arms.md), we said that the `on-poke` and `on-watch` arms listen for input/calls. We're going to use them both to do that in this lesson, as well as work with the `on-agent` arm that handles responses from those calls.
 
-## Preamble: the `=^` Idiom
+Both `on-poke` and `on-watch` allow outside processes on the same ship or other ships to call your ship. The difference is that poke is for "one-time" calls, and watch is for subscriptions.
+
+## Preamble
+There are a couple common things we should introduce now, since we'll start to see them a lot.
+
+### bowl: Our Agent's Metadata
+
+
+### the `=^` Idiom
 One frequent pattern with pokes and watches is having a helper function modify the state, and also return some cards as actions. The `=^` is a very convenient rune that we'll use here and that you'll see in a lot of Gall code.
 
 `=^` takes 3 children:
@@ -22,6 +31,35 @@ Notice below that the `state` of `this` will be updated by `some-action-handler`
 ```
 
 ## poke: One-Time Call
+Sending a poke to a Gall agent is easy; you can do it directly from the Dojo. Let's poke our app and examine what happens.
+```
+> :poketime %print-state
+::  you'll see the state variable and the bowl printed
+```
+OK, so we've used this syntax a lot, and it's time to walk-through how it works.
+
+`on-poke` is a gate:
+```
+++  on-poke
+  |=  [=mark =vase]
+  ...
+```
+
+When you type `:poketime %print-state` in the Dojo, it sends a `poke` to the agent `%poketime`. `on-poke` expects a `mark` and a `vase`. You can read more about these in [Gall Types](gall_types.md), but a `mark` is a `@tas` representing a Ford mark as we saw in the [prior lesson](ford.md), and a vase is the data structure created by running `!>(some-data)`. Its head is a type, and its tail is a noun.
+
+There are two formats you can type at the Dojo after `:agent-name` (`:poketime` in our case):
+```
+::  pokes with mark %noun and [%some-tas optional-data] inside the vase
+> :poketime [%some-tas optional-data]
+
+::  note the '&' instead of '%'
+::  mymark MUST be a mark in /mar
+::  renders required data using mymark, passes mymark as the mark parameter
+::  puts required-data inside the vase
+> :poketime &mymark required-data
+```
+
+Does `poke-ack` always come?
 
 ### Poke from the Dojo
 

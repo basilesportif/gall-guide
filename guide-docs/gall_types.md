@@ -95,7 +95,8 @@ Search for `++  gall` in `zuze.hoon` to find the start of that core definition
 `agent` is an iron core that contains the 10 arms used for the app, which in turn rely on 
 
 * `note`
-  - tagged union, can be either a `note-arvo` note (for "calling" arvo vanes)
+  - can start with `%arvo` and hold a `note-arvo` note (for "calling" arvo vanes) 
+  - or can start with `%agent` and send a poke or subscribe to an agent
 ```
 +$  note
       $%  [%arvo =note-arvo]
