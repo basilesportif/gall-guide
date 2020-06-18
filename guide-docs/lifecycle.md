@@ -59,6 +59,9 @@ We will modify the below code throughout the lesson. Paste it into a file in `ap
         %print-state
       ~&  >>  state
       `this
+        %print-bowl
+      ~&  >>  bowl
+      `this
     ==
   ==
 ++  on-watch  on-watch:default
@@ -422,6 +425,37 @@ Let's commit and see the result of recompiling:
 [%2 val=100 msg='my message']
 ```
 You can play around and change some of the print messages to force recompilation. However, the state will remain the same, because when we're in state `%2`, it sismply sets the current state to the previous (i.e no change).
+
+## Gall-Managed App State: the `bowl`
+In addition to any state that we put inside our agent, we also have access to some state that Gall keeps track of and injects whenever it calls an arm in our agent. That state is of type `bowl:gall`.
+
+Near the top of our `lifecycle.hoon` file, we have:
+```
+^-  agent:gall
+|_  =bowl:gall
++*  this      .
+    default   ~(. (default-agent this %|) bowl)
+```
+The key here is `|_  =bowl:gall`, which says that our agent is a door that takes a parameter of type `bowl:gall` called `bowl`. We also pass that to `default-agent` when we initialize that core, and if you use a helper core, you'd pass it also (we'll see this is in later lessons).
+
+You can find the type definition of `bowl` in `/sys/zuze.hoon` if you search for `++  bowl`. For now, just know that it contains our ship name, the name of the ship that made the current call to us, the name of our agent, the current time, entropy, and data about any subscriptions our agent has made from or to it.
+
+We can print `bowl` for this app by entering at the Dojo:
+```
+> :lifecycle %print-bowl
+
+::  you should see something like:
+>>  [ [our=~zod src=~zod dap=%lifecycle]
+  [wex={} sup={}]
+  act=4
+    eny
+  \/0v3mh.pdbr4.15e5c.qlakl.ob41u.2f64d.3gauk.r3pm0.q6pv1.h76h0.98kpl.5godq.tvu1u.tdfs7.rjju9.j6vij.m3vmo.78pmb.8dfbd.\/
+    07nlt.58v8l
+  \/                                                                                                                  \/
+  now=~2020.6.18..14.50.18..d5f3
+  byk=[p=~zod q=%home r=[%da p=~2020.6.18..14.50.06..5bec]]
+]
+```
 
 ## Summary: Full Gall Compilation Lifecycle
 We're now ready to explicitly state Gall's compiliation lifecycle.

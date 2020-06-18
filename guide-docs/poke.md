@@ -80,10 +80,6 @@ def   ~(. (default-agent this %|) bowl)
 ## Preamble
 There are a couple common things we should introduce now, since we'll start to see them a lot.
 
-### bowl: Our Agent's Metadata
-TODO: fill out
-
-
 ### the `=^` Idiom
 One frequent pattern with pokes and watches is having a helper function modify the state, and also return some cards as actions. The `=^` is a very convenient rune that we'll use here and that you'll see in a lot of Gall code.
 
@@ -136,6 +132,8 @@ There are two formats you can type at the Dojo after `:agent-name` (`:poketime` 
 > :poketime &mymark required-data
 ```
 
+Our `:poketime %print-state` example pokes with a mark of `%noun`. In line 36 we switch on the mark, and see it's a noun. We use the line `?>  (team:title our.bowl src.bowl)` to verify that the poke is coming from us (this isn't necessary, but it's often done for these debugging-type `%noun` pokes). Then we switch on `q.vase`, i.e. the value inside the vase. It's `%print-state`, so we run that code, which prints the `state` and `bowl`.
+
 ### Poking from an Agent
 Now we're going to send a poke directly from our agent. We'll poke ourselves, but, as you'll see, we can send pokes to any agent on any ship.
 ```
@@ -179,9 +177,9 @@ When you send a `%poke` or `%watch`, your agent also gets a `%poke-ack` or `%wat
 It's considered best practice to switch first on the wire, and then on the sign (see [here in B3 for discussion](https://urbit.org/blog/precepts-discussion)).  So we switch on the wire, match `[%pokepath ~]`, and then match when the head of `sign` is `%poke-ack**.
 
 
-# TODO: below is a WIP
-
 ## Custom Marks
+* make a handler that uses `=^`
+* make mar
 
 ## watch: Subscribe to Events
 

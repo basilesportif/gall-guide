@@ -44,6 +44,7 @@ Gall passes all messages going into your app, and processes all messages going o
 * Requests between Gall apps themselves: Gall apps on one ship can send each other calls and request data to be processed.
 * Requests between Urbit ships: Gall provides interfaces to handle all the messages that happen when ships send messages to each other, or subscribe to resources on each other.
 
+
 ## Gall vs Generators
 You probably have written generators when learning Hoon. Generators are awesome! However, they have a different use-case from Gall apps, and it's important to understand when you want each of them.
 ### Generators

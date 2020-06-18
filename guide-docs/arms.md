@@ -96,7 +96,7 @@ Here are links to where the pieces above are defined in it:
 5. [arm definitions](https://github.com/urbit/urbit/blob/e931a473dd52614304b50c2dcbfc31a16fc82542/pkg/arvo/app/publish.hoon#L100) lines 100-541
 6. [helper core](https://github.com/urbit/urbit/blob/e931a473dd52614304b50c2dcbfc31a16fc82542/pkg/arvo/app/publish.hoon#L543)
 
-### Note on Aliases
+### Note on Aliases 
 From line 96 of the above:
 ```
   +*  this  .
