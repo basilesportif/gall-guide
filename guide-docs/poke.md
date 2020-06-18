@@ -177,7 +177,8 @@ When you send a `%poke` or `%watch`, your agent also gets a `%poke-ack` or `%wat
 It's considered best practice to switch first on the wire, and then on the sign (see [here in B3 for discussion](https://urbit.org/blog/precepts-discussion)).  So we switch on the wire, match `[%pokepath ~]`, and then match when the head of `sign` is `%poke-ack**.
 
 
-## Custom Marks
+## Custom Marks for Poke
+
 * make a handler that uses `=^`
 * make mar
 

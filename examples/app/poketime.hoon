@@ -1,3 +1,4 @@
+/-  poketime
 /+  default-agent
 |%
 +$  versioned-state
@@ -49,6 +50,11 @@ def   ~(. (default-agent this %|) bowl)
         ~&  >  "got poked with val: "
         ~&  >  +.q.vase  `this
     ==
+    ::
+      %poketime-action
+      ~&  >  "got %poketime-action mark:"
+      ~&  >  !<(action:poketime vase)
+      `this
   ==
 ::
 ++  on-watch  on-watch:def
