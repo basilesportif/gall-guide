@@ -182,6 +182,15 @@ It's considered best practice to switch first on the wire, and then on the sign 
 * make a handler that uses `=^`
 * make mar
 
+
+```
+> :poketime &poketime-action [%increase-counter 7]
+
+> :poketime &poketime-action [%subscribe %counter]
+
+> :poketime &poketime-action [%leave %counter]
+```
+
 ## watch: Subscribe to Events
 
 ### do `on-leave`

@@ -14,9 +14,11 @@
 --
 =|  state=versioned-state
 ^-  agent:gall
+=<
 |_  =bowl:gall
 +*  this      .
-def   ~(. (default-agent this %|) bowl)
+    def   ~(. (default-agent this %|) bowl)
+    hc    ~(. +> bowl)
 ::
 ++  on-init
   ^-  (quip card _this)
@@ -53,8 +55,7 @@ def   ~(. (default-agent this %|) bowl)
     ::
       %poketime-action
       ~&  >  "got %poketime-action mark:"
-      ~&  >  !<(action:poketime vase)
-      `this
+      ~&  >  !<(action:poketime vase)  `this
   ==
 ::
 ++  on-watch  on-watch:def
@@ -72,4 +73,8 @@ def   ~(. (default-agent this %|) bowl)
   ==
 ++  on-arvo   on-arvo:def
 ++  on-fail   on-fail:def
+--
+::  start helper core
+|_  bowl=bowl:gall
+++  handle-action  3
 --
