@@ -1,5 +1,5 @@
 # Poke and Watch
-Back in the [App Structure lesson](arms.md), we said that the `on-poke` and `on-watch` arms listen for input/calls. We're going to use them both to do that in this lesson, as well as work with the `on-agent` arm that handles responses from those calls.
+Back in the [App Structure lesson](arms.md), we said that the `on-poke` and `on-watch` arms listen for input/calls. We're going to use them both to do that in this lesson, as well as work with the `on-agent` and `on-leave` arms that handle responses from those calls.
 
 Both `on-poke` and `on-watch` allow outside processes on the same ship or other ships to call your ship. The difference is that poke is for "one-time" calls, and watch is for subscriptions.
 
@@ -7,6 +7,7 @@ Both `on-poke` and `on-watch` allow outside processes on the same ship or other 
 There are a couple common things we should introduce now, since we'll start to see them a lot.
 
 ### bowl: Our Agent's Metadata
+TODO: fill out
 
 
 ### the `=^` Idiom
@@ -32,11 +33,13 @@ Notice below that the `state` of `this` will be updated by `some-action-handler`
 
 ## poke: One-Time Call
 Sending a poke to a Gall agent is easy; you can do it directly from the Dojo. Let's poke our app and examine what happens.
+
+### Poke Basics
 ```
 > :poketime %print-state
 ::  you'll see the state variable and the bowl printed
 ```
-OK, so we've used this syntax a lot, and it's time to walk-through how it works.
+We've used this syntax a lot in prior lessons, and it's time to walk through how it works.
 
 `on-poke` is a gate:
 ```
@@ -59,26 +62,53 @@ There are two formats you can type at the Dojo after `:agent-name` (`:poketime` 
 > :poketime &mymark required-data
 ```
 
-Does `poke-ack` always come?
+### Poking from an Agent
+Now we're going to send a poke directly from our agent. We'll poke ourselves, but, as you'll see, we can send pokes to any agent on any ship.
+```
+::  at the Dojo, run:
+> :poketime %poke-self
 
-### Poke from the Dojo
+::  output:
+>   "got poked with val:"
+>   [%receive-poke 2]
+>>  "got a poke-ack"
+```
+Three things happened here, and we'll look at them both in detail
+1. We sent an outgoing poke to ourselvess
+2. We handled the poke to ourselves.
+3. We got back a `%poke-ack` confirming the poke was received.
 
-### Programmatic Pokage
+#### Sending a Poke to an Agent
+When we run `:poketime %poke-self` from the Dojo, Gall receives that message, and calls our `on-poke` arm with parameters `%noun` as the mark and `%poke-self` inside the vase. In line 36 we switch on the mark--in this case it's a `%noun`. Then in line 39 we switch on the value inside the vase; here it's `%poke-self`, so we return the card below:
+```
+::  type: [%pass path %agent [ship agent-name] task]
+::  task will usually be %poke, %leave, or %watch
+::  when task starts with %poke, its format is [%poke cage]
+::  a cage is a [mark vase] tuple, so we give the %noun mark, and then use !> to put our data in the vase
+[%pass /pokepath %agent [~zod %poketime] %poke %noun !>([%receive-poke 2])]
+```
+(You can look at the [Gall Types](gall_types) appendix to see full details on `card` format).
+
+That poke is processed by Gall and sent to us. Note that there is *nothing* special about sending it to ourselves--we could have written any ship name and agent name in the card, as long as they accept pokes.
+
+#### Handling an Incoming Poke
+Gall passes the above poke to us again, and again the mark is `%noun`. This time `q.vase` is `[%receive-poke 2]`, so that matches `[%receive-poke @]`, and we print that we got poked along with the tail of `q.vase`.
+
+#### Ack'ing the Poke
+When you send a `%poke` or `%watch`, your agent also gets a `%poke-ack` or `%watch-ack` back when it's received. Responses to calls to agents are always sent by Gall to the `on-agent` arm, which is a gate of form:
+```
+::  wire is a path; sign starts with %poke-ack, %watch-ack, %kick, or %fact
+|=  [=wire =sign:agent:gall]
+```
+`wire` is a path that is used mainly for `watch` and subscriptions. I set it as `/pokepath` here, but we could have used anything (`~` would make the most sense for pokes, but I just wanted to demonstrate the battle station's full power).
+
+It's considered best practice to switch first on the wire, and then on the sign (see [here in B3 for discussion](https://urbit.org/blog/precepts-discussion)).  So we switch on the wire, match `[%pokepath ~]`, and then match when the head of `sign` is `%poke-ack**.
+
+
+# TODO: below is a WIP
+
+## Custom Marks
 
 ## watch: Subscribe to Events
 
-## on-agent: respond
-* do example where we call out to another Gall agent?
-* do example of how we'd implement our own on-agent?
-
-# TODO: MOVE tHIS STUFF TO JSON/MARKS
-## to parse JSON
-just choose what "type" you have at each level, and use the various piece functions to parse it
-
-## parsing different types of JSON action/input with a mark
-see `grab` here:
-https://github.com/yosoyubik/canvas/blob/master/urbit/mar/canvas/view.hoon
-then see how it uses `dejs` here:
-https://github.com/yosoyubik/canvas/blob/master/urbit/lib/canvas.hoon#L10
-
-## poke can use ANY mark--just has to be in `/mar`; uses `noun` -> `mark`
+### do `on-leave`

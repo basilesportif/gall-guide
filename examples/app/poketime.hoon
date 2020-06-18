@@ -5,7 +5,7 @@
     ==
 ::
 +$  state-zero
-    $:  [%0]
+    $:  [%0 counter=@ud]
     ==
 ::
 +$  card  card:agent:gall
@@ -20,7 +20,7 @@ def   ~(. (default-agent this %|) bowl)
 ++  on-init
   ^-  (quip card _this)
   ~&  >  '%poketime initialized successfully'
-  =.  state  [%0]
+  =.  state  [%0 0]
   `this
 ++  on-save
   ^-  vase
@@ -43,7 +43,7 @@ def   ~(. (default-agent this %|) bowl)
       ::
         %poke-self
       :_  this
-      ~[[%pass ~ %agent [~zod %poketime] %poke %noun !>([%receive-poke 2])]]
+      ~[[%pass /pokepath %agent [~zod %poketime] %poke %noun !>([%receive-poke 2])]]
       ::
         [%receive-poke @]
         ~&  >  "got poked with val: "
@@ -58,13 +58,10 @@ def   ~(. (default-agent this %|) bowl)
   |=  [=wire =sign:agent:gall]
   ^-  (quip card _this)
   ?+    wire  (on-agent:def wire sign)
-      ~
+    [%pokepath ~]
       ?+    -.sign  (on-agent:def wire sign)
           %poke-ack
-        ~&  >>  "got a poke-ack"  `this
-        ::
-          %watch-ack
-        ~&  >>  "got a watch-ack"  `this
+        ~&  >>  "got a %poke-ack"  `this
       ==
   ==
 ++  on-arvo   on-arvo:def
