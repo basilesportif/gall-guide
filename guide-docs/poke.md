@@ -193,7 +193,7 @@ It's considered best practice to switch first on the wire, and then on the sign 
 
 ## watch: Subscribe to Events
 
-
+* show an example of how %watch-ack puts bad subscriptions and good ones in its sign. How do we print the leaf? Look in the default implementation of on-watch
 
 * watch example
 * kick example

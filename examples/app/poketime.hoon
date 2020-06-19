@@ -75,9 +75,6 @@
   ?+    wire  (on-agent:def wire sign)
       [%poke-self %pokepath ~]
     ~&  >>  -.sign  `this
-    ::
-      [%poketime @ta %counter ~]
-    ~&  >>  -.sign  `this
   ==
 ++  on-arvo   on-arvo:def
 ++  on-fail   on-fail:def
