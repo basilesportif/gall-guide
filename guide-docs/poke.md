@@ -143,7 +143,7 @@ Now we're going to send a poke directly from our agent. We'll poke ourselves, bu
 ::  output:
 >   "got poked with val:"
 >   [%receive-poke 2]
->>  "got a poke-ack"
+>>  [%poke-ack p=~]
 ```
 Three things happened here, and we'll look at them both in detail
 1. We sent an outgoing poke to ourselvess
@@ -172,7 +172,7 @@ When you send a `%poke` or `%watch`, your agent also gets a `%poke-ack` or `%wat
 ::  wire is a path; sign starts with %poke-ack, %watch-ack, %kick, or %fact
 |=  [=wire =sign:agent:gall]
 ```
-`wire` is a path that is used mainly for `watch` and subscriptions. I set it as `/pokepath` here, but we could have used anything (`~` would make the most sense for pokes, but I just wanted to demonstrate the battle station's full power).
+`wire` is a path that is used mainly for `watch` and subscriptions. I set it as `/poke-self/pokepath` here, but we could have used anything (`~` would make the most sense for pokes, but I just wanted to demonstrate the battle station's full power).
 
 It's considered best practice to switch first on the wire, and then on the sign (see [here in B3 for discussion](https://urbit.org/blog/precepts-discussion)).  So we switch on the wire, match `[%pokepath ~]`, and then match when the head of `sign` is `%poke-ack**.
 
@@ -193,4 +193,10 @@ It's considered best practice to switch first on the wire, and then on the sign 
 
 ## watch: Subscribe to Events
 
-### do `on-leave`
+
+
+* watch example
+* kick example
+* leave example
+
+## show `on-leave`

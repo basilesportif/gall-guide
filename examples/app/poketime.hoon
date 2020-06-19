@@ -27,8 +27,8 @@
   `this
 ++  on-save
   ^-  vase
-  !>(state) 
-++  on-load 
+  !>(state)
+++  on-load
   |=  old-state=vase
   ^-  (quip card _this)
   ~&  >  '%poketime recompiled successfully'
@@ -46,7 +46,7 @@
       ::
         %poke-self
       :_  this
-      ~[[%pass /pokepath %agent [~zod %poketime] %poke %noun !>([%receive-poke 2])]]
+      ~[[%pass /poke-self/pokepath %agent [~zod %poketime] %poke %noun !>([%receive-poke 2])]]
       ::
         [%receive-poke @]
         ~&  >  "got poked with val: "
@@ -54,27 +54,49 @@
     ==
     ::
       %poketime-action
-      ~&  >  "got %poketime-action mark:"
-      ~&  >  !<(action:poketime vase)  `this
+      ~&  >  !<(action:poketime vase)
+      =^  cards  state
+      (handle-action !<(action:poketime vase))
+      [cards this]
   ==
 ::
-++  on-watch  on-watch:def
+++  on-watch
+  |=  =path
+  ^-  (quip card _this)
+  ?+     path  (on-watch:def path)
+      [%counter ~]
+    ~&  >>  "got counter subscription"  `this
+  ==
 ++  on-leave  on-leave:def
 ++  on-peek   on-peek:def
 ++  on-agent
   |=  [=wire =sign:agent:gall]
   ^-  (quip card _this)
   ?+    wire  (on-agent:def wire sign)
-    [%pokepath ~]
-      ?+    -.sign  (on-agent:def wire sign)
-          %poke-ack
-        ~&  >>  "got a %poke-ack"  `this
-      ==
+      [%poke-self %pokepath ~]
+    ~&  >>  -.sign  `this
+    ::
+      [%poketime @ta %counter ~]
+    ~&  >>  -.sign  `this
   ==
 ++  on-arvo   on-arvo:def
 ++  on-fail   on-fail:def
 --
 ::  start helper core
 |_  bowl=bowl:gall
-++  handle-action  3
+++  handle-action
+  |=  =action:poketime
+  ^-  (quip card _state)
+  ?-    -.action
+      %increase-counter
+    `state(counter (add step.action counter.state))
+    ::
+      %subscribe
+    :_  state
+    ~[[%pass /poketime/(scot %p src.action)/counter %agent [src.action %poketime] %watch /counter]]
+    ::
+      %leave
+    :_  state
+    ~[[%pass /poketime/(scot %p src.action)/counter %agent [src.action %poketime] %leave ~]]
+  ==
 --

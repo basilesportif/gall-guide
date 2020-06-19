@@ -1,7 +1,7 @@
 |%
 +$  action
   $%  [%increase-counter step=@ud]
-      [%subscribe name=term]
-      [%leave name=term]
+      [%subscribe src=ship]
+      [%leave src=ship]
   ==
 --
