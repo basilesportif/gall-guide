@@ -4,6 +4,28 @@ Back in the [App Structure lesson](arms.md), we said that the `on-poke` and `on-
 Both `on-poke` and `on-watch` allow outside processes on the same ship or other ships to call your ship. The difference is that poke is for "one-time" calls, and watch is for subscriptions.
 
 ## Example Code for the Lesson
+In `/sur/poketime.hoon`:
+```
+|%
++$  action
+  $%  [%increase-counter step=@ud]
+      [%subscribe src=ship]
+      [%leave src=ship]
+  ==
+--
+```
+
+In `/mar/poketime/action.hoon`:
+```
+/-  poketime
+|_  act=action:poketime
+++  grab
+  |%
+  ++  noun  action:poketime
+  --
+--
+```
+
 In `/app/poketime.hoon`:
 ```
 /+  default-agent
@@ -178,18 +200,48 @@ It's considered best practice to switch first on the wire, and then on the sign 
 
 
 ## Custom Marks for Poke
+In the above, we moved with `%noun`. This is convenient for local CLI development, and I usually put some debug prints in my programs that I can poke. However, in general, you will want to explicitly define the types of pokes that can be done to your app by using custom types and marks.
 
-* make a handler that uses `=^`
-* make mar
+Let's say we want to make an action type that can have 3 types of actions. It can increase our current counter, subscribe to updates to that counter, or unsubscribe from those updates.  To do this, we'll want to make both a custom mark and a custom type. In fact, we already did that in our example code, so let's look at those two files:
+* `/sur/poketime.hoon`
+* `/mar/poketime/action.hoon`
 
+In `poketime.hoon`, we define a tagged union that has those 3 possibilities:
+```
++$  action
+  $%  [%increase-counter step=@ud]   ::  how big an increase to do
+      [%subscribe src=ship]          ::  which ship to send the %poketime subscribe message to
+      [%leave src=ship]              ::  which ship's %poketime subscription to leave
+```
+And now, in order to send a custom mark called `poketime-action`, we created `mar/poketime/action` ([recall that in the last lesson we saw that "-" is treated as a sub-directory](ford.md)):
+```
+/-  poketime
+|_  act=action:poketime
+++  grab
+  |%
+  ++  noun  action:poketime
+```
+Our `grab` here just handles nouns, and converts them to the `action` type in `sur/poketime.hoon`. Notice that we use Ford to import that `sur` library.
 
+So with that all in hand, we can see our custom mark in action!  All we have to do is use `&` before the name of our custom mark, and the Dojo will treat it as a custom mark, and try to render the following value from noun to it. Try out the following commands at the Dojo:
 ```
 > :poketime &poketime-action [%increase-counter 7]
+> :poketime %print-state
+::  you'll see that the counter went up by 7, and that wex and sup in bowl are empty
 
-> :poketime &poketime-action [%subscribe %counter]
+> :poketime &poketime-action [%subscribe ~zod]
+> :poketime %print-state
+::  you'll see that the wex and sup elements of bowl now have values where before they were empty
 
-> :poketime &poketime-action [%leave %counter]
+> :poketime &poketime-action [%leave ~zod]
+> :poketime %print-state
+::  you'll see that wex and sup are empty again
 ```
+Processing custom marks is very straightforward. In `on-poke`, where we used `?+` to switch on mark, we just add a case for `%poketime-action`.  Because the Gall agent type has to be fully general, it can't know what type of data our particular app will pass to `on-poke`. 
+
+This is why we use vases: now that we've rendered our data with the `%poketime-action` mark, we know the vase contains a value of type `action:poketime` and so we can use `!<(action:poketime vase)` to get it out of the vase as an `action`. We then pass it to the `handle-action` gate in our helper core, and use `=^` as described in the Preamble of this lesson to capture the return head as `cards`, and tail as the value to update our `state` with.
+
+`handle-action` itself is very simple. We can use `?-` to switch because we know all possible values for the head of the incoming `action`. For `%increase-counter`, we just add the `step` to the current counter value in the state and return the state.  For the `%subscribe`/`%leave` cases, we keep the state the and return cards whose contents we'll explain in the next section.
 
 ## watch: Subscribe to Events
 ### wire vs path
