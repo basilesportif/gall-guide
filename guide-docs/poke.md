@@ -192,6 +192,12 @@ It's considered best practice to switch first on the wire, and then on the sign 
 ```
 
 ## watch: Subscribe to Events
+### wire vs path
+- wire is for subscription metadata (acks etc)
+- path is for the "content" of the subscription
+This is enforced: when passing information out to subscribers, Gall **only** lets you use `path`. 
+
+* show how we use default-agent for acks
 
 * show an example of how %watch-ack puts bad subscriptions and good ones in its sign. How do we print the leaf? Look in the default implementation of on-watch
 
@@ -200,3 +206,7 @@ It's considered best practice to switch first on the wire, and then on the sign 
 * leave example
 
 ## show `on-leave`
+
+## Exercises
+1. Make your own handlers for acks in `on-agent`
+2. 
