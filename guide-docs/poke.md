@@ -32,75 +32,7 @@ In `/mar/poketime/action.hoon`:
 
 In `/app/poketime.hoon`:
 ```
-/+  default-agent
-|%
-+$  versioned-state
-    $%  state-zero
-    ==
-::
-+$  state-zero
-    $:  [%0 counter=@ud]
-    ==
-::
-+$  card  card:agent:gall
-::
---
-=|  state=versioned-state
-^-  agent:gall
-|_  =bowl:gall
-+*  this      .
-def   ~(. (default-agent this %|) bowl)
-::
-++  on-init
-  ^-  (quip card _this)
-  ~&  >  '%poketime initialized successfully'
-  =.  state  [%0 0]
-  `this
-++  on-save
-  ^-  vase
-  !>(state) 
-++  on-load 
-  |=  old-state=vase
-  ^-  (quip card _this)
-  ~&  >  '%poketime recompiled successfully'
-  `this(state !<(versioned-state old-state))
-++  on-poke
-  |=  [=mark =vase]
-  ^-  (quip card _this)
-  ?+    mark  (on-poke:def mark vase)
-      %noun
-    ?>  (team:title our.bowl src.bowl)
-    ?+    q.vase  (on-poke:def mark vase)
-        %print-state
-      ~&  >>  state
-      ~&  >>>  bowl  `this
-      ::
-        %poke-self
-      :_  this
-      ~[[%pass /pokepath %agent [~zod %poketime] %poke %noun !>([%receive-poke 2])]]
-      ::
-        [%receive-poke @]
-        ~&  >  "got poked with val: "
-        ~&  >  +.q.vase  `this
-    ==
-  ==
-::
-++  on-watch  on-watch:def
-++  on-leave  on-leave:def
-++  on-peek   on-peek:def
-++  on-agent
-  |=  [=wire =sign:agent:gall]
-  ^-  (quip card _this)
-  ?+    wire  (on-agent:def wire sign)
-    [%pokepath ~]
-      ?+    -.sign  (on-agent:def wire sign)
-          %poke-ack
-        ~&  >>  "got a %poke-ack"  `this
-      ==
-  ==
-++  on-arvo   on-arvo:def
-++  on-fail   on-fail:def
---
+
 ```
 
 ## Preamble
@@ -206,7 +138,7 @@ It's considered best practice to switch first on the wire, and then on the sign 
 ## Custom Marks for Poke
 In the above, we moved with `%noun`. This is convenient for local CLI development, and I usually put some debug prints in my programs that I can poke. However, in general, you will want to explicitly define the types of pokes that can be done to your app by using custom types and marks.
 
-Let's say we want to make an action type that can have 5 types of actions. It can increase our current counter, poke another instance of our agent, poke us, subscribe to updates to that counter, or unsubscribe from those updates.  To do this, we'll want to make both a custom mark and a custom type. In fact, we already did that in our example code, so let's look at those two files:
+Let's say we want to make an action type that can have 6 types of actions. It can increase our current counter, poke another instance of our agent, poke us, subscribe to updates to that counter, unsubscribe from those updates, or kick a subscriber.  To do this, we'll want to make both a custom mark and a custom type. In fact, we already did that in our example code, so let's look at those two files:
 * `/sur/poketime.hoon`
 * `/mar/poketime/action.hoon`
 
@@ -215,8 +147,10 @@ In `poketime.hoon`, we define a tagged union that has those 4 possibilities:
 +$  action
   $%  [%increase-counter step=@ud]   ::  how big an increase to do
       [%poke-remote target=ship]     ::  the target ship on which to poke %poketime
+      [%poke-self target=ship]       ::  poke your own ship (poking others will crash)
       [%subscribe src=ship]          ::  which ship to send the %poketime subscribe message to
       [%leave src=ship]              ::  which ship's %poketime subscription to leave
+      [%kick paths=(list path) subscriber=ship]  ::kick a subscriber out of paths
 ```
 And now, in order to send a custom mark called `poketime-action`, we created `mar/poketime/action` ([recall that in the last lesson we saw that "-" is treated as a sub-directory](ford.md)):
 ```
@@ -231,18 +165,26 @@ Our `grab` here just handles nouns, and converts them to the `action` type in `s
 So with that all in hand, we can see our custom mark in action!  All we have to do is use `&` before the name of our custom mark, and the Dojo will treat it as a custom mark, and try to render the following value from noun to it. Try out the following commands at the Dojo from `~zod`:
 ```
 > :poketime &poketime-action [%poke-remote ~timluc]
+::  you'll see a successful poke-ack locally, and a message on ~timluc
+
+> :poketime &poketime-action [%poke-self ~zod]
+::  this will work
+
+> :poketime &poketime-action [%poke-self ~timluc]
+::  this will fail with a "poke failed" error
+::  this is because the %poke-self case uses ?>  (team:title our.bowl src.bowl) to block outside ships
 
 > :poketime &poketime-action [%increase-counter 7]
 > :poketime %print-state
 ::  you'll see that the counter went up by 7, and that wex and sup in bowl are empty
 
-> :poketime &poketime-action [%subscribe ~zod]
-> :poketime %print-state
-::  you'll see that the wex and sup elements of bowl now have values where before they were empty
+> :poketime &poketime-action [%subscribe ~timluc]
+> :poketime %print-subs
+::  you'll see that the wex element of bowl now has a value where before it was empty
 
 > :poketime &poketime-action [%leave ~zod]
-> :poketime %print-state
-::  you'll see that wex and sup are empty again
+> :poketime %print-subs
+::  you'll see that wex is empty again
 ```
 Processing custom marks is very straightforward. In `on-poke`, where we used `?+` to switch on mark, we just add a case for `%poketime-action`.  Because the Gall agent type has to be fully general, it can't know what type of data our particular app will pass to `on-poke`. 
 
@@ -251,19 +193,39 @@ This is why we use vases: now that we've rendered our data with the `%poketime-a
 `handle-action` itself is very simple. We can use `?-` to switch because we know all possible values for the head of the incoming `action`. For `%increase-counter`, we just add the `step` to the current counter value in the state and return the state.  For the `%subscribe`/`%leave` cases, we keep the state the and return cards whose contents we'll explain in the next section.
 
 ## How Subscriptions Work in Gall
-* handled internally
-* use wires and paths
-* 
+Now we move from pokes, which are one-time calls, to subscriptions.
 
-## watch: Subscribe to Events
+Gall tracks incoming and outgoing subscriptions, and stores them in the `bowl` of an agent:
+* `wex` - outgoing subscriptions (uses `wire`)
+* `sup` - incoming subscriptions (uses `path`)
+
 ### wire vs path
-- wire is for subscription metadata (acks etc)
-- path is for the "content" of the subscription
-This is enforced: when passing information out to subscribers, Gall **only** lets you use `path`. 
+`wex` holds a `wire` that is used to receive acknowledgement of subscriptions, receive subscription facts/updates, and also to leave a subscription.
+
+`sup` holds a `path` that is used to send out updates to all subscribers on the `path` and also to kick unwanted subscribers off the `path`.
+
+- wire is for subscription metadata (acks, leaving)
+- path is for the "content" of the subscription (sending out updates, kicking)
+
+### Subscription Workflow
+* subscription requests are created with `%pass` cards
+* subscriptions requests contain
+  - `wire` to listen for ack on, listen for updates, and to leave if desired
+  - `path` that the host will send updates or kicks on
+* subscriptions can be unilaterally terminated at any time
+  - subscribers do it with `%leave` `%pass` cards on the `wire`
+  - hosts do it with `%kick` `%give` cards on the `path`, or with `%kick` signs at the time of receiving the subscription
+
+## Subscription Examples
+We'll now look at examples of all parts of the workflow above.
+
+
 
 * show how we use default-agent for acks
 
 * show an example of how %watch-ack puts bad subscriptions and good ones in its sign. How do we print the leaf? Look in the default implementation of on-watch
+
+* double subscription
 
 * watch example
 * kick example

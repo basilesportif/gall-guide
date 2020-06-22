@@ -5,5 +5,6 @@
       [%poke-self target=ship]
       [%subscribe src=ship]
       [%leave src=ship]
+      [%kick paths=(list path) subscriber=ship]
   ==
 --

@@ -6,7 +6,7 @@
     ==
 ::
 +$  state-zero
-    $:  [%0 counter=@ud]
+    $:  [%0 counter=@]
     ==
 ::
 +$  card  card:agent:gall
@@ -43,6 +43,9 @@
       ~&  >>  state
       ~&  >>>  bowl  `this
       ::
+        %print-subs
+      ~&  >>  &2.bowl  `this
+      ::
         %poke-self
       ?>  (team:title our.bowl src.bowl)
       :_  this
@@ -74,6 +77,14 @@
   |=  [=wire =sign:agent:gall]
   ^-  (quip card _this)
   ?+    wire  (on-agent:def wire sign)
+      [%poketime @ %counter ~]
+      ?+  -.sign  (on-agent:def wire sign)
+        %fact
+      =/  val=@  !<(@ q.cage.sign)
+      ~&  >>  "counter val on {<src.bowl>} is {<val>}"
+      `this
+      ==
+      ::
       [%poke-wire ~]
     ?~  +.sign
       ~&  >>  "successful {<-.sign>}"  `this
@@ -89,7 +100,9 @@
   ^-  (quip card _state)
   ?-    -.action
       %increase-counter
-    `state(counter (add step.action counter.state))
+    =.  counter.state  (add step.action counter.state)
+    :_  state
+    ~[[%give %fact ~[/counter] [%atom !>(counter.state)]]]
     ::
       %poke-remote
     :_  state
@@ -106,5 +119,9 @@
       %leave
     :_  state
     ~[[%pass /poketime/(scot %p src.action)/counter %agent [src.action %poketime] %leave ~]]
+    ::
+      %kick
+    :_  state
+    ~[[%give %kick paths.action `subscriber.action]]
   ==
 --
