@@ -474,4 +474,10 @@ Poking and subscribing have a lot of combinations and variants, and we've played
 * Create a custom type and mark for your app's actions
 * Gall handles most of the ceremony around subscribing and unsubscribing. Write new logic as your program needs it, but let the default handlers do the rest for `on-watch`, `on-agent`, and `on-leave`.
 
+## Bonus Knowledge
+When you see lines like this to run at the Dojo, bet they make a lot more sense now, right? Gall all the way down.
+```
+:file-server &file-server-action [%serve-dir /example-path /app/example %.y]
+```
+
 [Prev: Importing Code & Static Resources](ford.md) | [Home](overview.md) | [Next: Communicating with the Outside World (HTTP)](http.md)
