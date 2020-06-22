@@ -3,8 +3,9 @@
   $%  [%increase-counter step=@ud]
       [%poke-remote target=ship]
       [%poke-self target=ship]
-      [%subscribe src=ship]
-      [%leave src=ship]
+      [%subscribe host=ship]
+      [%leave host=ship]
       [%kick paths=(list path) subscriber=ship]
+      [%bad-path host=ship]
   ==
 --

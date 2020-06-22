@@ -77,7 +77,7 @@
   |=  [=wire =sign:agent:gall]
   ^-  (quip card _this)
   ?+    wire  (on-agent:def wire sign)
-      [%poketime @ %counter ~]
+      [%counter @ ~]
       ?+  -.sign  (on-agent:def wire sign)
         %fact
       =/  val=@  !<(@ q.cage.sign)
@@ -114,14 +114,18 @@
     ::
       %subscribe
     :_  state
-    ~[[%pass /poketime/(scot %p src.action)/counter %agent [src.action %poketime] %watch /counter]]
+    ~[[%pass /counter/(scot %p host.action) %agent [host.action %poketime] %watch /counter]]
     ::
       %leave
     :_  state
-    ~[[%pass /poketime/(scot %p src.action)/counter %agent [src.action %poketime] %leave ~]]
+    ~[[%pass /counter/(scot %p host.action) %agent [host.action %poketime] %leave ~]]
     ::
       %kick
     :_  state
     ~[[%give %kick paths.action `subscriber.action]]
+    ::
+      %bad-path
+    :_  state
+    ~[[%pass /counter/(scot %p host.action) %agent [host.action %poketime] %watch /mybadpath]]
   ==
 --

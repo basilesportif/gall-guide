@@ -138,19 +138,20 @@ It's considered best practice to switch first on the wire, and then on the sign 
 ## Custom Marks for Poke
 In the above, we moved with `%noun`. This is convenient for local CLI development, and I usually put some debug prints in my programs that I can poke. However, in general, you will want to explicitly define the types of pokes that can be done to your app by using custom types and marks.
 
-Let's say we want to make an action type that can have 6 types of actions. It can increase our current counter, poke another instance of our agent, poke us, subscribe to updates to that counter, unsubscribe from those updates, or kick a subscriber.  To do this, we'll want to make both a custom mark and a custom type. In fact, we already did that in our example code, so let's look at those two files:
+Let's say we want to make an action type that can have 7 types of actions. It can increase our current counter, poke another instance of our agent, poke us, subscribe to updates to that counter, unsubscribe from those updates, or kick a subscriber.  To do this, we'll want to make both a custom mark and a custom type. In fact, we already did that in our example code, so let's look at those two files:
 * `/sur/poketime.hoon`
 * `/mar/poketime/action.hoon`
 
-In `poketime.hoon`, we define a tagged union that has those 4 possibilities:
+In `poketime.hoon`, we define a tagged union that has those 7 possibilities:
 ```
 +$  action
   $%  [%increase-counter step=@ud]   ::  how big an increase to do
       [%poke-remote target=ship]     ::  the target ship on which to poke %poketime
       [%poke-self target=ship]       ::  poke your own ship (poking others will crash)
-      [%subscribe src=ship]          ::  which ship to send the %poketime subscribe message to
-      [%leave src=ship]              ::  which ship's %poketime subscription to leave
+      [%subscribe host=ship]         ::  which ship to send the %poketime subscribe message to
+      [%leave host=ship]             ::  which ship's %poketime subscription to leave
       [%kick paths=(list path) subscriber=ship]  ::kick a subscriber out of paths
+      [%bad-path host=ship]          ::  subscribe on a non-existent path to show what happens
 ```
 And now, in order to send a custom mark called `poketime-action`, we created `mar/poketime/action` ([recall that in the last lesson we saw that "-" is treated as a sub-directory](ford.md)):
 ```
@@ -215,24 +216,107 @@ Gall tracks incoming and outgoing subscriptions, and stores them in the `bowl` o
 * subscriptions can be unilaterally terminated at any time
   - subscribers do it with `%leave` `%pass` cards on the `wire`
   - hosts do it with `%kick` `%give` cards on the `path`, or with `%kick` signs at the time of receiving the subscription
+  
+### New Subscription Dataflow
+* subscription request card is sent and received in `on-watch` by the host
+* Gall adds the subscription to `wex` in the subscriber
+* Gall adds the subscription to `sup` in the host, calls `on-watch`, and sends a `%watch-ack` back to the subscriber
+* the subscriber receives the `%watch-ack` in `on-agent`
+
+### End Subscription Dataflow
+* subscriber sends a `%leave` card
+* Gall removes the subscription from `wex` in subscriber
+* Gall receives the `%leave` notification in the host
+* Gall removes the subscription from `sup` in host
+* `on-leave` is called
 
 ## Subscription Examples
 We'll now look at examples of all parts of the workflow above.
 
+### Example 1: Subscribe to Another Ship's `poketime`
+In `~zod`, run the following:
+```
+> :poketime &poketime-action [%subscribe ~timluc]
+```
+Which creates a poke of mark `poketime-action` that is matched in `handle-action` of the helper core. This generates a card:
+```
+[%pass /counter(scot %p host.action) %agent [host.action %poketime] %watch /counter]
+::  [%pass path note]
+::  path is the wire
+::  note is [%agent [=ship name=term] =task]
+::  task is [%watch =path]
+```
+Ship `~timluc` receives this `%pass` in its `on-watch`, where we match on the `path` (`[%counter ~]` in this case). Notice that all we do is print a message confirming we got the subscription. **Gall handles the actual subscription management for us.**
 
+We can see `~timluc`'s current subscriptions by running `:poketime %print-subs`.  We see there a value in `sup` (incoming subscriptions) that contains `~zod` and the `/counter` path.
 
-* show how we use default-agent for acks
+If you go back to `~zod` and run `:poketime %print-subs`, you'll see a value in `wex` (outgoing subs) something like:
+```
+[wex={[p=[wire=/counter/~timluc ship=~timluc term=%poketime] q=[acked=%.y path=/counter]]} sup={}]
+```
+We have an `acked` value of `%.y`, and the rest of the subscription info as well.
 
-* show an example of how %watch-ack puts bad subscriptions and good ones in its sign. How do we print the leaf? Look in the default implementation of on-watch
+### Example 2: Getting Subscription Updates
+So now `~zod`'s `%poketime` is subscribed to the `/counter` path on `~timluc`'s `%poketime`. Let's trigger an update message on that path.
+
+In `~timluc`, run:
+```
+> :poketime &poketime-action [%increase-counter 29]
+```
+On `~zod`, you should see a message that `counter val on ~timluc is 29`. In `handle-action` on `~timluc`, we matched `%increase-counter`, and added `step.action` to its current value. Then we returned a `%give` card, which is how you return values to subscribers. 
+
+Our `gift` was `[%give %fact ~[/counter] [%atom !>(counter.state)]]`, which sends a `cage` to a list of paths (just the `/counter` path in this case).
+
+`cage` is a pair of `[mark vase]`, and we gave a mark of `%atom` while putting the updated `counter` atom into the vase using `!>`.
+
+Where does `~zod` listen for updates? Same place as for acks: in `on-agent`, on the wire we passed when `~zod` subscribed. We match the wire, and then check that its sign is a `%fact`. If it is, we cast the value from the vase, and then print it.
+
+### Example 3: Leaving a Subscription
+Now let's leave the sub from Example 1. From `~zod`:
+```
+> :poketime &poketime-action [%leave ~timluc]
+```
+On `~timluc`, you'll see `"got counter leave request from ~zod"`.
+
+The `%leave` branch in `handle-action` returns the card:
+```
+[%pass /counter/(scot %p host.action) %agent [host.action %poketime] %leave ~]
+```
+This `%pass` card uses the same wire we subscribed on earlier, passes a `host.action` of `~timluc` and an app `%poketime`, and then adds the `%leave` task at the end.
+
+`~timluc` doesn't have to handle this in any way: note that our `on-leave` function simply prints a message. Agents aren't responsible for removing subscriptions; Gall does that for them. `on-leave` is simply there if you need to do any cleanup--often it isn't implemented.
+
+You can run `:poketime %print-subs` on either ship to verify that the sub maps are now empty.
+
+### Example 4: Kicking a Subscriber from the Host
+Let's subscribe one more time from `~zod` to `~timluc`:
+```
+> :poketime &poketime-action [%subscribe ~timluc]
+```
+And then in `~timluc`, run:
+```
+> :poketime &poketime-action [%kick ~[/counter] ~zod]
+```
+Now if you do `:poketime %print-state` in either ship, you'll see there are no longer any subscriptions.
+
+We use the `[%give %kick paths.action `subscriber.action]` card here, which lets you kick off any subscriber ships on a list of paths you specify. If you pass an empty list of paths (`~`), it kicks the subscriber ship from all paths it is subscribed to on you.
+
+Note that `on-leave` is *not* called here on `~zod`.
+
+### Example 5: Subscribe on a Non-Existent Path
+On `~zod`, run:
+```
+> :poketime &poketime-action [%bad-path ~timluc]
+```
+You'll see an error like `/~timluc/home/0/lib/default-agent/hoon:<[25 3].[25 5]>` saying that there was a `"unexpected subscription to %poketime on path /mybadpath"`. This is because instead of `/counter`, which has a matching case in `on-watch`, we passed `/mybadpath` as the path. It has no matching case, so the `default-agent` implementation of `on-watch` is called, which throws an error for unmatched paths.
+
+## more stuff
+
+* `on-watch` returning `~` as the path and ship
+* These errors we see? Show how we use default-agent for acks
+
 
 * double subscription
-
-* watch example
-* kick example
-* leave example
-
-## on-leave
-* `on-leave` mostly handled by Gall: you can't stop other ships from leaving. You can just do some extra stuff at that time if you have processing to do around the leave.
 
 ## Exercises
 1. Make your own handlers for acks in `on-agent`
