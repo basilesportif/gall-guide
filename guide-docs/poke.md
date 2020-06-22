@@ -32,7 +32,137 @@ In `/mar/poketime/action.hoon`:
 
 In `/app/poketime.hoon`:
 ```
-
+/-  poketime
+/+  default-agent
+|%
++$  versioned-state
+    $%  state-zero
+    ==
+::
++$  state-zero
+    $:  [%0 counter=@]
+    ==
+::
++$  card  card:agent:gall
+::
+--
+=|  state=versioned-state
+^-  agent:gall
+=<
+|_  =bowl:gall
++*  this      .
+    def   ~(. (default-agent this %|) bowl)
+    hc    ~(. +> bowl)
+::
+++  on-init
+  ^-  (quip card _this)
+  ~&  >  '%poketime initialized successfully'
+  =.  state  [%0 0]
+  `this
+++  on-save
+  ^-  vase
+  !>(state)
+++  on-load
+  |=  old-state=vase
+  ^-  (quip card _this)
+  ~&  >  '%poketime recompiled successfully'
+  `this(state !<(versioned-state old-state))
+++  on-poke
+  |=  [=mark =vase]
+  ^-  (quip card _this)
+  ?+    mark  (on-poke:def mark vase)
+      %noun
+    ?+    q.vase  (on-poke:def mark vase)
+        %print-state
+      ~&  >>  state
+      ~&  >>>  bowl  `this
+      ::
+        %print-subs
+      ~&  >>  &2.bowl  `this
+      ::
+        %poke-self
+      ?>  (team:title our.bowl src.bowl)
+      :_  this
+      ~[[%pass /poke-wire %agent [our.bowl %poketime] %poke %noun !>([%receive-poke 2])]]
+      ::
+        [%receive-poke @]
+        ~&  >  "got poked from {<src.bowl>} with val: {<+.q.vase>}"  `this
+    ==
+    ::
+      %poketime-action
+      ~&  >>>  !<(action:poketime vase)
+      =^  cards  state
+      (handle-action !<(action:poketime vase))
+      [cards this]
+  ==
+::
+++  on-watch
+  |=  =path
+  ^-  (quip card _this)
+  ?+     path  (on-watch:def path)
+      [%counter ~]
+      ~&  >>  "got counter subscription from {<src.bowl>}"  `this
+  ==
+++  on-leave
+  |=  =path
+  ~&  "got counter leave request from {<src.bowl>}"  `this
+++  on-peek   on-peek:def
+++  on-agent
+  |=  [=wire =sign:agent:gall]
+  ^-  (quip card _this)
+  ?+    wire  (on-agent:def wire sign)
+      [%counter @ ~]
+      ?+  -.sign  (on-agent:def wire sign)
+        %fact
+      =/  val=@  !<(@ q.cage.sign)
+      ~&  >>  "counter val on {<src.bowl>} is {<val>}"
+      `this
+      ==
+      ::
+      [%poke-wire ~]
+    ?~  +.sign
+      ~&  >>  "successful {<-.sign>}"  `this
+    (on-agent:def wire sign)
+  ==
+++  on-arvo   on-arvo:def
+++  on-fail   on-fail:def
+--
+::  start helper core
+|_  bowl=bowl:gall
+++  handle-action
+  |=  =action:poketime
+  ^-  (quip card _state)
+  ?-    -.action
+      %increase-counter
+    =.  counter.state  (add step.action counter.state)
+    :_  state
+    ~[[%give %fact ~[/counter] [%atom !>(counter.state)]]]
+    ::
+      %poke-remote
+    :_  state
+    ~[[%pass /poke-wire %agent [target.action %poketime] %poke %noun !>([%receive-poke 99])]]
+    ::
+      %poke-self
+    :_  state
+    ~[[%pass /poke-wire %agent [target.action %poketime] %poke %noun !>(%poke-self)]]
+    ::
+      %subscribe
+    :_  state
+    ~[[%pass /counter/(scot %p host.action) %agent [host.action %poketime] %watch /counter]]
+    ::
+      %leave
+    :_  state
+    ~[[%pass /counter/(scot %p host.action) %agent [host.action %poketime] %leave ~]]
+    ::
+      %kick
+    :_  state
+    ~[[%give %kick paths.action `subscriber.action]]
+    ::
+      %bad-path
+    :_  state
+    ~[[%pass /bad-path/(scot %p host.action) %agent [host.action %poketime] %watch /bad-path]]
+  ==
+--
 ```
 
 ## Preamble
@@ -90,7 +220,7 @@ There are two formats you can type at the Dojo after `:agent-name` (`:poketime` 
 > :poketime &mymark required-data
 ```
 
-Our `:poketime %print-state` example pokes with a mark of `%noun`. In line 36 we switch on the mark, and see it's a noun. Then we switch on `q.vase`, i.e. the value inside the vase. It's `%print-state`, so we run that code, which prints the `state` and `bowl`.
+Our `:poketime %print-state` example pokes with a mark of `%noun`. In line 39 we switch on the mark, and see it's a noun. Then we switch on `q.vase`, i.e. the value inside the vase. It's `%print-state`, so we run that code, which prints the `state` and `bowl`.
 
 ### Poking from an Agent
 Now we're going to send a poke directly from our agent. We'll poke ourselves, but, as you'll see, we can send pokes to any agent on any ship.
@@ -310,14 +440,38 @@ On `~zod`, run:
 ```
 You'll see an error like `/~timluc/home/0/lib/default-agent/hoon:<[25 3].[25 5]>` saying that there was a `"unexpected subscription to %poketime on path /mybadpath"`. This is because instead of `/counter`, which has a matching case in `on-watch`, we passed `/mybadpath` as the path. It has no matching case, so the `default-agent` implementation of `on-watch` is called, which throws an error for unmatched paths.
 
-## more stuff
+## Odds and Ends
 
-* `on-watch` returning `~` as the path and ship
-* These errors we see? Show how we use default-agent for acks
+### Multiple Subscriptions
+You *can* have multiple subscriptions from one ship to one path on a host. The subscriptions just have to have different wires. That is, `~zod` can have to `~timluc` for app `%poketime`:
+* one sub on wire `/wire1` and path `/counter`
+* another sub on wire `/wire2` and path `/counter`
 
+Both wires would receive updates in this case. A `%kick` from `~timluc` on the `/counter` path would kick both subscriptions.
 
-* double subscription
+### %fact or %kick Nuances
+`%fact` and `%kick` take `(list path)` and `(unit ship)` arguments, which means those arguments can either have values or be `~`. See below:
+```
+[%fact paths=(list path) =cage]
 
-## Exercises
-1. Make your own handlers for acks in `on-agent`
-2. 
+[%kick paths=(list path) ship=(unit ship)]
+```
+
+That `~` behaves differently in `on-watch` vs other contexts.
+#### in `on-watch`
+* `%fact` uses `~` to mean "send to the ship whose subscription triggered this `on-watch`".
+* `%kick` uses `~` to mean "the path that was subscribed to" and "the ship that subscribed", respectively
+
+#### anyhwere else
+* `%fact` isn't allowed to use `~` -- you're not allowed to say "send to all paths subscribed to me"
+* `%kick` uses `~` to mean "all paths" and "all ships", respectively
+
+## poke & watch Best Practices Summary
+Poking and subscribing have a lot of combinations and variants, and we've played around with them in this chapter. However, not everything that can be done is worth doing, so here are some simple guidelines for writing programs:
+
+* Switch first on wire and then on sign, since you could have multiple wires, each handling `%fact`s etc.
+* Use `%noun` pokes only for simple debugging purposes
+* Create a custom type and mark for your app's actions
+* Gall handles most of the ceremony around subscribing and unsubscribing. Write new logic as your program needs it, but let the default handlers do the rest for `on-watch`, `on-agent`, and `on-leave`.
+
+[Prev: Importing Code & Static Resources](ford.md) | [Home](overview.md) | [Next: Communicating with the Outside World (HTTP)](http.md)

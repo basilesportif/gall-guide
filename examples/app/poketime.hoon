@@ -126,6 +126,6 @@
     ::
       %bad-path
     :_  state
-    ~[[%pass /counter/(scot %p host.action) %agent [host.action %poketime] %watch /mybadpath]]
+    ~[[%pass /bad-path/(scot %p host.action) %agent [host.action %poketime] %watch /bad-path]]
   ==
 --
