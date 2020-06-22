@@ -38,23 +38,22 @@
   ^-  (quip card _this)
   ?+    mark  (on-poke:def mark vase)
       %noun
-    ?>  (team:title our.bowl src.bowl)
     ?+    q.vase  (on-poke:def mark vase)
         %print-state
       ~&  >>  state
       ~&  >>>  bowl  `this
       ::
         %poke-self
+      ?>  (team:title our.bowl src.bowl)
       :_  this
-      ~[[%pass /poke-self/pokepath %agent [~zod %poketime] %poke %noun !>([%receive-poke 2])]]
+      ~[[%pass /poke-wire %agent [our.bowl %poketime] %poke %noun !>([%receive-poke 2])]]
       ::
         [%receive-poke @]
-        ~&  >  "got poked with val: "
-        ~&  >  +.q.vase  `this
+        ~&  >  "got poked from {<src.bowl>} with val: {<+.q.vase>}"  `this
     ==
     ::
       %poketime-action
-      ~&  >  !<(action:poketime vase)
+      ~&  >>>  !<(action:poketime vase)
       =^  cards  state
       (handle-action !<(action:poketime vase))
       [cards this]
@@ -65,16 +64,20 @@
   ^-  (quip card _this)
   ?+     path  (on-watch:def path)
       [%counter ~]
-    ~&  >>  "got counter subscription"  `this
+      ~&  >>  "got counter subscription from {<src.bowl>}"  `this
   ==
-++  on-leave  on-leave:def
+++  on-leave
+  |=  =path
+  ~&  "got counter leave request from {<src.bowl>}"  `this
 ++  on-peek   on-peek:def
 ++  on-agent
   |=  [=wire =sign:agent:gall]
   ^-  (quip card _this)
   ?+    wire  (on-agent:def wire sign)
-      [%poke-self %pokepath ~]
-    ~&  >>  -.sign  `this
+      [%poke-wire ~]
+    ?~  +.sign
+      ~&  >>  "successful {<-.sign>}"  `this
+    (on-agent:def wire sign)
   ==
 ++  on-arvo   on-arvo:def
 ++  on-fail   on-fail:def
@@ -87,6 +90,14 @@
   ?-    -.action
       %increase-counter
     `state(counter (add step.action counter.state))
+    ::
+      %poke-remote
+    :_  state
+    ~[[%pass /poke-wire %agent [target.action %poketime] %poke %noun !>([%receive-poke 99])]]
+    ::
+      %poke-self
+    :_  state
+    ~[[%pass /poke-wire %agent [target.action %poketime] %poke %noun !>(%poke-self)]]
     ::
       %subscribe
     :_  state

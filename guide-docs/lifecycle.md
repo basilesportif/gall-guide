@@ -468,4 +468,6 @@ State transitions can be either actions passed to the system or updates to app s
 
 Because `on-load` is executed after every successful recompilation, it's useful to put a debug print in `on-load` like `'app recompiled successfully'`, so that you can quickly see that things have worked.
 
+If you want to iterate until you get your `on-init` right, I recommend using the "Faster Fakeship Startup" method from the [workflow lesson](workflow.md).
+
 [Prev: The 10 Arms of Gaal: App Structure](arms.md) | [Home](overview.md) | [Next: Importing Code and Static Resources](ford.md)

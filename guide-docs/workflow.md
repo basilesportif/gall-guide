@@ -79,18 +79,37 @@ There are 3 primary workflows we can use to handle this issue.
 3. Use the `create-landscape-app` scripts to watch your project and sync files to your pier
 
 ### Edit Files Directly in Your Pier
-This will be familiar to anyone who has written simple Hoon generators. You write the code, commit it, and then run it. Unfortunately, this makes it tricky to put our code in version control and to save it even when we make a new `~zod`. I recommend only using this option for quick throwaway tests and sanity checks.
+This will be familiar to anyone who has written simple Hoon generators. You write the code, commit it, and then run it. Unfortunately, this makes it tricky to put our code in version control and to save it even when we make a new `~zod`. I usually use this 
 
 ### Create a Separate Folder/Project
 If you are writing a Gall app without a frontend (for example, a web server), you can create a separate folder somewhere in your filesystem, edit files and track changes there, and then copy them to your pier.
 
 This can be done at the command line like so:
 ```
-cp your_code_directory/*.hoon your_pier_directory/app/
+cp -r your_code_directory/* your_pier_directory/app/
 ```
 
 ### Use `create-landscape-app` to Sync Files to Your Pier
 Once we begin creating Landscape apps, we will able to use `create-landscape-app` to monitor our JS and Hoon files, and copy them to our ship as they're updated.
+
+## Faster Fakeship Startup
+This can be used in combination with workflow option 1 above. Steps:
+1. Create a fake ship
+2. Run `|mount %` *as the first thing you do on the new fakeship*
+3. Copy the pier directory to something like `backup-zod`
+4. Do development as normal in method 1
+5. When you want to reset your ship, just delete your normal `zod` directory (backing up code files of course), and copy your `backup-zod` directory to `zod/`. 
+6. Run `./urbit zod` to boot from your backup, skipping the ~5 min load process.
+
+## Multiple Ships
+Since Gall apps communicate between ships, it's sometimes useful in testing to make multiple ships and have them talk to each other. This is really easy: any fake ships you have on your local machine can see each other automatically. Just create them with `-F`
+```
+> ./urbit -F zod
+
+# in another terminal window:
+> ./urbit -F timluc
+```
+In the example above, `~zod` and `~timluc` can now see each other. We'll use this extensively starting in the [poke and watch lesson](poke.md).
 
 ## Which Editor to Use?
 Any text editor/IDE is fine for Hoon. VSCode has support for Hoon syntax highlighting, if you want that. I generally keep a console with my Dojo open vertically next to my code, so that my editor takes up half the screen, and the console half the screen. This works well with Hoon's vertically-oriented syntax.

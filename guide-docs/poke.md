@@ -4,6 +4,10 @@ Back in the [App Structure lesson](arms.md), we said that the `on-poke` and `on-
 Both `on-poke` and `on-watch` allow outside processes on the same ship or other ships to call your ship. The difference is that poke is for "one-time" calls, and watch is for subscriptions.
 
 ## Example Code for the Lesson
+For this lesson, we will be using two fake ships to demonstrate communication between them. Make a fake `zod` and a fake `timluc`, mount them, and copy all code below to both of them.
+
+After the code is copied, start our Gall agent on each with `|start %poketime`
+
 In `/sur/poketime.hoon`:
 ```
 |%
@@ -154,7 +158,7 @@ There are two formats you can type at the Dojo after `:agent-name` (`:poketime` 
 > :poketime &mymark required-data
 ```
 
-Our `:poketime %print-state` example pokes with a mark of `%noun`. In line 36 we switch on the mark, and see it's a noun. We use the line `?>  (team:title our.bowl src.bowl)` to verify that the poke is coming from us (this isn't necessary, but it's often done for these debugging-type `%noun` pokes). Then we switch on `q.vase`, i.e. the value inside the vase. It's `%print-state`, so we run that code, which prints the `state` and `bowl`.
+Our `:poketime %print-state` example pokes with a mark of `%noun`. In line 36 we switch on the mark, and see it's a noun. Then we switch on `q.vase`, i.e. the value inside the vase. It's `%print-state`, so we run that code, which prints the `state` and `bowl`.
 
 ### Poking from an Agent
 Now we're going to send a poke directly from our agent. We'll poke ourselves, but, as you'll see, we can send pokes to any agent on any ship.
@@ -173,7 +177,7 @@ Three things happened here, and we'll look at them both in detail
 3. We got back a `%poke-ack` confirming the poke was received.
 
 #### Sending a Poke to an Agent
-When we run `:poketime %poke-self` from the Dojo, Gall receives that message, and calls our `on-poke` arm with parameters `%noun` as the mark and `%poke-self` inside the vase. In line 36 we switch on the mark--in this case it's a `%noun`. Then in line 39 we switch on the value inside the vase; here it's `%poke-self`, so we return the card below:
+When we run `:poketime %poke-self` from the Dojo, Gall receives that message, and calls our `on-poke` arm with parameters `%noun` as the mark and `%poke-self` inside the vase. In line 39 we switch on the mark--in this case it's a `%noun`. Then in line 41 we switch on the value inside the vase; here it's `%poke-self`, so we do a check with `team:title` to make sure the poke source is us or one of our moons, and then we return the card below:
 ```
 ::  type: [%pass path %agent [ship agent-name] task]
 ::  task will usually be %poke, %leave, or %watch
@@ -194,7 +198,7 @@ When you send a `%poke` or `%watch`, your agent also gets a `%poke-ack` or `%wat
 ::  wire is a path; sign starts with %poke-ack, %watch-ack, %kick, or %fact
 |=  [=wire =sign:agent:gall]
 ```
-`wire` is a path that is used mainly for `watch` and subscriptions. I set it as `/poke-self/pokepath` here, but we could have used anything (`~` would make the most sense for pokes, but I just wanted to demonstrate the battle station's full power).
+`wire` is a path that is used mainly for `watch` and subscriptions. I set it as `/poke-wire` here, but we could have used anything. Usually you won't need or want to handle the `%poke-ack`--this is just for demonstration of all the possibilities.
 
 It's considered best practice to switch first on the wire, and then on the sign (see [here in B3 for discussion](https://urbit.org/blog/precepts-discussion)).  So we switch on the wire, match `[%pokepath ~]`, and then match when the head of `sign` is `%poke-ack**.
 
@@ -202,14 +206,15 @@ It's considered best practice to switch first on the wire, and then on the sign 
 ## Custom Marks for Poke
 In the above, we moved with `%noun`. This is convenient for local CLI development, and I usually put some debug prints in my programs that I can poke. However, in general, you will want to explicitly define the types of pokes that can be done to your app by using custom types and marks.
 
-Let's say we want to make an action type that can have 3 types of actions. It can increase our current counter, subscribe to updates to that counter, or unsubscribe from those updates.  To do this, we'll want to make both a custom mark and a custom type. In fact, we already did that in our example code, so let's look at those two files:
+Let's say we want to make an action type that can have 5 types of actions. It can increase our current counter, poke another instance of our agent, poke us, subscribe to updates to that counter, or unsubscribe from those updates.  To do this, we'll want to make both a custom mark and a custom type. In fact, we already did that in our example code, so let's look at those two files:
 * `/sur/poketime.hoon`
 * `/mar/poketime/action.hoon`
 
-In `poketime.hoon`, we define a tagged union that has those 3 possibilities:
+In `poketime.hoon`, we define a tagged union that has those 4 possibilities:
 ```
 +$  action
   $%  [%increase-counter step=@ud]   ::  how big an increase to do
+      [%poke-remote target=ship]     ::  the target ship on which to poke %poketime
       [%subscribe src=ship]          ::  which ship to send the %poketime subscribe message to
       [%leave src=ship]              ::  which ship's %poketime subscription to leave
 ```
@@ -223,8 +228,10 @@ And now, in order to send a custom mark called `poketime-action`, we created `ma
 ```
 Our `grab` here just handles nouns, and converts them to the `action` type in `sur/poketime.hoon`. Notice that we use Ford to import that `sur` library.
 
-So with that all in hand, we can see our custom mark in action!  All we have to do is use `&` before the name of our custom mark, and the Dojo will treat it as a custom mark, and try to render the following value from noun to it. Try out the following commands at the Dojo:
+So with that all in hand, we can see our custom mark in action!  All we have to do is use `&` before the name of our custom mark, and the Dojo will treat it as a custom mark, and try to render the following value from noun to it. Try out the following commands at the Dojo from `~zod`:
 ```
+> :poketime &poketime-action [%poke-remote ~timluc]
+
 > :poketime &poketime-action [%increase-counter 7]
 > :poketime %print-state
 ::  you'll see that the counter went up by 7, and that wex and sup in bowl are empty
@@ -243,6 +250,11 @@ This is why we use vases: now that we've rendered our data with the `%poketime-a
 
 `handle-action` itself is very simple. We can use `?-` to switch because we know all possible values for the head of the incoming `action`. For `%increase-counter`, we just add the `step` to the current counter value in the state and return the state.  For the `%subscribe`/`%leave` cases, we keep the state the and return cards whose contents we'll explain in the next section.
 
+## How Subscriptions Work in Gall
+* handled internally
+* use wires and paths
+* 
+
 ## watch: Subscribe to Events
 ### wire vs path
 - wire is for subscription metadata (acks etc)
@@ -257,7 +269,8 @@ This is enforced: when passing information out to subscribers, Gall **only** let
 * kick example
 * leave example
 
-## show `on-leave`
+## on-leave
+* `on-leave` mostly handled by Gall: you can't stop other ships from leaving. You can just do some extra stuff at that time if you have processing to do around the leave.
 
 ## Exercises
 1. Make your own handlers for acks in `on-agent`
