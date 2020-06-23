@@ -26,7 +26,7 @@ Create two files, `/app/fordexample/example.html` and `/app/fordexample/example2
 Put the following code in the `/sur` directory in a file called `fordexample.hoon`:
 ```
 |%
-+$  name  [first=@t  last=@t]
++$  name  [first=@t last=@t]
 --
 ```
 Put the following code in the `/sur` directory in a file called `fordexample2.hoon`:
@@ -154,7 +154,6 @@ Put the following code in the `/app` directory in a file called `fordexample.hoo
 ++  on-arvo   on-arvo:def
 ++  on-fail   on-fail:def
 --
-
 ```
 
 Now go ahead and run `|commit %home`. You should see a message that `app initialized successfully`.
