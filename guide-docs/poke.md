@@ -1,7 +1,9 @@
-# Poke and Watch
+# Talk to Ships: Poke and Watch
 Back in the [App Structure lesson](arms.md), we said that the `on-poke` and `on-watch` arms listen for input/calls. We're going to use them both to do that in this lesson, as well as work with the `on-agent` and `on-leave` arms that handle responses from those calls.
 
 Both `on-poke` and `on-watch` allow outside processes on the same ship or other ships to call your ship. The difference is that poke is for "one-time" calls, and watch is for subscriptions.
+
+By the end of this lesson, you should feel very comfortable making calls and subscriptions across ships and processes.
 
 ## Example Code for the Lesson
 For this lesson, we will be using two fake ships to demonstrate communication between them. Make a fake `zod` and a fake `timluc`, mount them, and copy all code below to both of them.
@@ -480,4 +482,4 @@ When you see lines like this to run at the Dojo, bet they make a lot more sense 
 :file-server &file-server-action [%serve-dir /example-path /app/example %.y]
 ```
 
-[Prev: Importing Code & Static Resources](ford.md) | [Home](overview.md) | [Next: Communicating with the Outside World (HTTP)](http.md)
+[Prev: Importing Code & Static Resources](ford.md) | [Home](overview.md) | [Next: TBD)](.md)

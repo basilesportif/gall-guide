@@ -10,7 +10,7 @@ This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101
 * [The 10 Arms of Gaal: App Structure](arms.md)
 * [App Lifecycle and State](lifecycle.md)
 * [Importing Code and Static Resources](ford.md)
-* [Poke and Watch](poke.md)
+* [Talk to Ships: Poke and Watch](poke.md)
 * [Communicating with the Outside World (HTTP)](http.md)
 
 ### Building a Real Application
@@ -23,7 +23,6 @@ This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101
 
 ### More Backend
 * [Calling the OS (Arvo)]()
-* [Communicating with Other Ships]()
 * [Store/Hook/View]()
 
 ### Appendix
