@@ -22,7 +22,7 @@
 ++  on-init
   ^-  (quip card _this)
   ~&  >  '%chanel initialized successfully'
-  =.  state  [%0 0]
+  =.  state  [%0 100]
   `this
 ++  on-save
   ^-  vase
@@ -35,60 +35,26 @@
 ++  on-poke
   |=  [=mark =vase]
   ^-  (quip card _this)
-  ?+    mark  (on-poke:def mark vase)
-      %noun
-    ?+    q.vase  (on-poke:def mark vase)
-        %print-state
-      ~&  >>  state
-      ~&  >>>  bowl  `this
-      ::
-        %print-subs
-      ~&  >>  &2.bowl  `this
-      ::
-        %poke-self
-      ?>  (team:title our.bowl src.bowl)
-      :_  this
-      ~[[%pass /poke-wire %agent [our.bowl] %poke %noun !>([%receive-poke 2])]]
-      ::
-        [%receive-poke @]
-        ~&  >  "got poked from {<src.bowl>} with val: {<+.q.vase>}"  `this
+  |^
+  =^  cards  state
+    ?+    mark  (on-poke:def mark vase)
+        %chanel-action  (handle-action !<(action:chanel vase))
     ==
+  [cards this]
+  ::
+  ++  handle-action
+    |=  =action:chanel
+    ^-  (quip card _state)
+    ?-    -.action
+        %increase-counter  `state
     ::
-      %poketime-action
-      ~&  >>>  !<(action:poketime vase)
-      =^  cards  state
-      (handle-action !<(action:poketime vase))
-      [cards this]
-  ==
+        %decrease-counter  `state
+    ==
 ::
-++  on-watch
-  |=  =path
-  ^-  (quip card _this)
-  ?+     path  (on-watch:def path)
-      [%counter ~]
-      ~&  >>  "got counter subscription from {<src.bowl>}"  `this
-  ==
-++  on-leave
-  |=  =path
-  ~&  "got counter leave request from {<src.bowl>}"  `this
+++  on-watch  on-watch:def
+++  on-leave  on-leave:def
 ++  on-peek   on-peek:def
-++  on-agent
-  |=  [=wire =sign:agent:gall]
-  ^-  (quip card _this)
-  ?+    wire  (on-agent:def wire sign)
-      [%counter @ ~]
-      ?+  -.sign  (on-agent:def wire sign)
-        %fact
-      =/  val=@  !<(@ q.cage.sign)
-      ~&  >>  "counter val on {<src.bowl>} is {<val>}"
-      `this
-      ==
-      ::
-      [%poke-wire ~]
-    ?~  +.sign
-      ~&  >>  "successful {<-.sign>}"  `this
-    (on-agent:def wire sign)
-  ==
+++  on-agent  on-agent:def
 ++  on-arvo   on-arvo:def
 ++  on-fail   on-fail:def
 --
