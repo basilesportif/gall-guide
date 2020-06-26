@@ -11,14 +11,16 @@ This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101
 * [App Lifecycle and State](lifecycle.md)
 * [Importing Code and Static Resources](ford.md)
 * [Talk to Ships: Poke and Watch](poke.md)
+* [Call from Outside: JSON and channel.js](channel.md)
 * [Communicating with the Outside World (HTTP)](http.md)
 
 ### Building a Real Application
 
 ### Basic Frontend
 * [Landscape: GUI for Gall](landscape.md)
+* [Style](style.md)
 * [Walkthrough: Landscape Skeleton]()
-* [Communicating with Landscape (Subscriptions)]()
+* [Communicating with Landscape (Pokes & Subscriptions)]()
 * [Everything about React for Landscape]()
 
 ### More Backend
