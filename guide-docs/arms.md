@@ -79,25 +79,25 @@ A common Gall pattern is for arms to output a quip. The list of `card` is action
 ## Code Organization Conventions
 By convention, Gall apps generally all follow a similar structure. They do the following, in order:
 1. Ford imports of types (`/-` rune) and libraries (`/+` rune)
-2. import static resources (JS, CSS, images)
-3. define the app's state type
-4. define aliases for the agent, default agent implementation, and helper core
+2. define the app's state type
+3. Wrap in the `dbug` agent for easy debugging
+4. define aliases for the agent, default agent implementation, and helper core (if applicable)
 5. write the "10-arms" agent core
 6. write the helper core that contains extra functionality so that the "10 arms" code isn't so long
 
 ### Code Example
-Let's look at [the source for the publish agent](https://github.com/urbit/urbit/blob/e931a473dd52614304b50c2dcbfc31a16fc82542/pkg/arvo/app/publish.hoon).
+Let's look at [the source for the publish agent (as of June 17, 2020)](https://github.com/urbit/urbit/blob/08e1abb1396e9fe0673f5696260a9bcf18b2fa0f/pkg/arvo/app/publish.hoon)
 
 Here are links to where the pieces above are defined in it:
-1. [type imports](https://github.com/urbit/urbit/blob/e931a473dd52614304b50c2dcbfc31a16fc82542/pkg/arvo/app/publish.hoon#L2), [library imports](https://github.com/urbit/urbit/blob/e931a473dd52614304b50c2dcbfc31a16fc82542/pkg/arvo/app/publish.hoon#L12)
-2. [static resources](https://github.com/urbit/urbit/blob/e931a473dd52614304b50c2dcbfc31a16fc82542/pkg/arvo/app/publish.hoon#L14) -- lines 16-41
-3. [state type definitions](https://github.com/urbit/urbit/blob/e931a473dd52614304b50c2dcbfc31a16fc82542/pkg/arvo/app/publish.hoon#L47) lines 47-87
-4. [alias definitions](https://github.com/urbit/urbit/blob/e931a473dd52614304b50c2dcbfc31a16fc82542/pkg/arvo/app/publish.hoon#L96)
-5. [arm definitions](https://github.com/urbit/urbit/blob/e931a473dd52614304b50c2dcbfc31a16fc82542/pkg/arvo/app/publish.hoon#L100) lines 100-541
-6. [helper core](https://github.com/urbit/urbit/blob/e931a473dd52614304b50c2dcbfc31a16fc82542/pkg/arvo/app/publish.hoon#L543)
+1. [type imports](https://github.com/urbit/urbit/blob/08e1abb1396e9fe0673f5696260a9bcf18b2fa0f/pkg/arvo/app/publish.hoon#L1), [library imports](https://github.com/urbit/urbit/blob/08e1abb1396e9fe0673f5696260a9bcf18b2fa0f/pkg/arvo/app/publish.hoon#L11)
+2. [state type definitions](https://github.com/urbit/urbit/blob/e931a473dd52614304b50c2dcbfc31a16fc82542/pkg/arvo/app/publish.hoon) lines 19-44
+3. 
+4. [alias definitions](https://github.com/urbit/urbit/blob/08e1abb1396e9fe0673f5696260a9bcf18b2fa0f/pkg/arvo/app/publish.hoon#L66)
+5. [arm definitions](https://github.com/urbit/urbit/blob/08e1abb1396e9fe0673f5696260a9bcf18b2fa0f/pkg/arvo/app/publish.hoon#L70) lines 70-517
+6. [helper core](https://github.com/urbit/urbit/blob/08e1abb1396e9fe0673f5696260a9bcf18b2fa0f/pkg/arvo/app/publish.hoon#L519)
 
 ### Note on Aliases 
-From line 96 of the above:
+From line 66 of the above:
 ```
   +*  this  .
       def   ~(. (default-agent this %|) bol)
@@ -109,7 +109,14 @@ We have aliases for the `this`, the default agent, and the helper core are defin
 
 `default-agent` is a basic implementation of a Gall agent that returns valid but dummy responses for all arms. We give it the alias `def` here, and you'll see most Gall programs call it when they don't need a particular arm to have an action.
 
-Finally, note the `+>` in line 98. This is a *very* common idiom in Gall for referring to the helper core. In this case, we have the `=<` rune on line 94, which means that our Gall agent is defined with the helper core as the subject. Because our Gall agent is a door, the sample is in the head of the tail. So we select the tail of the tail, which is our helper core.
+Finally, note the `+>` in line 98. This is a very common idiom in Gall for referring to the helper core. In this case, we have the `=<` rune on line 94, which means that our Gall agent is defined with the helper core as the subject. Because our Gall agent is a door, the sample is in the head of the tail. So we select the tail of the tail, which is our helper core.
+
+Many applications now use `|^` instead of a helper core. This allows them to put the heavier functions below the main logic, while keeping helpers closer to their use place. You'll see both in these upcoming tutorials.
+
+## debugger: `dbug`
+Near the top of the file, you'll see the line `%-  agent:dbug`. This wraps our program in the `dbug` Gall agent, which lets us inspect the state of the program as it's running. We'll do this in more detail in the [lifecycle lesson](lifecycle.md).
+
+If you type `|start %dbug` at the Dojo, you'll be able to browse to `yourshipurl/~debug` and see the current state of every app in the ship that uses `dbug`.
 
 ## Summary
 You've now seen all the pieces that make up a complete Gall app, with a conceptual overview of the kinds of things that each of the arms handle. If this seems overwhelming, **don't panic**. I'll take you through each part of this program structure in great detail in the upcoming lessons.

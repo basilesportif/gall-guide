@@ -11,7 +11,7 @@ This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101
 * [App Lifecycle and State](lifecycle.md)
 * [Importing Code and Static Resources](ford.md)
 * [Talk to Ships: Poke and Watch](poke.md)
-* [Call from Outside: JSON and channel.js](channel.md)
+* [Call from Outside: JSON and channel.js](chanel.md)
 * [Communicating with the Outside World (HTTP)](http.md)
 
 ### Building a Real Application

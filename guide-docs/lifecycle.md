@@ -10,7 +10,7 @@ We'll also get our sneak peak at calling out to Arvo for networking services.
 We will modify the below code throughout the lesson. Paste it into a file in `app/` called `lifecycle.hoon`.
 
 ```
-/+  default-agen
+/+  default-agen, dbug
 |%
 +$  versioned-state
   $%  state-zero
@@ -21,6 +21,7 @@ We will modify the below code throughout the lesson. Paste it into a file in `ap
 +$  card  card:agent:gall
 ::
 --
+%-  agent:dbug
 =|  state=versioned-state
 ^-  agent:gall
 |_  =bowl:gall
@@ -56,9 +57,6 @@ We will modify the below code throughout the lesson. Paste it into a file in `ap
       %noun
     ?>  (team:title our.bowl src.bowl)
     ?+    q.vase  (on-poke:default mark vase)
-        %print-state
-      ~&  >>  state
-      `this
         %print-bowl
       ~&  >>  bowl
       `this
@@ -79,6 +77,13 @@ We will modify the below code throughout the lesson. Paste it into a file in `ap
 ++  on-fail   on-fail:default
 --
 ```
+
+## Preamble: `dbug`
+Near the top of the file, you'll see the line `%-  agent:dbug`. This wraps our program in the `dbug` Gall agent, which lets us inspect the state of the program as it's running. Once our agent is started, we can type at the Dojo:
+```
+:lifecycle +dbug
+```
+and we'll see the current state object printed out.
 
 ## Experiment: 1st Successful Compilation
 Before we start, just note that we are using `~&` to print messages in `on-init`, `on-save`, and `on-load`. (You can use up to 3 `>`s with `~&` to print the debug messages in different colors).
@@ -102,9 +107,9 @@ ford: %core on /~zod/home/0/app/lifecycle/hoon failed:
 ```
 
 ### Resolution
-What happened? This message is telling us that it can't find something in `lib`: `default-agen/hoon`. We'll learn about libraries in the [next lesson](ford.md). For now, check the very first line of our program: we need to change it to:
+What happened? This message is telling us that it can't find something in `lib`: `default-agen/hoon`. This is because we spelled the name wrong. We'll learn about libraries in the [next lesson](ford.md). For now, check the very first line of our program: we need to change it to:
 ```
-/+  default-agent
+/+  default-agent, dbug
 ```
 Now commit, and you'll see the following:
 ```
@@ -141,11 +146,11 @@ Gall arms that return this structure are passing 0 or more actions (`card`s) bac
 
 Take it as a given for now that this HTTP `card` works. What about our new state?
 
-We use `:_` to put the end of our return tuple first and put the heaviest code at the bottom (the `card`). So `this(state [%0 99])` is the value of our app that we return. I put a command in `on-poke` that allows us to print our current app state; try it out:
+We use `:_` to put the end of our return tuple first and put the heaviest code at the bottom (the `card`). So `this(state [%0 99])` is the value of our app that we return. Let's use `+dbug to print the state`
 ```
-> :lifecycle %print-state
+> :lifecycle +dbug
 ```
-You should see `[%0 val=99]` as the result.
+You should see `[%0 val=99]` as the result. (our `on-save` debug print also prints, since `dbug` calls it).
 
 ### Initializing with 0 or More Cards
 If we wanted to initialize with more than one `card`, we would put more elements in the list created with `:~`. If we wanted 0 elements, we could do either of the following, which are equivalent and both put ~ at the front of our tuple:
@@ -276,7 +281,7 @@ Now commit, and you will see something like this:
 ```
 And let's also check the current state:
 ```
-> :lifecycle %print-state
+> :lifecycle +dbug
 [%1 val=100 msg='my message']
 ```
 Notice that while our state updated as expected, we can see from the debug prints that Gall called the `"v0"` version of `on-save`, and the `"v1"` version of `on-load`. Why?
@@ -421,7 +426,7 @@ Let's commit and see the result of recompiling:
 >   'on-save v1'
 >   'on-load'
 >>> '%1'
-> :lifecycle %print-state
+> :lifecycle +dbug
 [%2 val=100 msg='my message']
 ```
 You can play around and change some of the print messages to force recompilation. However, the state will remain the same, because when we're in state `%2`, it sismply sets the current state to the previous (i.e no change).
