@@ -15,15 +15,17 @@
       %-  of:dejs
       :~  [%increase step]
           decrease+step
-          [%exampleship who]
+          [%example example]
       ==
     ++  step
       %-  ot:dejs
       :~  [%step ni:dejs]
       ==
-    ++  who
+    ++  example
       %-  ot:dejs
       :~  [%who (su:dejs fed:ag)]
+          [%msg so:dejs]
+          [%app so:dejs]
       ==
     --
   --

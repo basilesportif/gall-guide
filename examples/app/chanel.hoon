@@ -40,6 +40,7 @@
     ?+    mark  (on-poke:def mark vase)
         %chanel-action  (handle-action !<(action:chanel vase))
     ::
+
         %json
       ~&  >>  !<(json vase)
       `state
@@ -56,8 +57,8 @@
         %decrease
         `state(counter (sub counter.state step.action))
     ::
-        %exampleship
-        ~&  >>  "got ship {<who.action>}"
+        %example
+        ~&  >>  +.action
         `state
     ==
   --

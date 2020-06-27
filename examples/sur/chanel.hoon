@@ -2,6 +2,6 @@
 +$  action
   $%  [%increase step=@ud]
       [%decrease step=@ud]
-      [%exampleship who=ship]
+      [%example who=ship msg=@t app=term]
   ==
 --
