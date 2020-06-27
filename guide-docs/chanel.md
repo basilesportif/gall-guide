@@ -8,4 +8,10 @@
 
 ## Make a JSON mark
 
+## Mount the Static Files
+```
+> :file-server &file-server-action [%serve-dir /'~chanel' /app/chanel %.y]
+> :file-server +dbug
+```
+
 ## channel.js setup

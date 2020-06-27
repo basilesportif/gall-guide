@@ -1,6 +1,7 @@
 |%
 +$  action
-  $%  [%increase-counter step=@ud]
-      [%decrease-counter step=@ud]
+  $%  [%increase step=@ud]
+      [%decrease step=@ud]
+      [%exampleship who=ship]
   ==
 --

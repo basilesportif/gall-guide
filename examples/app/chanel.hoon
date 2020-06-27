@@ -39,6 +39,10 @@
   =^  cards  state
     ?+    mark  (on-poke:def mark vase)
         %chanel-action  (handle-action !<(action:chanel vase))
+    ::
+        %json
+      ~&  >>  !<(json vase)
+      `state
     ==
   [cards this]
   ::
@@ -46,9 +50,15 @@
     |=  =action:chanel
     ^-  (quip card _state)
     ?-    -.action
-        %increase-counter  `state
+        %increase
+        `state(counter (add step.action counter.state))
     ::
-        %decrease-counter  `state
+        %decrease
+        `state(counter (sub counter.state step.action))
+    ::
+        %exampleship
+        ~&  >>  "got ship {<who.action>}"
+        `state
     ==
   --
 ::
