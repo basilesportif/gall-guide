@@ -1,12 +1,27 @@
 # Call from Outside: JSON, channel.js, and Static Files
 
-## Make a skeleton app to use it
-* move to the `|^` style?
-* use dbug
+In this lesson, we're going to show how to call into your app from the outside world. We'll do it from a web browser, but this example would be easy to extend to other contexts.
 
-## Make a simple action type with 2 things
+In order to make the calls, we'll use and explain the helper library `channel.js`, which is short (235 lines as of this writing) and provides a minimal interface for poking and subscribing.
 
-## Make a JSON mark
+You'll also learn how to use the `:file-server` Gall agent to serve static files up to web requests from anywhere on your Urbit.
+
+## Example Code
+- very simple
+- note: moves to the `|^` style?
+- note: uses dbug
+
+## Action Type and JSON Mark
+
+### Action Type
+
+### JSON Mark
+
+### JSON Parsing, Explained
+* provide a "mark" (`%increase`)
+* function for how to parse that mark's data
+* `of` says that it can have many "fronds"
+* `ot` says it will have these multiple elements
 - `fed:ag` is the ship name parser (`cord` to `ship`). Deal with it.
 
 ## Mount the Static Files
