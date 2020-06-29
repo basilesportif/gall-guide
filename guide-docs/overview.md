@@ -11,7 +11,7 @@ This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101
 * [App Lifecycle and State](lifecycle.md)
 * [Importing Code and Static Resources](ford.md)
 * [Talk to Ships: Poke and Watch](poke.md)
-* [Call from Outside: JSON and channel.js](chanel.md)
+* [Call from Outside: JSON, channel.js and Static Files](chanel.md)
 * [Communicating with the Outside World (HTTP)](http.md)
 
 ### Building a Real Application
@@ -24,6 +24,7 @@ This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101
 * [Everything about React for Landscape]()
 
 ### More Backend
+* [Shoe: CLI Apps]()
 * [Calling the OS (Arvo)]()
 * [Store/Hook/View]()
 

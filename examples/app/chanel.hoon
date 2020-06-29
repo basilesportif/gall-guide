@@ -40,7 +40,6 @@
     ?+    mark  (on-poke:def mark vase)
         %chanel-action  (handle-action !<(action:chanel vase))
     ::
-
         %json
       ~&  >>  !<(json vase)
       `state
@@ -60,10 +59,21 @@
         %example
         ~&  >>  +.action
         `state
+    ::
+        %send-sub-data
+      :_  state
+      ~[[%give %fact ~[path.action] [%json !>((json [%s msg.action]))]]]
     ==
   --
 ::
-++  on-watch  on-watch:def
+++  on-watch
+  |=  =path
+  ^-  (quip card _this)
+  ?+    path  (on-watch:def path)
+      [%example ~]
+    ~&  >>>  "got %example subscription"
+    `this
+  ==
 ++  on-leave  on-leave:def
 ++  on-peek   on-peek:def
 ++  on-agent  on-agent:def

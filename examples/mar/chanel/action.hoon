@@ -13,11 +13,12 @@
     |%
     ++  action
       %-  of:dejs
-      :~  [%increase step]
-          decrease+step
+      :~  [%increase counter]
+          decrease+counter
           [%example example]
+          [%send-sub-data send-sub-data]
       ==
-    ++  step
+    ++  counter
       %-  ot:dejs
       :~  [%step ni:dejs]
       ==
@@ -26,6 +27,11 @@
       :~  [%who (su:dejs fed:ag)]
           [%msg so:dejs]
           [%app so:dejs]
+      ==
+    ++  send-sub-data
+      %-  ot:dejs
+      :~  [%path pa:dejs]
+          [%msg so:dejs]
       ==
     --
   --
