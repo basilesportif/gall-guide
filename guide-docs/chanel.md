@@ -11,18 +11,84 @@ You'll also learn how to use the `:file-server` Gall agent to serve static files
 - note: moves to the `|^` style?
 - note: uses dbug
 
-## Action Type and JSON Mark
+## marks and JSON Parsing
 
-### Action Type
+### Action Type and JSON mark
+In `sur/chanel.hoon` we define our `action` type. It has 4 different elements, to showcase different ways of parsing JSON.
 
-### JSON Mark
+In `mar/chanel/action.hoon`, we define a `%chanel-action` mark. It has a `json` arm in `grab`, so that we can take `json` sent in with a `%chanel-action` mark by the frontend, and properly parse it here. That parsing works by running `=<  (action jon)` on the incoming JSON, where `action` is an arm that produces a JSON parser (a gate). Let's look now at how that works
 
 ### JSON Parsing, Explained
+In order to parse, we use the `dejs:format` core found in `zuse.hoon`. Its arms let us create gates that will parse a given piece of JSON. There are two basic types of arms: arms that directly produce gates (like `so` and `ni`) and arms that require samples to produce gates (like `of` and `ot`)
+
+#### Simple Parsers
+These parsers all take json directly and produce various types like numbers and strings.  You can find all variants by searching for `++  dejs` in `sys/zuse.hoon`.
+```
+> (so:dejs:format (json [%s 'hello']))
+'hello'
+
+> (ni:dejs:format (json [%n ~.99]))
+99
+
+> (no:dejs:format (json [%n ~.99]))
+~.99
+
+> (bo:dejs:format (json [%b %.y]))
+%.y
+```
+
+#### Parsers with Samples
+These expect a sample in order to produce a gate that can then be used to parse.
+```
+
+```
+
+#### Object and Array Parsing
+```
+:: set up example maps
+> =m1 (~(put by *(map cord json)) ['key1' [%s 'sample cord']])
+> =m2 (~(put by *(map cord json)) ['key2' [%n ~.998]])
+> =mboth (~(put by m1) ['key2' [%n ~.998]])
+
+::  of takes a list of [key parser] tuples and makes a parser that creates [key value] keys for ONE key
+::  first element of the tuple is a possible key
+::  second element of the tuple is the parser to use for that type of key
+> =of-parser %-  of:dejs:format
+  :~  [%key1 so:dejs:format]
+      [%key2 ni:dejs:format]
+  ==
+> (of-parser (json [%o m1]))
+[%'key1' 'sample cord']
+> (of-parser (json [%o m2]))
+[%'key2' 998]
+
+::  ot takes a list of n tuples, but makes a parser that for an object that has ALL keys as an n-tuple
+> =ot-parser %-  ot:dejs:format
+  :~  [%key1 so:dejs:format]
+      [%key2 ni:dejs:format]
+  ==
+> (ot-parser (json [%o mboth]))
+```
+
+Arrays:
+```
+::  ar
+((ar:dejs:format ni:dejs:format) (json [%a p=~[[%n p=~.9] [%n p=~.10]]]))
+
+::  at
+
+::  as
+```
+
 * provide a "mark" (`%increase`)
 * function for how to parse that mark's data
 * `of` says that it can have many "fronds"
 * `ot` says it will have these multiple elements
 - `fed:ag` is the ship name parser (`cord` to `ship`). Deal with it.
+
+#### frond
+
+#### pairs/tuples
 
 ## Mount the Static Files
 ```

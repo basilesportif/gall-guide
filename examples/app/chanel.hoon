@@ -50,10 +50,10 @@
     |=  =action:chanel
     ^-  (quip card _state)
     ?-    -.action
-        %increase
+        %increase-counter
         `state(counter (add step.action counter.state))
     ::
-        %decrease
+        %decrease-counter
         `state(counter (sub counter.state step.action))
     ::
         %example

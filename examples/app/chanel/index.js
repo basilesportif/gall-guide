@@ -13,9 +13,9 @@ const login =  async () => {
 
 window.urb = new Channel();
 
-window.urb.poke('zod', 'chanel', 'chanel-action', {increase: {step: 40}}, () => console.log("Successful poke"), (err) => console.log(err));
+window.urb.poke('zod', 'chanel', 'chanel-action', {'increase-counter': {step: 40}}, () => console.log("Successful poke"), (err) => console.log(err));
 window.urb.poke('zod', 'chanel', 'chanel-action', {example: {who: 'timluc-miptev', msg: 'hello world', app: 'chanel'}}, () => console.log("Successful poke"), (err) => console.log(err));
-window.urb.poke('zod', 'chanel', 'json', {increase: {step: 9}}, () => console.log("JSON poke"), (err) => console.log(err));
+window.urb.poke('zod', 'chanel', 'json', {'key1': 9}, () => console.log("JSON poke"), (err) => console.log(err));
 
 // subscriptions
 window.urb.subscribe('zod', 'chanel', '/example', (err) => console.log("Sub Error"), (data) => console.log(`got response: ${data}`), () => console.log("Sub Quit"));

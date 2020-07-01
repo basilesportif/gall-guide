@@ -13,8 +13,8 @@
     |%
     ++  action
       %-  of:dejs
-      :~  [%increase counter]
-          decrease+counter
+      :~  [%increase-counter counter]
+          decrease-counter+counter
           [%example example]
           [%send-sub-data send-sub-data]
       ==
