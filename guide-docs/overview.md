@@ -14,8 +14,6 @@ This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101
 * [Call from Outside: JSON, channel.js and Static Files](chanel.md)
 * [Communicating with the Outside World (HTTP)](http.md)
 
-### Building a Real Application
-
 ### Basic Frontend
 * [Landscape: GUI for Gall](landscape.md)
 * [Style](style.md)
@@ -24,9 +22,10 @@ This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101
 * [Everything about React for Landscape]()
 
 ### More Backend
-* [Shoe: CLI Apps]()
-* [Calling the OS (Arvo)]()
+* [on-peek & Data Model/Store](model.md) 
 * [Store/Hook/View]()
+* [Using Existing Data like Groups]()
+* [Calling the OS (Arvo)]()
 
 ### Appendix
 * [Troubleshooting & FAQ](faq.md)
