@@ -16,7 +16,6 @@ This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101
 
 ### Basic Frontend
 * [Landscape: GUI for Gall](landscape.md)
-* [Style](style.md)
 * [Walkthrough: Landscape Skeleton]()
 * [Communicating with Landscape (Pokes & Subscriptions)]()
 * [Everything about React for Landscape]()
