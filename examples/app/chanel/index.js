@@ -1,5 +1,11 @@
 window.urb = new Channel();
 
+const sendSubData = (msg) => {
+    window.urb.poke(window.ship, 'chanel', 'chanel-action',
+                    {'send-sub-data': {'path': '/example', 'msg': msg}},
+                    () => 'sent', (err) => console.log(err));
+};
+
 const doShipCalls = () => {
     console.log(`window.ship: ${window.ship}`);
 
@@ -10,12 +16,7 @@ const doShipCalls = () => {
     // subscriptions
     window.urb.subscribe(window.ship, 'chanel', '/example', (err) => console.log("Sub Error"), (data) => console.log(`got response: ${data}`), () => console.log("Sub Quit"));
 
-    const sendSubData = (msg) => {
-        window.urb.poke(window.ship, 'zod-action',
-                        {'send-sub-data': {'path': '/example', 'msg': msg}},
-                        () => 'sent', (err) => console.log(err));
-    };
-}
+};
 
 const login =  async (ship) => {
     let loginRes = await fetch('/~/login', {
