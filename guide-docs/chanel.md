@@ -1,4 +1,4 @@
-# Call from Outside: JSON, channel.js, and Static Files
+# Call from Outside: JSON & channel.js
 
 In this lesson, we're going to show how to call into your app from the outside world. We'll do it from a web browser, but this example would be easy to extend to other contexts.
 
@@ -40,7 +40,13 @@ These parsers all take json directly and produce various types like numbers and 
 #### Parsers with Samples
 These expect a sample in order to produce a gate that can then be used to parse.
 ```
+::  parse string using an aura
+> `@da`((se:dejs:format %da) (json [%s '~2020.7.4..08.39.17..541e']))
+~2020.7.4..08.39.17..541e
 
+> `@p`((se:dejs:format %p) (json [%s '~timluc-miptev']))`
+~timluc-miptev
+::  
 ```
 
 #### Object and Array Parsing
@@ -91,9 +97,9 @@ Arrays:
 #### pairs/tuples
 
 ## Mount the Static Files
+We'll use the `:file-server` agent we learned about in the [HTTP lesson](http.md).
 ```
 > :file-server &file-server-action [%serve-dir /'~chanel' /app/chanel %.y]
-> :file-server +dbug
 ```
 
 ## channel.js
@@ -116,3 +122,5 @@ If the response is to a poke, its data is disregarded, and we just run the poke 
 This can receive a `"quit"` response (for `kick` and `leave`) which causes it to call the subscription's `quitFunc` and deletes the `outstandingSubscription`.
 
 If it receives an `"event"` response, it calls the subscription's `eventFunc` with the the `json` element of the return object.
+
+## Getting Ship Name from Cookies
