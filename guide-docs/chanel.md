@@ -11,6 +11,7 @@ You'll also learn how to use the `:file-server` Gall agent to serve static files
 - note: moves to the `|^` style?
 - note: uses dbug
 - note: mounts static files in `on-init`
+- `|start %chanel`
 
 ## marks and JSON Parsing
 
@@ -54,6 +55,7 @@ These expect a sample in order to produce a gate that can then be used to parse.
 ```
 
 #### Object and Array Parsing
+Objects:
 ```
 :: set up example maps
 > =m1 (~(put by *(map cord json)) ['key1' [%s 'sample cord']])
@@ -96,25 +98,70 @@ Arrays:
 {10 9}
 ```
 
+## Simplest Possible Browser/Ship Interaction
+In our `on-init`, we started serving the `app/chanel` directory publicly, with no login required. This means that you can navigate directly to [http://localhost/~chanel/index.html](http://localhost/~chanel/index.html) and see a page there.
+
+If you open the JS console, you'll see some messages with your current ship name and some stuff about "Successful Poke".
+
+In `index.html`, you'll see that we include `channel.js` and `index.js`. The latter is our custom logic, so let's start by learning about `channel.js`.
+
 ## channel.js
-[May 28 channel.js](https://github.com/urbit/urbit/blob/4fded00005770a84a53ff77a81ba71353f84b4bd/pkg/arvo/app/landscape/js/channel.js)
+`channel.js` is a library that lives under `/~landscape/js/channel.js` when you are logged in to your ship. We'll use the [May 28th verion](https://github.com/urbit/urbit/blob/4fded00005770a84a53ff77a81ba71353f84b4bd/pkg/arvo/app/landscape/js/channel.js) in this lesson and serve it directly from `app/chanel/channel.js`.
 
-### EventSource
-Simple browser built-in object that opens a connection to a server on a URL, and listens for updates on it from the server. You [attach](https://github.com/urbit/urbit/blob/4fded00005770a84a53ff77a81ba71353f84b4bd/pkg/arvo/app/landscape/js/channel.js#L180) an `onmessage` function to the event source to process messages back.
+`channel.js` allows you to do pokes and subscribes to a running ship, similar to what we've seen from the Dojo. The only difference is that the data for the pokes will initially be passed as JSON, which is why we learned about parsing above.
 
-### flow
-1. get a poke or subscribe
+### Interface to channel.js
+You create a new channel by calling `new Channel()`. This initializes a data structure to track pokes and subscriptions.
+
+You interface with channel.js by calling `poke`, `subscribe` and `unsubscribe`.
+
+#### poke
+`poke(ship, app, mark, json, successFunc, failureFunc)`
+* ship: ship name, generally the one our frontend is logged in to
+* app: name of the Gall app
+* mark: name of the mark
+* json: data to pass in the poke. We'll see in a bit how custom marks let us parse it on the Gall side
+* successFunc: function to call if poke succeeds; takes no parameters
+* failureFunc: function to call if poke fails; takes error as parameter
+
+#### subscribe
+`subscribe(ship, app, path, connectionErrFunc, eventFunc, quitFunc)`
+* ship: ship name, generally the one our frontend is logged in to
+* app: name of the Gall app
+* path: `on-watch` path to subscribe to
+* connectionErrFunc: function to call if subscribing fails
+* eventFunc: function to call on success, takes a data parameter
+* quitFunc: function to call after unsubscribing or being kicked
+
+#### unsubscribe
+`unsubscribe(subscription)`: passes a subscription from `outStandingSubscriptions` to unsubscribe to.
+
+### Basic Logical Flow
+1. `poke` or `subscribe`  is called
 2. send their json to `ship/~/channel/$UID`
 3. Generate a new `outstandingPoke` or `outstandingSubscription`
 4. Open up an `EventSource` if one doesn't exist
 5. Poke will generate one response (basicallyy an ack); subscribe will create as many as the server generates. All will be handled in the `onmessage` function.
 
-### poke Response
+#### poke Response
 If the response is to a poke, its data is disregarded, and we just run the poke `onSuccess` function and delete the `outstandingPoke`. This is like a `%poke-ack` in our [prior lesson](poke.md).
 
-### subscribe Response
+#### subscribe Response
 This can receive a `"quit"` response (for `kick` and `leave`) which causes it to call the subscription's `quitFunc` and deletes the `outstandingSubscription`.
 
 If it receives an `"event"` response, it calls the subscription's `eventFunc` with the the `json` element of the return object.
 
-## Getting Ship Name from Cookies
+### "Under the Hood"
+`channel.js` creates a JS `EventSource`, which is just an object that that opens a connection to a server on a URL, and listens for updates on it from the server. You [attach](https://github.com/urbit/urbit/blob/4fded00005770a84a53ff77a81ba71353f84b4bd/pkg/arvo/app/landscape/js/channel.js#L180) an `onmessage` function to the event source to process messages back.
+
+## index.js
+Now we can go through this and see how it interacts with our ship's running Gall app.
+
+### Getting Ship Name
+
+### Make Pokes
+
+### Subscribe
+
+### Send Subscription Data
+
