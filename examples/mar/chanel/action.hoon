@@ -6,7 +6,7 @@
   ++  noun  action:chanel
   ++  json
     |=  jon=^json
-    ::run noun through the action mold
+    ::  run noun through the action mold
     %-  action:chanel
     ::  returns a noun
     =<  (action jon)
@@ -14,6 +14,7 @@
     ++  action
       %-  of:dejs
       :~  [%increase-counter counter]
+          ::  equivalent to [%decrease-counter counter]
           decrease-counter+counter
           [%example example]
           [%send-sub-data send-sub-data]

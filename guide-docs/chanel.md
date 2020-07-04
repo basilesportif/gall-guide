@@ -130,7 +130,7 @@ You interface with channel.js by calling `poke`, `subscribe` and `unsubscribe`.
 * app: name of the Gall app
 * path: `on-watch` path to subscribe to
 * connectionErrFunc: function to call if subscribing fails
-* eventFunc: function to call on success, takes a data parameter
+* eventFunc: function to call on success, takes a json argument, returned from the ship
 * quitFunc: function to call after unsubscribing or being kicked
 
 #### unsubscribe
@@ -155,11 +155,29 @@ If it receives an `"event"` response, it calls the subscription's `eventFunc` wi
 `channel.js` creates a JS `EventSource`, which is just an object that that opens a connection to a server on a URL, and listens for updates on it from the server. You [attach](https://github.com/urbit/urbit/blob/4fded00005770a84a53ff77a81ba71353f84b4bd/pkg/arvo/app/landscape/js/channel.js#L180) an `onmessage` function to the event source to process messages back.
 
 ## index.js
-Now we can go through this and see how it interacts with our ship's running Gall app.
+Now we can go through this and see how it interacts with our ship's running Gall app.  For this part of the lesson, uopen up the Console in the developer tools of your browser.
+
+Go to `localhost/~chanel/index.html` (add the port if necessary for your fakezod).
+
+### Logging In
+In line 22, we do a POST request to our server with the body as the ship's password. If this succeeds, it sets a cookie in our browser that will automatically be used for future calls to the ship.
 
 ### Getting Ship Name
+In line 30, we fetch `session.js` and eval its result--this is a file that is available once you are logged in, and it has code to inject the current ship name to `window.ship`.
 
 ### Make Pokes
+In lines 12-14 we poke the ship 3 times.
+
+#### poke 1: mutate ship state
+Here we poke `chanel` with `chanel-action`, and pass JSON data. Our ship receives that, and Gall tries to find a corresponding mark in `mar/chanel/action.hoon`. It does, and now it needs a `grab` arm to go from `json` to `action` (line 7).
+
+We use `of` object parsing to alternate between the 4 different possible JSON keys. In this case, our key matches `%increase-counter`, so the value of the object is parsed with the `counter` arm (line 22).
+
+`counter` returns a parser that parses a tuple with one element, a number.
+
+#### poke 2: extended JSON parsing
+
+#### poke 3: raw JSON
 
 ### Subscribe
 

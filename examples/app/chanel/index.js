@@ -18,10 +18,10 @@ const doShipCalls = () => {
 
 };
 
-const login =  async (ship) => {
+const login =  async (pass) => {
     let loginRes = await fetch('/~/login', {
         method: 'POST',
-        body: `password=${passwords[ship]}`
+        body: `password=${pass}`
     });
     if (loginRes.status != 200) {
         return;
@@ -36,7 +36,7 @@ const login =  async (ship) => {
 
 const passwords = {'zod': 'lidlut-tabwed-pillex-ridrup',
                    'timluc': 'tilhep-bittul-happex-motlet'};
-Object.keys(passwords).forEach(pass => login(pass));
+Object.keys(passwords).forEach(ship => login(passwords[ship]));
 
 /*
 
