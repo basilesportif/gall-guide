@@ -10,6 +10,7 @@ You'll also learn how to use the `:file-server` Gall agent to serve static files
 - very simple
 - note: moves to the `|^` style?
 - note: uses dbug
+- note: mounts static files in `on-init`
 
 ## marks and JSON Parsing
 
@@ -46,7 +47,10 @@ These expect a sample in order to produce a gate that can then be used to parse.
 
 > `@p`((se:dejs:format %p) (json [%s '~timluc-miptev']))`
 ~timluc-miptev
-::  
+
+::  parse string using a rule (useful for going from ship-name to @p)
+> `@p`((su:dejs:format fed:ag) (json [%s 'timluc-miptev']))
+~timluc-miptev
 ```
 
 #### Object and Array Parsing
@@ -68,38 +72,28 @@ These expect a sample in order to produce a gate that can then be used to parse.
 > (of-parser (json [%o m2]))
 [%'key2' 998]
 
-::  ot takes a list of n tuples, but makes a parser that for an object that has ALL keys as an n-tuple
+::  ot takes a list of n tuples, but makes a parser that for an object that has ALL the keys
 > =ot-parser %-  ot:dejs:format
   :~  [%key1 so:dejs:format]
       [%key2 ni:dejs:format]
   ==
 > (ot-parser (json [%o mboth]))
+['sample cord' 998]
 ```
 
 Arrays:
 ```
-::  ar
-((ar:dejs:format ni:dejs:format) (json [%a p=~[[%n p=~.9] [%n p=~.10]]]))
+::  ar - array as list. List has one type inside, so one parser passed
+> ((ar:dejs:format ni:dejs:format) (json [%a p=~[[%n p=~.9] [%n p=~.10]]]))
+~[9 10]
 
-::  at
+::  at - array as tuple (multiple parsers needed)
+> ((at:dejs:format ~[ni:dejs:format so:dejs:format]) (json [%a p=~[[%n p=~.9] [%s 'hello there']]]))
+[9 'hello there']
 
-::  as
-```
-
-* provide a "mark" (`%increase`)
-* function for how to parse that mark's data
-* `of` says that it can have many "fronds"
-* `ot` says it will have these multiple elements
-- `fed:ag` is the ship name parser (`cord` to `ship`). Deal with it.
-
-#### frond
-
-#### pairs/tuples
-
-## Mount the Static Files
-We'll use the `:file-server` agent we learned about in the [HTTP lesson](http.md).
-```
-> :file-server &file-server-action [%serve-dir /'~chanel' /app/chanel %.y]
+::  as - array as set, all of one type
+> `(set @ud)`((as:dejs:format ni:dejs:format) (json [%a p=~[[%n p=~.10] [%n p=~.10] [%n p=~.9] [%n p=~.10]]]))
+{10 9}
 ```
 
 ## channel.js

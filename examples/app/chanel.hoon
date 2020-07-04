@@ -22,8 +22,11 @@
 ++  on-init
   ^-  (quip card _this)
   ~&  >  '%chanel initialized successfully'
+  =/  filea  [%file-server-action !>([%serve-dir /'~chanel' /app/chanel %.y])]
   =.  state  [%0 100]
-  `this
+  :_  this
+  :~  [%pass /srv %agent [our.bowl %file-server] %poke filea]
+  ==
 ++  on-save
   ^-  vase
   !>(state)
@@ -54,6 +57,7 @@
         `state(counter (add step.action counter.state))
     ::
         %decrease-counter
+
         `state(counter (sub counter.state step.action))
     ::
         %example
