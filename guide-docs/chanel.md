@@ -7,11 +7,21 @@ In order to make the calls, we'll use and explain the helper library `channel.js
 You'll also learn how to use the `:file-server` Gall agent to serve static files up to web requests from anywhere on your Urbit.
 
 ## Example Code
-- very simple
-- note: moves to the `|^` style?
-- note: uses dbug
-- note: mounts static files in `on-init`
-- `|start %chanel`
+* to `/app/`
+  - [chanel.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/examples/app/chanel.hoon)
+  - directory: [chanel](https://github.com/timlucmiptev/gall-guide/tree/master/examples/app/chanel)
+* to `/mar/chanel/`
+  - [action.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/examples/mar/chanel/action.hoon)
+* to `/sur/`
+  - [chanel.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/examples/sur/chanel.hoon)
+
+### to start
+run `|start %chanel`
+
+### notes
+* uses `%file-server` in `on-init` to statically serve the `app/chanel/` directory from endpoint `/~chanel`.
+* `on-poke` uses `|^` to give helper arms inside the `on-poke` rather than using a helper core.
+* has `dbug`, so you can type `:chanel +dbug` at any time in the Dojo to see the state
 
 ## marks and JSON Parsing
 
@@ -175,11 +185,25 @@ We use `of` object parsing to alternate between the 4 different possible JSON ke
 
 `counter` returns a parser that parses a tuple with one element, a number.
 
+Run `:chanel +dbug` at the Dojo to see the updated counter state.
+
 #### poke 2: extended JSON parsing
+TODO: you'll see it output in the frontend
 
 #### poke 3: raw JSON
+TODO: you'll see it output in the frontend
 
 ### Subscribe
+Line 17 sends a subscription to the ship, which is handled in `on-watch`. The path `/example` must exist in order for this to work.
 
 ### Send Subscription Data
+On the webpage, enter some text in the input box, and click the button.
 
+Line 10 of `app/chanel/index.html` handles the onClick of that button: when pressed it calls `sendSubData` with the current value of the text box, which sends a poke to `%chanel` that then sends data to all subscribers.
+
+You'll see the data get handled in the console with a message that it `"got response: $DATA"`
+
+## Summary
+* Logging in is a very "non-magical" process that simply involves making a `POST` call that sets a cookie.
+* Subscriptions (usually to a path called `/primary`) are the way that Gall apps send data to the frontend.
+* Pokes are used to send in actions
