@@ -1,4 +1,4 @@
-# Communicating with the Outside World: HTTP
+# HTTP & Static Files
 
 ## `:file-server`: Serve Static Resources
 ```

@@ -11,7 +11,7 @@ This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101
 * [App Lifecycle and State](lifecycle.md)
 * [Importing Code and Static Resources](ford.md)
 * [Talk to Ships: Poke & Watch](poke.md)
-* [HTTP and Static Files](http.md)
+* [HTTP & Static Files](http.md)
 * [Call from Outside: JSON & channel.js](chanel.md)
 
 ### Basic Frontend

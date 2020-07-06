@@ -226,3 +226,5 @@ Great! We now have a clear way for our ship's Gall app to pass us any data about
 You now have seen almost all the basics of Gall, and know how to communicate with your app from the frontend. You could definitely go ahead and write any frontend app you want now, but it's nice to have some better starting point than just raw HTML+JS (although that's a totally valid option!). 
 
 So, in the next section of this course, we're going to learn next about React and Landscape, as well as some patterns you can use to make apps that integrate into the Urbit experience.
+
+[Prev: HTTP & Static Files](http.md) | [Home](overview.md) | 
