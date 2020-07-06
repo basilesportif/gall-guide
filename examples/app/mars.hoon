@@ -2,7 +2,7 @@
 ::  examples of HTTP going into and out of Mars
 ::
 /-  mars
-/+  default-agent, dbug
+/+  srv=server, default-agent, dbug
 |%
 +$  versioned-state
     $%  state-zero
@@ -35,6 +35,7 @@
   :_  this
   :~  [%pass /srv %agent [our.bowl %file-server] %poke public-filea]
       [%pass /srv %agent [our.bowl %file-server] %poke private-filea]
+      [%pass /'~mars-dynamic' %arvo %e %connect [~ /'~mars-dynamic'] %mars]
   ==
 ++  on-save
   ^-  vase
@@ -51,6 +52,12 @@
   =^  cards  state
     ?+    mark  (on-poke:def mark vase)
         %mars-action  (handle-action !<(action:mars vase))
+        %handle-http-request
+      =+  !<([id=@ta req=inbound-request:eyre] vase)
+      :_  state
+      %+  give-simple-payload:app:srv  id
+      %+  require-authorization:app:srv  req
+      handle-http-request
     ==
   [cards this]
   ::
@@ -67,11 +74,26 @@
     |=  =url
     ^-  request:http
     [%'GET' url ~ ~]
+  ++  handle-http-request
+    |=  req=inbound-request:eyre
+    ^-  simple-payload:http
+    ~&  >>  req
+    =,  enjs:format
+    %-  json-response:gen:srv
+    %-  json-to-octs:srv
+    %-  pairs
+    :~
+      [%msg [%s 'hello my friends']]
+      [%intent [%s 'peaceful']]
+    ==
   --
 ++  on-arvo
   |=  [=wire =sign-arvo]
   ^-  (quip card _this)
   |^
+  ?:  ?=(%e -.sign-arvo)
+    ~&  >>  "Eyre returned: {<+.sign-arvo>}"
+    `this
   ?:  ?=(%i -.sign-arvo)
   ?>  ?=(%http-response +<.sign-arvo)
     =^  cards  state

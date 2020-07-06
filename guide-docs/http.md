@@ -1,19 +1,38 @@
 # HTTP & Static Files
-Doing all this stuff internally is great and all, but your Urbit is meant to be a personal *server*. That means that we need to have ways for it to serve up resources to the outside world (Earth calling Mars).  There are also times when we want to access Earth resources we've heard about, which your Urbit allows you to access through a very narrow interface.
+Urbit is Mars. The rest of the computing world is Earth.
+
+We'll touch on this metaphor again later, but it deeply informs how ships communicate with the outside world. They are hermetically sealed, and should only interact with it in specific ways.
+
+That said, your Urbit is meant to be a personal *server*. That means that we need to have ways for it to serve up resources to the outside world (Earth calling Mars).  There are also times when we want to access Earth resources we've heard about, which your Urbit allows you to access through a very narrow interface.
 
 In this lesson, you will learn how to:
 * serve static files to Earth (the outside internet)
+* handle dynamic inbound requests from Earth on the server-side
 * 
 
-## `:file-server`: Serve Static Resources
+## `%file-server`: Serve Static Resources to Earth
+In `on-init`, we return a couple cards that open up directories to the world.
 ```
-> :file-server &file-server-action [%serve-dir /'~chanel' /app/chanel %.y]
+=/  public-filea   [%file-server-action !>([%serve-dir /'~mars-public' /app/mars/public %.y])]
+=/  private-filea  [%file-server-action !>([%serve-dir /'~mars-private' /app/mars/private %.n])]
+```
+```
+
 > :file-server +dbug
+::  the 
 ```
 
 ### Only for Authenticated
 
-### 
+## Eyre: Handle Dynamic Calls from Earth
+- `%file-server` uses Eyre internally
+
+- return JSON
+- return TXT
+- return HTML
+
+### How It Works
+`ive-simple-payload` passes cards to Arvo, which passes them to Eyre, which passes back to the caller. This keeps Mars (Urbit, Gall) from knowing about Earth and coupling to it as a dependency.
 
 ## Iris: Call Out to Earth
 ```
