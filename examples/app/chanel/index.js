@@ -10,7 +10,7 @@ const doShipCalls = () => {
     console.log(`window.ship: ${window.ship}`);
 
     window.urb.poke(window.ship, 'chanel', 'chanel-action', {'increase-counter': {step: 40}}, () => console.log("Successful poke"), (err) => console.log(err));
-    window.urb.poke(window.ship, 'chanel', 'chanel-action', {example: {who: 'timluc-miptev', msg: 'hello world', app: 'chanel'}}, () => console.log("Successful poke"), (err) => console.log(err));
+    window.urb.poke(window.ship, 'chanel', 'chanel-action', {example: {who: 'timluc-miptev', msg: 'hello world', app: 'chanel', friends: ['zod', 'dopzod', 'timluc']}}, () => console.log("Successful poke"), (err) => console.log(err));
     window.urb.poke(window.ship, 'chanel', 'json', {'key1': 9}, () => console.log("JSON poke"), (err) => console.log(err));
 
     // subscriptions
@@ -37,7 +37,3 @@ const login =  async (pass) => {
 const passwords = {'zod': 'lidlut-tabwed-pillex-ridrup',
                    'timluc': 'tilhep-bittul-happex-motlet'};
 Object.keys(passwords).forEach(ship => login(passwords[ship]));
-
-/*
-
-*/

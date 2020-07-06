@@ -9,7 +9,9 @@ You'll also learn how to use the `:file-server` Gall agent to serve static files
 ## Example Code
 * to `/app/`
   - [chanel.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/examples/app/chanel.hoon)
-  - directory: [chanel](https://github.com/timlucmiptev/gall-guide/tree/master/examples/app/chanel)
+* to `/app/chanel/`
+  - [index.html](https://github.com/timlucmiptev/gall-guide/tree/master/examples/app/chanel/index.js)
+  - [index.js](https://github.com/timlucmiptev/gall-guide/tree/master/examples/app/chanel/index.js)
 * to `/mar/chanel/`
   - [action.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/examples/mar/chanel/action.hoon)
 * to `/sur/`
@@ -34,7 +36,8 @@ In `mar/chanel/action.hoon`, we define a `%chanel-action` mark. It has a `json` 
 In order to parse, we use the `dejs:format` core found in `zuse.hoon`. Its arms let us create gates that will parse a given piece of JSON. There are two basic types of arms: arms that directly produce gates (like `so` and `ni`) and arms that require samples to produce gates (like `of` and `ot`)
 
 #### Simple Parsers
-These parsers all take json directly and produce various types like numbers and strings.  You can find all variants by searching for `++  dejs` in `sys/zuse.hoon`.
+These parsers all take jso
+n directly and produce various types like numbers and strings.  You can find all variants by searching for `++  dejs` in `sys/zuse.hoon`.
 ```
 > (so:dejs:format (json [%s 'hello']))
 'hello'
@@ -176,7 +179,7 @@ In line 22, we do a POST request to our server with the body as the ship's passw
 In line 30, we fetch `session.js` and eval its result--this is a file that is available once you are logged in, and it has code to inject the current ship name to `window.ship`.
 
 ### Make Pokes
-In lines 12-14 we poke the ship 3 times.
+In lines 12-14 we poke the ship 3 times. These pokes run right away when you load `index.html`
 
 #### poke 1: mutate ship state
 Here we poke `chanel` with `chanel-action`, and pass JSON data. Our ship receives that, and Gall tries to find a corresponding mark in `mar/chanel/action.hoon`. It does, and now it needs a `grab` arm to go from `json` to `action` (line 7).
@@ -188,22 +191,38 @@ We use `of` object parsing to alternate between the 4 different possible JSON ke
 Run `:chanel +dbug` at the Dojo to see the updated counter state.
 
 #### poke 2: extended JSON parsing
-TODO: you'll see it output in the frontend
+If you look back at the Dojo, you should see a line that was printed out when the pokes were sent:
+```
+>>  [who=~timluc-miptev msg='hello world' app=%chanel friends={~dopzod ~timluc ~zod}]
+```
+This was created by our poke in line 13 of `index.js`: we poked again with a `chanel-action` mark type. Our mark in `mar/chanel/action.hoon` matches the `'example'` key in line 19, which calls the `example` arm to process the object in the value slot. This uses `ot` to parse an object with multiple keys, and returns the whole thig as an `action:chanel` type, which is then printed out as you see above.
 
 #### poke 3: raw JSON
-TODO: you'll see it output in the frontend
+We also see in the Dojo:
+```
+[%o p={[p='key1' q=[%n p=~.9]]}]
+```
+This is our poke from line 14 of `index.js`; here, we use a raw 'json' mark, and then print the resulting object when it comes into the Dojo.
+
+In general, you want to have marks set up to translate JSON so that you can have a clear set of typed, predictable inputs to your app.
 
 ### Subscribe
-Line 17 sends a subscription to the ship, which is handled in `on-watch`. The path `/example` must exist in order for this to work.
+Line 17 sends a subscription to the ship, which is handled in `on-watch` (line 77 of `app/chanel.hoon`). The path `/example` must exist in order for this to work. Now our frontend is listening to any data that the ship sends out on the `/example` path.
 
 ### Send Subscription Data
-On the webpage, enter some text in the input box, and click the button.
+Let's check that our subscription is working. On the webpage, enter some text in the `"Type message here"` input box, and click the `"Send Data to Subscription"` button.
 
 Line 10 of `app/chanel/index.html` handles the onClick of that button: when pressed it calls `sendSubData` with the current value of the text box, which sends a poke to `%chanel` that then sends data to all subscribers.
 
-You'll see the data get handled in the console with a message that it `"got response: $DATA"`
+You'll see the data get handled in the console with a message that it `"got response: $YOUR_MESSAGE"`.
+
+Great! We now have a clear way for our ship's Gall app to pass us any data about things in the app that have changed. This "frontend-updating" path is, by convention, usually called `/primary`, but as we see here, that name is just a parameter.
 
 ## Summary
 * Logging in is a very "non-magical" process that simply involves making a `POST` call that sets a cookie.
 * Subscriptions (usually to a path called `/primary`) are the way that Gall apps send data to the frontend.
 * Pokes are used to send in actions
+
+You now have seen almost all the basics of Gall, and know how to communicate with your app from the frontend. You could definitely go ahead and write any frontend app you want now, but it's nice to have some better starting point than just raw HTML+JS (although that's a totally valid option!). 
+
+So, in the next section of this course, we're going to learn next about React and Landscape, as well as some patterns you can use to make apps that integrate into the Urbit experience.

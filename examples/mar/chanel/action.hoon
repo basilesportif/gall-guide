@@ -28,6 +28,7 @@
       :~  [%who (su:dejs fed:ag)]
           [%msg so:dejs]
           [%app so:dejs]
+          [%friends (as:dejs (su:dejs fed:ag))]
       ==
     ++  send-sub-data
       %-  ot:dejs

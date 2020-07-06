@@ -16,3 +16,6 @@ So now, whenever an HTTP request comes in at `http://localhost:$PORT/~myapp` (wh
 
 ::  print a list of the directories we are serving
 > :file-server +dbug
+
+
+[Prev: Talk to Ships: Poke & Watch](poke.md) | [Home](overview.md) | [Next: JSON & channel.js)](chanel.md)

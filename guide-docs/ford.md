@@ -15,13 +15,14 @@ Note: these Ford (`/`) runes only work in Hoon files evaluated in Gall apps and 
 
 ## Example Code
 * to `/app/`
-  - [fordexample.hoon]()
-  - directory: [fordexample]()
+  - [fordexample.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/examples/app/fordexample.hoon)
+to `/app/fordexample/`
+  - [example.html](https://github.com/timlucmiptev/gall-guide/blob/master/examples/app/fordexample/example.html)
 * to `/mar/fordexample/`
-  - [name.hoon]()
+  - [name.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/examples/mar/fordexample/name.hoon)
 * to `/sur/`
-  - [fordexample.hoon]()
-  - [fordexample2.hoon]()
+  - [fordexample.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/examples/sur/fordexample.hoon)
+  - [fordexample2.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/examples/sur/fordexample2.hoon)
 
 Now go ahead and run `|commit %home`. You should see a message that `fordexample initialized successfully`.
 
@@ -37,7 +38,6 @@ The syntax `fordex=fordexample` tells Ford to find the file `fordexample.hoon` i
 The syntax `*fordexample2*` tells Ford to find the file `fordexample2.hoon` in `sur` and put it into the current subject. Essentially this means that it's not "namespaced": we can access the `age` arm from its core directly, as we do in line 30.
 
 `sur` is used for data structures that are shared between apps.
-
 
 ## `/+` Import Libraries
 This works in exactly the same way as `/+`, with the difference that it looks in the `lib` directory. This lets us import existing and user-created libraries.
