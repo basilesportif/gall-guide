@@ -84,7 +84,7 @@ These are types found in `hoon.hoon`, `arvo.hoon`, and `zuse.hoon`
 
 ### Wires and Paths
 These types often use a shortcut syntax that we can check in the dojo.
-EXAMPLE
+TODO: EXAMPLE
 
 ## Gall Types
 These include anything like `...:agent:gall`. They are defined in `sys/zuze.hoon`.
