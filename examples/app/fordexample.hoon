@@ -1,26 +1,12 @@
 /-  fordex=fordexample, *fordexample2
 /+  *server, default-agent, base=base64
+::  evaluate Hoon code
+/=  n2w  /lib/number-to-words
 ::  mark example
-/=  html-as-html
-  /^  cord
-  /:  /===/app/fordexample/example  /html/
-/=  html-as-mime
-  /:  /===/app/fordexample/example  /mime/
-/=  html-as-mime-as-html
-  /:  /===/app/fordexample/example  /html/  /mime/
+/*  html-as-html  %html  /app/fordexample/example/html
+/*  html-as-mime  %mime  /app/fordexample/example/html
 ::  custom mark example
-/=  noun-as-name
-  /:  /===/app/fordexample/example  /fordexample-name/
-/=  html-as-name
-  /:  /===/app/fordexample/example  /fordexample-name/  /html/
-::  importing files for real
-/=  html-as-octs
-  /^  octs
-  /;  as-octs:mimes:html
-  /:  /===/app/fordexample/example  /html/
-/=  multiple-files
-  /^  (map knot @t)
-  /:  /===/app/fordexample  /_  /html/
+/*  html-as-name  %fordexample-name  /app/fordexample/example/html
 |%
 +$  versioned-state
   $%  state-zero
@@ -41,16 +27,16 @@
 ::
 ++  on-init
   ^-  (quip card _this)
-  ~&  >  'app initialized successfully'
+  ~&  >  'fordexample initialized successfully'
   =.  state  [%0 [first='Hoon' last='Cool Guy'] age=74]
   `this
 ++  on-save
   ^-  vase
-  !>(state) 
-++  on-load 
+  !>(state)
+++  on-load
   |=  old-state=vase
   ^-  (quip card _this)
-  ~&  >  'app recompiled successfully'
+  ~&  >  'fordexample recompiled successfully'
   =/  prev  !<(versioned-state old-state)
   ?-  -.prev
     %0
@@ -63,26 +49,15 @@
       %noun
     ?>  (team:title our.bowl src.bowl)
     ?+    q.vase  (on-poke:def mark vase)
-        %print-state
-      ~&  >>  state
-      `this
         %mark-example
       ~&  >>  html-as-html
       ~&  >>  html-as-mime
-      ~&  >>  html-as-mime-as-html
       `this
         %custom-mark-example
-      ~&  >>  noun-as-name
       ~&  >>  html-as-name
       `this
-        %multiple-files-example
-      ~&  >>  ~(key by multiple-files)
-      `this
-        %print-vars
-      ~&  >>  html-as-html
-      ~&  >>  html-as-mime
-      ~&  >>  html-as-octs
-      ~&  >>  ~(key by multiple-files)
+        %evaluate-hoon-example
+      ~&  >>  (to-words:eng-us:n2w 3)
       `this
     ==
   ==

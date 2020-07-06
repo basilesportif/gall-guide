@@ -14,149 +14,16 @@ In this lesson, you'll learn how to include types and libraries, work with and c
 Note: these Ford (`/`) runes only work in Hoon files evaluated in Gall apps and generators. They will not work in the Dojo.
 
 ## Example Code
-Start by creating a directory, `/app/fordexample`
+* to `/app/`
+  - [fordexample.hoon]()
+  - directory: [fordexample]()
+* to `/mar/fordexample/`
+  - [name.hoon]()
+* to `/sur/`
+  - [fordexample.hoon]()
+  - [fordexample2.hoon]()
 
-### HTML Files
-Create two files, `/app/fordexample/example.html` and `/app/fordexample/example2.html`. Put the following code in each of them:
-```
-<html><head><title>Ford HTML Example</title></head></html>
-```
-
-### Types File
-Put the following code in the `/sur` directory in a file called `fordexample.hoon`:
-```
-|%
-+$  name  [first=@t last=@t]
---
-```
-Put the following code in the `/sur` directory in a file called `fordexample2.hoon`:
-```
-|%
-++  age  @ud
---
-```
-
-### Mark File
-Put the following in `/mar/fordexample/name.hoon`
-```
-/-  *fordexample
-|_  own=name
-++  grab
-  |%
-  ++  noun
-    |=  n=@t
-    ^-  name
-    [first='NOUN' last=n]
-  ++  html
-    |=  h=@t
-    ^-  name
-    [first='HTML' last=h]
-  --
---
-```
-
-### Gall File
-Put the following code in the `/app` directory in a file called `fordexample.hoon`:
-```
-/-  fordex=fordexample, *fordexample2
-/+  *server, default-agent, base=base64
-::  mark example
-/=  html-as-html
-  /^  cord
-  /:  /===/app/fordexample/example  /html/
-/=  html-as-mime
-  /:  /===/app/fordexample/example  /mime/
-/=  html-as-mime-as-html
-  /:  /===/app/fordexample/example  /html/  /mime/
-::  custom mark example
-/=  noun-as-name
-  /:  /===/app/fordexample/example  /fordexample-name/
-/=  html-as-name
-  /:  /===/app/fordexample/example  /fordexample-name/  /html/
-::  importing files for real
-/=  html-as-octs
-  /^  octs
-  /;  as-octs:mimes:html
-  /:  /===/app/fordexample/example  /html/
-/=  multiple-files
-  /^  (map knot @t)
-  /:  /===/app/fordexample  /_  /html/
-|%
-+$  versioned-state
-  $%  state-zero
-  ==
-::
-+$  state-zero
-  $:  [%0 name:fordex =age]
-  ==
-::
-+$  card  card:agent:gall
-::
---
-=|  state=versioned-state
-^-  agent:gall
-|_  =bowl:gall
-+*  this      .
-    def   ~(. (default-agent this %|) bowl)
-::
-++  on-init
-  ^-  (quip card _this)
-  ~&  >  'app initialized successfully'
-  =.  state  [%0 [first='Hoon' last='Cool Guy'] age=74]
-  `this
-++  on-save
-  ^-  vase
-  !>(state) 
-++  on-load 
-  |=  old-state=vase
-  ^-  (quip card _this)
-  ~&  >  'app recompiled successfully'
-  =/  prev  !<(versioned-state old-state)
-  ?-  -.prev
-    %0
-    `this(state prev)
-  ==
-++  on-poke
-  |=  [=mark =vase]
-  ^-  (quip card _this)
-  ?+    mark  (on-poke:def mark vase)
-      %noun
-    ?>  (team:title our.bowl src.bowl)
-    ?+    q.vase  (on-poke:def mark vase)
-        %print-state
-      ~&  >>  state
-      `this
-        %mark-example
-      ~&  >>  html-as-html
-      ~&  >>  html-as-mime
-      ~&  >>  html-as-mime-as-html
-      `this
-        %custom-mark-example
-      ~&  >>  noun-as-name
-      ~&  >>  html-as-name
-      `this
-        %multiple-files-example
-      ~&  >>  ~(key by multiple-files)
-      `this
-        %print-vars
-      ~&  >>  html-as-html
-      ~&  >>  html-as-mime
-      ~&  >>  html-as-octs
-      ~&  >>  ~(key by multiple-files)
-      `this
-    ==
-  ==
-::
-++  on-watch  on-watch:def
-++  on-leave  on-leave:def
-++  on-peek   on-peek:def
-++  on-agent  on-agent:def
-++  on-arvo   on-arvo:def
-++  on-fail   on-fail:def
---
-```
-
-Now go ahead and run `|commit %home`. You should see a message that `app initialized successfully`.
+Now go ahead and run `|commit %home`. You should see a message that `fordexample initialized successfully`.
 
 ## `/-` Import Types
 Our code starts with:
@@ -179,131 +46,75 @@ This works in exactly the same way as `/+`, with the difference that it looks in
 
 We've seen `default-agent` a lot already. It just gets used once, on line 40.
 
+## `/=` Import the Evaluation of a Hoon File
+In line 4, we use `/=`. The `/=` rune imports the result of building a hoon file from a user-specified path (the second argument, `/lib/number-to-words`), wrapping it in a face specified by the first argument (`n2w`). The final /hoon at the end of the path must be omitted. This is similar to `` and `/-`, but just allows us to import from any directory.
+
+Run `:fordexample %evaluate-hoon-example`, and you'll see how we now have access to the `to-words` arm in `number-to-words`.
+
 ## Marks
-Marks have some similarities to file types, except that they are more explicit and can be directly programmed. They exist only for Ford and processes that use Ford (like Gall), and are defined in the `mar` directory. We use some `/` runes yet that you won't be familiar with--they're explained in "Import and Process Files" below.
+Marks have some similarities to file types, except that they are more explicit and can be directly programmed. They exist only for Ford and processes that use Ford (like Gall), and are defined in the `mar` directory.
 
 Marks have two primary use cases:
 1. Importing files with Ford
 2. Sending data to Gall apps
 
-We'll work with files in this lesson, and then once we get to [poke](poke.md) and Landscape, we'll see how marks help us for the data-sending use case.
+We'll work with files in this lesson, and then once we get to [poke](poke.md) and [JSON & channels](chanel.md), we'll see how marks help us for the data-sending use case.
 
 ### Example 1: Two Ways to Open an HTML File
-Lines 4-10 of `fordexample.hoon`:
+Lines 6-7 of `fordexample.hoon`:
 ```
-/=  html-as-html
-  /^  cord
-  /:  /===/app/fordexample/example  /html/
-/=  html-as-mime
-  /:  /===/app/fordexample/example  /mime/
-/=  html-as-mime-as-html
-  /:  /===/app/fordexample/example  /html/  /mime/
+/*  html-as-html  %html  /app/fordexample/example/html
+/*  html-as-mime  %mime  /app/fordexample/example/html
 ```
-We'll learn exactly how this syntax works later in this lesson. For now, focus on the `/html/` and `/mime/` parts. These are marks, and they are both run on the file `example.html` (Ford essentially ignores the Unix `.html` file ending, although it remains as a suggestion for the mark to use in opening). 
+We'll learn exactly how this syntax works later in this lesson. For now, focus on the `%html` and `%mime` parts. These are marks, and they are both run on the file `example.html` (Urbit imports the file extension as a `/`).
 
-So the first 3 lines here say:
-1. Get the file `/app/fordexample/example` and convert it to a Hoon noun
-2. Find the `html` mark in `/mar/html.hoon`. If the mark name has a `-` in it, such as `mymark-name`it looks for a file called `/mar/mymark/name.hoon`.
-3. See if it has a way to convert from `noun`
+The arguments to `/*`:
+* a face name (`html-as-html` and `html-as-mime`)
+* a mark to use (`%html` or `%mime`)
+* a file to open
 
 #### How the Mark Works
-To convert from one mark to another, Ford looks for the appropriate arm in the `grab` core of the mark.
-
 Open the file `/mar/html.hoon`, and you'll see that it has the code:
 ```
-++  grab  |%::  convert from
+|_  htm/@t
+++  grow                                                ::  convert to
+  ^?
+  |%                                                    ::
+  ++  mime  [/text/html (met 3 htm) htm]                ::  to %mime
+  ++  hymn  (need (de-xml htm))                         ::  to %hymn
+  --  
+++  grab  ^?
+          |%::  convert from
           ++  noun  @t                                  ::clam from %noun
           ++  mime  |=({p/mite q/octs} q.q)             ::retrieve form $mime
           --
 ```
-We said above that example was opened as a `noun`, and that we gave an instruction to render it with the `html` mark. So Ford finds the `noun` arm in `grab`, and runs it on the file data. In this case, it's the mold `@t`--so we an `html` mark is just the filedata as one big cord. (Notice that in line 5 we cast the result to a cord. This isn't necessary; I just wanted to show that the result of running the mark is normal Hoon data.)
+* the `grow` arms give ways to go from html to other marks
+* the `grab` arms give ways to go from other marks to html
 
-The same process holds in the code
-```
-/=  html-as-mime
-  /:  /===/app/fordexample/example  /mime/
-```
-We want to use a `mime` mark, so we check `/mar/mime.hoon`. It does indeed have a `grab` arm for `noun`, which uses the `mime` mold.
+`/*` starts by using the file extension as a mark, so line 6 loads as `%html` already, and the mark is redundant.
 
-#### Converting between Marks
-Converting from one mark to another is easy. Ford simply checks whether there is a `grab` arm from the current mark to the new one, and runs it if there is.
-```
-/=  html-as-mime-as-html
-  /:  /===/app/fordexample/example  /html/  /mime/
-```
-Here we start by rendering a `noun` with `mime`, and then we try to render the `mime` with `html`. If you look in `hhtml`, we see a grab arm for `mime`, which simply drops the `mite` and keeps the `octs` (bytes).
+In line 7, it loads the file as `%html`, and then to render with the `%mime` mark, looks for a `grow` arm in `mar/html.hoon` and then if that doesn't exist, a `grab` arm in `mar/mime.hoon`, Here it uses the `grow` arm of `html`.
 
 #### Checking the Results of Our Marks
 In the Dojo, run `:fordexample %mark-example`. You should see printed:
 ```
 >>  '<html><head><title>Ford HTML Example</title></head></html>\0a'
 >>  [[%text %html ~] 59 '<html><head><title>Ford HTML Example</title></head></html>\0a']
->>  '<html><head><title>Ford HTML Example</title></head></html>\0a'
 ```
-The first is the result of our `html` mark, the second is our `mime` mark, and the last is running an `html` mark on our `mime` result (equivalent to the first `html` mark).
+The first is the result of our `html` mark and the second is our `mime` mark.
 
-### Making a Custom Mark
-We have a custom mark in `/mar/fordexample/name.hoon`, and it gets used in lines 12-15:
+### Using a Custom Mark
+We have a custom mark in `/mar/fordexample/name.hoon`, and it gets used in line 9:
 ```
-/=  noun-as-name
-  /:  /===/app/fordexample/example  /fordexample-name/
-/=  html-as-name
-  /:  /===/app/fordexample/example  /fordexample-name/  /html/
+/*  html-as-name  %fordexample-name  /app/fordexample/example/html
 ```
-Again, the `-` in the mark means "directory", i.e. `/mar/fordexample/name.hoon`. If we look at that file, we see it has a `grab` from `noun`, and one from `html`. We use those in the first and second examples, respectively.
+The `-` in the mark means "directory", i.e. `/mar/fordexample/name.hoon`. If we look at that file, we see it has a `grab` from `noun`, and one from `html`. We use the `%html` mark.
 
 To test this, run `:fordexample %custom-mark-example` in the Dojo, and you'll see:
 ```
 >>  [first='HTML' last='<html><head><title>Ford HTML Example</title></head></html>\0a']
->>  [first='HTML' last='<html><head><title>Ford HTML Example</title></head></html>\0a']
 ```
-Which confirms that our toy `grab` gates were used to do the proper mark renderings.
-
-
-## `/= /^ /; /: /_` Import and Process Files
-Now we can use our knowledge of marks to process files in any way we want.
-
-### `/:` Set the Current Path
-We used this rune in our mark examples in lines 4-15, and now we can explain it. It lets us set a path or file to operate on, and then creates a "horn" from it. A "horn" is just some Hoon created by Ford, usually by rendering marks.
-
-`/:` takes two children:
-1. A path/file
-2. Either
-  * one or more marks
-  * `/_` followed by one or more marks
-
-If we look at lines 8 and 10, we'll see how the second child of `/:` can either be one mark, or a series of marks that are rendered in succession.
-
-In lines 21-23, we have `/_`:
-```
-/=  multiple-files
-  /^  (map knot @t)
-  /:  /===/app/fordexample  /_  /html/
-```
-`/_` takes every file in the current directory (here `/app/fordexample`) and applies the given mark to it. It returns a map with keys that are base file names and values that are the file contents with the mark applied.
-
-In the Dojo, run `:fordexample %multiple-files-example`:
-```
->>  {~.example2 ~.example}
-```
-We see both our HTML files' names printed (remember, Urbit ignores the `.html` ending).
-
-### `/=` Assign a Face
-This simply assigns a face to the result of a Ford expression, which is Hoon data. We see it used in all our initial lines.
-
-The 2 main ways that you'll form horns are simply by selecting a path and applying a file
-
-### `/^` and `/;` Format the Result
-`/^` casts the Ford result, and `/;` runs a gate on it. Line 17 contains a very idiomatic example of this:
-```
-/=  html-as-octs
-  /^  octs
-  /;  as-octs:mimes:html
-  /:  /===/app/fordexample/example  /html/
-```
-We first render `example.html` with an `html` mark, then run the `as-octs` gate on it, which converts it to bytes. Finally, we cast it to `octs` (bytes) for later usage. This pattern is very, very often used in Gall apps to include static resources, and we'll see in later lessons how we can return those `octs` resources in HTTP responses.
-
-## Summary
-The above should give you everything you need to know to both use Ford, and understand code you encounter in the wild. If you want more examples, the full documentation for Ford runes is [here](https://urbit.org/docs/tutorials/arvo/ford/).
+Which confirms that our toy `html` `grab` gate was used to do the proper mark renderings.
 
 [Prev: App Lifecycle and State](lifecycle.md) | [Home](overview.md) | [Next: Poke and Watch](poke.md)
