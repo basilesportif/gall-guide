@@ -82,6 +82,25 @@ These are types found in `hoon.hoon`, `arvo.hoon`, and `zuse.hoon`
     ==
 ```
 
+### sign-arvo
+```
+ $%  {$a gift:able:ames}
+      $:  $b
+          $%  gift:able:behn
+              $>(%wris gift:able:clay)
+              $>(%writ gift:able:clay)
+              $>(%mere gift:able:clay)
+              $>(%unto gift:able:gall)
+          ==
+      ==
+      {$c gift:able:clay}
+      {$d gift:able:dill}
+      [%e gift:able:eyre]
+      {$g gift:able:gall}
+      [%i gift:able:iris]
+      {$j gift:able:jael}
+```
+
 ### Wires and Paths
 These types often use a shortcut syntax that we can check in the dojo.
 TODO: EXAMPLE

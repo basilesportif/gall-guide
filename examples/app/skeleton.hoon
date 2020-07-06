@@ -9,7 +9,7 @@
     ==
 ::
 +$  state-zero
-    $:  [%0 counter=@ud]
+    $:  [%0 last-response=client-response:iris]
     ==
 ::
 +$  card  card:agent:gall
@@ -25,8 +25,8 @@
 ++  on-init
   ^-  (quip card _this)
   ~&  >  '%mars initialized successfully'
-  =/  filea  [%file-server-action !>([%serve-dir /'~mars' /app/mars %.y])]
-  =.  state  [%0 100]
+  =/  filea  [%file-server-action !>([%serve-dir /'~mars-static' /app/mars %.y])]
+  =.  state  [%0 *client-response:iris]
   :_  this
   :~  [%pass /srv %agent [our.bowl %file-server] %poke filea]
   ==
@@ -44,7 +44,7 @@
   |^
   =^  cards  state
     ?+    mark  (on-poke:def mark vase)
-        %mars-action  (handle-action !<(action:mars vase))state
+        %mars-action  (handle-action !<(action:mars vase))
     ==
   [cards this]
   ::
@@ -52,9 +52,15 @@
     |=  =action:mars
     ^-  (quip card _state)
     ?-    -.action
-        %increase
-        `state(counter (add step.action counter.state))
+        %http-get
+      :_  state
+      :~  [%pass /[(scot %da now.bowl)] %arvo %i %request (get-url url.action) *outbound-config:iris]
+      ==
     ==
+  ++  get-url
+    |=  url=@t
+    ^-  request:http
+    [%'GET' url ~ ~]
   --
 ::
 ++  on-watch  on-watch:def

@@ -9,8 +9,12 @@
     ==
 ::
 +$  state-zero
-    $:  [%0 last-response=client-response:iris]
+    $:  [%0 =files]
     ==
+::
++$  url  @t
+::
++$  files  (map url (unit mime-data:iris))
 ::
 +$  card  card:agent:gall
 ::
@@ -25,10 +29,12 @@
 ++  on-init
   ^-  (quip card _this)
   ~&  >  '%mars initialized successfully'
-  =/  filea  [%file-server-action !>([%serve-dir /'~mars-static' /app/mars %.y])]
-  =.  state  [%0 *client-response:iris]
+  =/  public-filea  [%file-server-action !>([%serve-dir /'~mars-public' /app/mars/public %.y])]
+  =/  private-filea  [%file-server-action !>([%serve-dir /'~mars-private' /app/mars/private %.n])]
+  =.  state  [%0 *files]
   :_  this
-  :~  [%pass /srv %agent [our.bowl %file-server] %poke filea]
+  :~  [%pass /srv %agent [our.bowl %file-server] %poke public-filea]
+      [%pass /srv %agent [our.bowl %file-server] %poke private-filea]
   ==
 ++  on-save
   ^-  vase
@@ -54,19 +60,39 @@
     ?-    -.action
         %http-get
       :_  state
-      :~  [%pass /[(scot %da now.bowl)] %arvo %i %request (get-url url.action) *outbound-config:iris]
+      :~  [%pass /[url.action] %arvo %i %request (get-url url.action) *outbound-config:iris]
       ==
     ==
   ++  get-url
-    |=  url=@t
+    |=  =url
     ^-  request:http
     [%'GET' url ~ ~]
+  --
+++  on-arvo
+  |=  [=wire =sign-arvo]
+  ^-  (quip card _this)
+  |^
+  ?:  ?=(%i -.sign-arvo)
+  ?>  ?=(%http-response +<.sign-arvo)
+    =^  cards  state
+      (handle-response -.wire client-response.sign-arvo)
+    [cards this]
+  (on-arvo:def wire sign-arvo)
+  ::
+  ++  handle-response
+    |=  [=url resp=client-response:iris]
+    ^-  (quip card _state)
+    ?.  ?=(%finished -.resp)
+      ~&  >>>  -.resp
+      `state
+    ~&  >>  "got data from {<url>}"
+    =.  files.state  (~(put by files.state) url full-file.resp)
+    `state
   --
 ::
 ++  on-watch  on-watch:def
 ++  on-leave  on-leave:def
 ++  on-peek   on-peek:def
 ++  on-agent  on-agent:def
-++  on-arvo   on-arvo:def
 ++  on-fail   on-fail:def
 --

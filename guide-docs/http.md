@@ -20,6 +20,24 @@ In this lesson, you will learn how to:
 :mars &mars-action [%http-get 'http://example.com']
 ```
 
+### Response Handling in `on-arvo`
+
+### Possible Responses (from `zuse.hoon`)
+```
+::  incremental progress report
+[%progress =response-header:http bytes-read=@ud expected-size=(unit @ud) incremental=(unit octs)]
+
+::  success
+[%finished =response=header:http full-file=(unit mime-data)]
+
+::  canceled by the runtime system
+[%cancel ~]
+```
+```
++$  mime-data
+  [type=@t data=octs]
+````
+
 In our `on-init`, we called out to Eyre. Let's see how we can use this call to serve HTTP resources. For more detail on the types used, see the [types appendix](gall_types.md) in the "Eyre" section.
 ```
 [%pass /bind %arvo %e %connect [~ /'~myapp'] %myapp]
