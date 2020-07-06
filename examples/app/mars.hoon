@@ -35,7 +35,7 @@
   :_  this
   :~  [%pass /srv %agent [our.bowl %file-server] %poke public-filea]
       [%pass /srv %agent [our.bowl %file-server] %poke private-filea]
-      [%pass /'~mars-dynamic' %arvo %e %connect [~ /'~mars-dynamic'] %mars]
+      [%pass /bind %arvo %e %connect [~ /'~mars-dynamic'] %mars]
   ==
 ++  on-save
   ^-  vase
@@ -85,6 +85,7 @@
     :~
       [%msg [%s 'hello my friends']]
       [%intent [%s 'peaceful']]
+      [%ship [%s (scot %p our.bowl)]]
     ==
   --
 ++  on-arvo
@@ -112,7 +113,11 @@
     `state
   --
 ::
-++  on-watch  on-watch:def
+++  on-watch
+  |=  =path
+  ?:  ?=([%http-response *] path)
+    `this
+  (on-watch:def path)
 ++  on-leave  on-leave:def
 ++  on-peek   on-peek:def
 ++  on-agent  on-agent:def

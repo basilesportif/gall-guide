@@ -11,28 +11,61 @@ In this lesson, you will learn how to:
 * 
 
 ## `%file-server`: Serve Static Resources to Earth
-In `on-init`, we return a couple cards that open up directories to the world.
+In `on-init`, we return a couple cards that open up directories to the world. Those are the `public-filea` and `private-filea` faces. Here are the action types of the `%file-server` agent that we pass them to:
 ```
-=/  public-filea   [%file-server-action !>([%serve-dir /'~mars-public' /app/mars/public %.y])]
-=/  private-filea  [%file-server-action !>([%serve-dir /'~mars-private' /app/mars/private %.n])]
+$%  [%serve-dir url-base=path clay-base=path public=?]
+    [%unserve-dir url-base=path]
+    [%toggle-permission url-base=path]
+    [%set-landscape-homepage-prefix prefix=(unit term)]
+==
 ```
-```
+We use `%serve-dir` here. It takes a URL, a directory to serve, and a flag for whether the file should be served to requesters who are not logged in to this ship. The latter is useful for serving static resources like HTML files or images from an Urbit.
 
-> :file-server +dbug
-::  the 
-```
+You can run `:file-server +dbug` in the Dojo to see the current bound directories being served.
 
-### Only for Authenticated
+### Public and Private File Serving
+Make sure your ship is not logged in, and then navigate to [http://localhost/~mars-public/index.html](http://localhost/~mars-public/index.html). You should see the contents of `/app/mars/public/index.html` there.
+
+However, if we try to navigate to [http://localhost/~mars-private/index.html](http://localhost/~mars-private/index.html), we get a login screen. If you log in and go back to that link, now you'll see the `/app/mars/private/index.html` file.
+
+### Changing Serving Options
+We can directly poke `%file-server` in order to serve and unserve directories or toggle directories between public and private. You can experiment with commands like the below:
+```
+> :file-server &file-server-action [%toggle-permission /'~mars-public']
+> :file-server &file-server-action [%unserve-dir /'~mars-public']
+```
 
 ## Eyre: Handle Dynamic Calls from Earth
-- `%file-server` uses Eyre internally
+`%file-server` lets us handle static resources, but what if you want your Urbit to respond dynamically at a given endpoint?  To do this, we use the Eyre vane to bind our app to a given endpoint and process incoming HTTP requests to that endpoint. `%file-server` uses Eyre internally--after this part of the lesson, you'll probably be able to understand a lot of what's going on in `app/file-server.hoon`.
 
+Back in the [lifecycle lesson](lifecycle.md), we connected to Eyre as part of our `on-init` and `on-load` functions. We'll do the same here, but go into a lot more detail.
+
+### Initial Binding
+
+
+### Requirements
+The binding card does the initial work, but Eyre also requires some other arms in your app to be set up for it.
+#### on-poke
+
+#### on-arvo
+
+#### on-watch
+- on-poke handler
+  - `%handle-http-response` mark
+  - type of the vase is `[id=@ta req=inbound-request:eyre]`
+- on-arvo handler
+  * just confirms the bind with an Eyre `gift`
+- on-watch handler
+  * why?
+
+### How It Works
+`ive-simple-payload` passes cards to Arvo, which passes them to Eyre, which passes back to the caller. This keeps Mars (Urbit, Gall) from knowing about Earth and coupling to it as a dependency.
+
+### Return Types
 - return JSON
 - return TXT
 - return HTML
 
-### How It Works
-`ive-simple-payload` passes cards to Arvo, which passes them to Eyre, which passes back to the caller. This keeps Mars (Urbit, Gall) from knowing about Earth and coupling to it as a dependency.
 
 ## Iris: Call Out to Earth
 ```
