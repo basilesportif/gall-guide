@@ -468,7 +468,7 @@ That `~` behaves differently in `on-watch` vs other contexts.
 * `%fact` uses `~` to mean "send to the ship whose subscription triggered this `on-watch`".
 * `%kick` uses `~` to mean "the path that was subscribed to" and "the ship that subscribed", respectively
 
-#### anyhwere else
+#### anywhere else
 * `%fact` isn't allowed to use `~` -- you're not allowed to say "send to all paths subscribed to me"
 * `%kick` uses `~` to mean "all paths" and "all ships", respectively
 
@@ -479,6 +479,7 @@ Poking and subscribing have a lot of combinations and variants, and we've played
 * Use `%noun` pokes only for simple debugging purposes
 * Create a custom type and mark for your app's actions
 * Gall handles most of the ceremony around subscribing and unsubscribing. Write new logic as your program needs it, but let the default handlers do the rest for `on-watch`, `on-agent`, and `on-leave`.
+* To figure out what a subscription does, search the source file for any `[%give %fact ...]` lines, since that's where it will send information out on various paths.
 
 ## Bonus Knowledge
 When you see lines like this to run at the Dojo, bet they make a lot more sense now, right? Gall all the way down.
