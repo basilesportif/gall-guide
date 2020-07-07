@@ -35,7 +35,7 @@ We can directly poke `%file-server` in order to serve and unserve directories or
 > :file-server &file-server-action [%unserve-dir /'~mars-public']
 ```
 
-## Eyre: Handle Dynamic Calls from Earth
+## Eyre: HTTP Server to Handle Calls from Earth
 `%file-server` lets us handle static resources, but what if you want your Urbit to respond dynamically at a given endpoint?  To do this, we use the Eyre vane to bind our app to a given endpoint and process incoming HTTP requests to that endpoint. `%file-server` uses Eyre internally--after this part of the lesson, you'll probably be able to understand a lot of what's going on in `app/file-server.hoon`.
 
 Back in the [lifecycle lesson](lifecycle.md), we connected to Eyre as part of our `on-init` and `on-load` functions. We'll do the same here, but go into a lot more detail.
@@ -67,7 +67,7 @@ The binding card does the initial work, but Eyre also requires some other arms i
 - return HTML
 
 
-## Iris: Call Out to Earth
+## Iris: HTTP Client to Call Out to Earth
 ```
 :mars &mars-action [%http-get 'http://example.com']
 ```

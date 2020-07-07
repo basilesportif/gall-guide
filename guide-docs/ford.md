@@ -92,9 +92,11 @@ Open the file `/mar/html.hoon`, and you'll see that it has the code:
 * the `grow` arms give ways to go from html to other marks
 * the `grab` arms give ways to go from other marks to html
 
+`/*` looks first for a `grow` arm from original mark -> new mark. If that is not present, it looks for a `grab` arm from in new mark, that can grab from the original one.
+
 `/*` starts by using the file extension as a mark, so line 6 loads as `%html` already, and the mark is redundant.
 
-In line 7, it loads the file as `%html`, and then to render with the `%mime` mark, looks for a `grow` arm in `mar/html.hoon` and then if that doesn't exist, a `grab` arm in `mar/mime.hoon`, Here it uses the `grow` arm of `html`.
+In line 7, it loads the file using the mark of its extension (`%html` here). It then looks for a `grow` arm from `html` to `mime`, and finds it in `/mar/html.hoon` above.
 
 #### Checking the Results of Our Marks
 In the Dojo, run `:fordexample %mark-example`. You should see printed:
@@ -109,6 +111,8 @@ We have a custom mark in `/mar/fordexample/name.hoon`, and it gets used in line 
 ```
 /*  html-as-name  %fordexample-name  /app/fordexample/example/html
 ```
+There is no `grow` arm from `html` to our custom mark, since `/mar/html.hoon` had no way to know that we'd make this new mark. So we need to see whether our new mark supplies a `grab` arm.
+
 The `-` in the mark means "directory", i.e. `/mar/fordexample/name.hoon`. If we look at that file, we see it has a `grab` from `noun`, and one from `html`. We use the `%html` mark.
 
 To test this, run `:fordexample %custom-mark-example` in the Dojo, and you'll see:
