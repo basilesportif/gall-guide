@@ -27,9 +27,9 @@ This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101
 * [Calling the OS (Arvo)]()
 
 ### Appendix
+* [Tips & Tricks](tips.md)
 * [Troubleshooting & FAQ](faq.md)
 * [Types Used in Gall Apps](appendix_types.md)
-* [Common Hoon Idioms Used in Gall]()
 
 ## What Is Gall?
 Gall is a program (OS kernel or "vane") that runs in the background on Urbit's operating system, Arvo. It manages most of the programs you think of as Urbit's apps. Most Urbit apps know and love, like Chat and Publish, are Gall applications. 

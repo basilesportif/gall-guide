@@ -3,10 +3,11 @@
 
 For nearly all Gall apps, you'll want to use some outside libraries, your own types, and static resources (like HTML and image files). To do this, you need to use Arvo's Ford build system, which Gall automatically calls for you whenever it sees certain runes in your app files.
 
-There are three classes of Ford runes that you'll see at the top of almost all Gall apps:
+There are four Ford runes, and you'll see some of them at the top of nearly all Gall apps. They must always be given in the following order:
 1. `/-`: import type files from the `/sur` directory
 2. `/+`: import code libraries from the `/lib` directory
-3. `/= /^ /; /: /_`: convert files to Hoon data types so they can be used in your program
+3. `/=`: import the result of building a hoon file from a user-specified path
+4. `/*`: import a file and apply a mark to it
 
 In addition to those runes, Ford has the concept of a `mark`, which is like a filetype that you can control and extend yourself to both work with existing data and create your own filetypes.
 

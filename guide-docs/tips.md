@@ -1,4 +1,20 @@
-# Hoon Idioms Used in Gall
+# Tips & Tricks
+
+## Generators
+* |command is just shorthand for :hood|command
+* and :app|command is just shorthand for "poke app with output from /gen/app/command"
+  - see `/gen/s3-store/*` for examples
+* just as you could :app +command for /gen/command, etc
+
+### Example
+`/gen/s3-store/set-endpoint/hoon`
+Uses a `%say` generator that takes one argument. You call it with:
+```
+> :s3-store|set-endpoint 'myendpoint.com'
+```
+The above expands to "poke `%s3-store` with the output from calling `+_s3-store/set-endpoint 'myendpoint.com'`".
+
+## Hoon Idioms Used in Gall
 
 `=^` for state updates in helper functions
 One frequent pattern with pokes and watches is having a helper function modify the state, and also return some cards as actions. The `=^` is a very convenient rune that we'll use here and that you'll see in a lot of Gall code.

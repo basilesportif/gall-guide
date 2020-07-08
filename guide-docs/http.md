@@ -68,7 +68,9 @@ The binding card does the initial work, but Eyre also requires some other arms i
 - on-arvo handler
   * just confirms the bind with an Eyre `gift`
 - on-watch handler
-  * why?
+  * Eyre opens a subscription on path `/http-response`. 
+  * Async responses
+  * long-running connections, like websockets/EventSources
 
 ### How It Works
 `ive-simple-payload` passes cards to Arvo, which passes them to Eyre, which passes back to the caller. This keeps Mars (Urbit, Gall) from knowing about Earth and coupling to it as a dependency.
