@@ -27,7 +27,7 @@
 ++  on-save
   ~&  >  'on-save v0'
   !>(state)
-++  on-load 
+++  on-load
   |=  old-state=vase
   ^-  (quip card _this)
   ~&  >  'on-load v0'
@@ -38,18 +38,7 @@
     `this(state prev)
     ::
   ==
-++  on-poke
-  |=  [=mark =vase]
-  ^-  (quip card _this)
-  ?+    mark  (on-poke:default mark vase)
-      %noun
-    ?>  (team:title our.bowl src.bowl)
-    ?+    q.vase  (on-poke:default mark vase)
-      %print-bowl
-      ~&  >>  bowl
-      `this
-    ==
-  ==
+++  on-poke  on-poke:default
 ++  on-watch  on-watch:default
 ++  on-leave  on-leave:default
 ++  on-peek   on-peek:default

@@ -50,18 +50,7 @@ We will modify the below code throughout the lesson. Paste it into a file in `ap
     `this(state prev)
     ::
   ==
-++  on-poke
-  |=  [=mark =vase]
-  ^-  (quip card _this)
-  ?+    mark  (on-poke:default mark vase)
-      %noun
-    ?>  (team:title our.bowl src.bowl)
-    ?+    q.vase  (on-poke:default mark vase)
-        %print-bowl
-      ~&  >>  bowl
-      `this
-    ==
-  ==
+++  on-poke   on-poke:default
 ++  on-watch  on-watch:default
 ++  on-leave  on-leave:default
 ++  on-peek   on-peek:default
@@ -81,9 +70,13 @@ We will modify the below code throughout the lesson. Paste it into a file in `ap
 ## Preamble: `dbug`
 Near the top of the file, you'll see the line `%-  agent:dbug`. This wraps our program in the `dbug` Gall agent, which lets us inspect the state of the program as it's running. Once our agent is started, we can type at the Dojo:
 ```
-:lifecycle +dbug
+> :lifecycle +dbug
 ```
-and we'll see the current state object printed out.
+and we'll see the current state object printed out. We can also do:
+```
+> :lifecycle +dbug %bowl
+```
+and we'll see the `bowl` (Gall metastate for the app) printed. We'll use this later in the lesson.
 
 ## Experiment: 1st Successful Compilation
 Before we start, just note that we are using `~&` to print messages in `on-init`, `on-save`, and `on-load`. (You can use up to 3 `>`s with `~&` to print the debug messages in different colors).
@@ -447,7 +440,7 @@ You can find the type definition of `bowl` in `/sys/zuze.hoon` if you search for
 
 We can print `bowl` for this app by entering at the Dojo:
 ```
-> :lifecycle %print-bowl
+> :lifecycle +dbug %bowl
 
 ::  you should see something like:
 >>  [ [our=~zod src=~zod dap=%lifecycle]

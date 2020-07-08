@@ -123,4 +123,5 @@ In the introductory documents here, we will use approach (1) (editing files dire
 * get your file with Gall code into `app`, commit, and run `|start %YOURAPPNAME`
 * every time you edit, make sure your new file ends up in `app` and that you commit.
 
+
 [Home](overview.md) | [Next: The 10 Arms of Gaal: App Structure](arms.md)
