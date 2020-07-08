@@ -69,17 +69,17 @@ For the path in `binding`, `/~myapp` will match `/~myapp` or `/~myapp/longer/pat
 ### Arm Requirements
 The binding card does the initial work, but Eyre also requires some other arms in your app to be set up for it.
 #### on-poke
-`on-poke` needs to handle a `%handle-http-response` mark (line 56.) This allows it to 
+`on-poke` needs to handle a `%handle-http-requuest` mark (line 57). This allows it to 
 
 The type of the vase passed is `[id=@ta =inbound-request:eyre]`. We can process this `inbound-request` in whatever way we want, and return a card to Eyre if we want to pass a response immediately (discussed below in "How It Works").
 
 #### on-arvo
-Eyre will send an acknowledgement that our binding worked (or an error if it didn't), and we must process that in `on-arvo`, or else we'll get an error. We do this in line 96. 
+Eyre will send an acknowledgement that our binding worked (or an error if it didn't), and we must process that in `on-arvo`, or else we'll get an error. We do this in line 122. 
 
 `sign-arvo` is documented in the [types appendix](gall_types.md)--its head is the letter of the vane sending the message, and the tail is type `gift:able:$VANE`. If we search for `++  eyre` in `zuse`, we find that the response to a `%connect` or `%serve` will be a boolean saying whether it was accepted as well as the binding site requested.
 
 #### on-watch
-This, in line 119, is the strangest requirement: why do we need to handle a subscription request from Eyre?
+This, in line 145, is the strangest requirement: why do we need to handle a subscription request from Eyre?
 
 In fact, all responses to HTTP in Eyre are handled by passing responses to a subscription path.
 The answer is that not all HTTP requests are handled synchronously, and we also might want to return streaming data, as with a websocket/`EventSource`. Eyre opens a subscription on path `%http-response` whenever a request is made, and then `leave`s it after the connection is finished. Until that time, we can push data out by `%give`ing `%fact`s to that path. In this app, we simply handle the subscription to avoid errors, but treat it as a no-op.
@@ -103,7 +103,7 @@ Let's follow the data flow and see what happens here. If you look in your Dojo, 
 >>> "watch request on path: [i=%~.http-response t=/~.eyre_0v4.jolo0.qjl1a.73gr8.40fll.ivird]"
 >>  "'/~mars-manual'"
 ```
-The first message corresponds to (1) above: Eyre subscribes on the `/http-response/...` path. The second is from line 59 in the code, and corresponds to (2) above: Eyre poked our app.
+The first message is from line 146 and corresponds to (1) above: Eyre subscribes on the `/http-response/...` path. The second is from line 59 in the code, and corresponds to (2) above: Eyre poked our app.
 
 Because our incoming URL matches `'~/mars-manual'`, we call `open-manual-stream` and pass the Eyre id. This will let us respond by passing a message to the subscription.
 
