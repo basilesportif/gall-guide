@@ -33,7 +33,7 @@ $%  [%serve-dir url-base=path clay-base=path public=?]
 ```
 We use `%serve-dir` here. It takes a URL, a directory to serve, and a flag for whether the file should be served to requesters who are not logged in to this ship. The latter is useful for serving static resources like HTML files or images from an Urbit.
 
-You can run `:file-server +dbug` in the Dojo to see the current bound directories being served.
+You can run `:file-server +dbug` in the Dojo to see the current directories being served and the parameters they are served with (like public vs. private).
 
 ### Public and Private File Serving
 Make sure your ship is not logged in, and then navigate to [http://localhost/~mars-public/index.html](http://localhost/~mars-public/index.html). You should see the contents of `/app/mars/public/index.html` there.
@@ -163,13 +163,25 @@ You can return many types of responses by using the `*-response` arms in `lib/se
 ```
 
 ## Iris: HTTP Client to Call Out to Earth
+Calling out to Earth using the Iris (`%i`) vane is very straightforward. Let's do it, and then check how the code works:
 ```
-:mars &mars-action [%http-get 'http://example.com']
+::  fetch a webpage, example.com
+> :mars &mars-action [%http-get 'http://example.com']
+
+::  check that we stored its contents
+:mars +dbug [%state 'files']
 ```
+
+### Call Iris
+Above, we used the `%http-get` `mars-action`, which we handle in line 74. We pass a card to Arvo that is a `note-arvo` using `task:able:iris` from `zuse`, which has form for requests: `[%request =request:http =outbound-config]`.
+
+We pass `[%'GET' url ~ ~]` as the `request:http` parameter, and use the bunt value for the `outbound-config`. For the wire to pass on, we use the `url.action` so that we'll have access to it when we receive the response.
 
 ### Response Handling in `on-arvo`
+The response will come back in `on-arvo`. In line 125 we catch anything coming from Iris, and then only continue if the head of the tail is an `%http-response`. Then we run `handle-response`, passing the head of `wire`, which is our `url`, as well as the response itself.
 
-### Possible Responses (from `zuse.hoon`)
+### Possible Iris Responses (from `zuse.hoon`)
+`client-response:iris` in `zuse` can have the following values:
 ```
 ::  incremental progress report
 [%progress =response-header:http bytes-read=@ud expected-size=(unit @ud) incremental=(unit octs)]
@@ -180,21 +192,19 @@ You can return many types of responses by using the `*-response` arms in `lib/se
 ::  canceled by the runtime system
 [%cancel ~]
 ```
-```
-+$  mime-data
-  [type=@t data=octs]
-````
 
-In our `on-init`, we called out to Eyre. Let's see how we can use this call to serve HTTP resources. For more detail on the types used, see the [types appendix](gall_types.md) in the "Eyre" section.
-```
-[%pass /bind %arvo %e %connect [~ /'~myapp'] %myapp]
-```
+We assume that we'll get a `%finished` response--if we don't, we just print the response and move on.
 
-So now, whenever an HTTP request comes in at `http://localhost:$PORT/~myapp` (where `$PORT` is the port your fakezod is running on), it will produce 
+Once we get `%finished`, we store it in a map keyed by `url`, which is what we saw at the top of this section when we printed the `dbug` state.
 
+## Summary
+We covered all of the key ways to communicate with Earth resources over HTTP from Mars.  Now that `%file-server` has been added, you'll be able to handle most web interactions with your server simply by serving static files and using the JSON pokes and subscription pushes you'll learn in the [channels lesson](chanel.md).
 
-::  print a list of the directories we are serving
-> :file-server +dbug
+However, there are definitely times when you need to access outside resources or serve custom logic from an endpoint, and in those cases, Eyre and Iris are your not-so-hard-to-use friends.
+
+## Exercises
+1. Serve your ship's name and the current time from an `/~info` endpoint
+2. TODO: `file-server` code analysis
 
 
 [Prev: Talk to Ships: Poke & Watch](poke.md) | [Home](overview.md) | [Next: JSON & channel.js)](chanel.md)
