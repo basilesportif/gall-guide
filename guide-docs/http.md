@@ -90,7 +90,7 @@ The answer is that not all HTTP requests are handled synchronously, and we also 
 Flow:
 1. Eyre subscribes on to bound `app` (here, `%mars`) on path `/http-response/$EYRE_ID`
 2. Eyre pokes `app` with an incoming request and mark `%handle-http-response`
-3. App responds on the subscribed path with cages that have marks:
+3. App can respond on the subscribed path with various cages. Examples:
   - `%http-response-header`
   - `%http-response-data`
 4. app `%give`s a `%kick` when done to close the connection
@@ -98,14 +98,44 @@ Flow:
 #### Manual Example
 Navigate to [http://localhost/~mars-manual](http://localhost/~mars-manual).  You'll notice that your browser stays loading, even though some data is displayed in the page.
 
+Let's follow the data flow and see what happens here. If you look in your Dojo, you'll see two messages:
 ```
+>>> "watch request on path: [i=%~.http-response t=/~.eyre_0v4.jolo0.qjl1a.73gr8.40fll.ivird]"
+>>  "'/~mars-manual'"
+```
+The first message corresponds to (1) above: Eyre subscribes on the `/http-response/...` path. The second is from line 59 in the code, and corresponds to (2) above: Eyre poked our app.
+
+Because our incoming URL matches `'~/mars-manual'`, we call `open-manual-stream` and pass the Eyre id. This will let us respond by passing a message to the subscription.
+
+In line 90, we have `open-manual-stream`. It sets a state variable with the Eyre `id` so that we can close the connection later, and then it `%give`s two `%fact`s: an HTTP header and a response body. Eyre is subscribing on the path here, so it gets these and prints the body in the browser.
+
+Let's inspect our app state, and then close the connection:
+```
+::  see that we set last-id.state
 > :mars +dbug
+
+::  see that there's a subscription from Eyre in sup
 > :mars +dbug %bowl
+
+::  poke mars with an action that closes the connection
 > :mars &mars-action [%http-stream-close %.y]
 ```
+In that last command, our app matches the `%http-stream-close` action, sets `last-id.state` to `~`, and then passes a `%give %kick` card.  This closes the connection, and you'll see that your browser is no longer "loading".
 
-#### Managed Example
-Navigate to [http://localhost/~mars-managed](http://localhost/~mars-managed).  You'll notice that your browser stays loading, even though some data is displayed in the page.
+#### "Managed" Example
+Most of the time, however, you just want to return some data upon a request.
+
+Navigate to [http://localhost/~mars-managed](http://localhost/~mars-managed). (Make sure you're logged in). This time, you'll see a JSON response and the page will finish loading.
+
+We handle this starting in line 62. This first uses `give-simple-payload` from `/lib/server.hoon`. Looking at the code below, we see what a `simple-payload` is and how it's used by `server.hoon`:
+
+From `/sys/zuse.hoon`
+```
++$  simple-payload
+  $:  =response-header
+      data=(unit octs)
+  ==
+```
 
 From `/lib/server.hoon`
 ```
@@ -121,15 +151,16 @@ From `/lib/server.hoon`
       [%give %kick ~[/http-response/[eyre-id]] ~]
   ==
 ```
+So `give-simple-payload` takes an `eyre-id` (needed to pass data to a subscription) as well as a `simple-payload` (which can be created by the `*-response` arms in `server.hoon`). It then does *exactly* the same process as we did in our manual request handling to `%give` `%fact`s to Eyre, and `%kick`s at the end to close the connection.
 
-### Parsing a Longer URL
-- url comes in the request
+Instead of passing a payload directly, in line 65 we use `require-authorization` from `server.hoon`. This takes two parameters: a request and a gate to run on the request. It only runs the gate if the user is currently logged in to the ship. This is a common pattern used to protect private resources and require a login.
 
-### Return Types
-- return JSON
-- return TXT
-- return HTML
-
+### Response Types
+You can return many types of responses by using the `*-response` arms in `lib/server.hoon` (eg `html-response`). You simply pass the data you want to return as bytes (`octs` in Urbit-ese) to the appropriate gate. In line 110 we use `json-to-octs`, but we could just as easily generate `html` with `as-octt:mimes:html` from `zuse`:
+```
+> ^-  octs  (as-octt:mimes:html "<html></html>")
+[p=13 q='<html></html>']
+```
 
 ## Iris: HTTP Client to Call Out to Earth
 ```

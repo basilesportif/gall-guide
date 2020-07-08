@@ -55,10 +55,6 @@
     ?+    mark  (on-poke:def mark vase)
         %mars-action  (handle-action !<(action:mars vase))
         %handle-http-request
-      ::  plan
-      ::  1. test url of request
-      ::  2. if it's mars-dynamic, send response
-      ::  3. if it's manual, do the rest
       =+  !<([id=@ta =inbound-request:eyre] vase)
       ~&  >>  "{<url.request.inbound-request>}"
       ?:  =(url.request.inbound-request '/~mars-manual')
@@ -109,11 +105,9 @@
   ++  handle-http-request
     |=  req=inbound-request:eyre
     ^-  simple-payload:http
-    ~&  >>  req
     =,  enjs:format
     %-  json-response:gen:srv
     %-  json-to-octs:srv
-
     %-  pairs
     :~
       [%msg [%s 'hello my friends']]
