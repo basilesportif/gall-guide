@@ -10,7 +10,7 @@
     ==
 ::
 +$  state-zero
-    $:  [%0 =files]
+    $:  [%0 =files last-id=(unit knot)]
     ==
 ::
 +$  url  @t
@@ -32,11 +32,12 @@
   ~&  >  '%mars initialized successfully'
   =/  public-filea  [%file-server-action !>([%serve-dir /'~mars-public' /app/mars/public %.y])]
   =/  private-filea  [%file-server-action !>([%serve-dir /'~mars-private' /app/mars/private %.n])]
-  =.  state  [%0 *files]
+  =.  state  [%0 *files ~]
   :_  this
   :~  [%pass /srv %agent [our.bowl %file-server] %poke public-filea]
       [%pass /srv %agent [our.bowl %file-server] %poke private-filea]
-      [%pass /bind %arvo %e %connect [~ /'~mars-dynamic'] %mars]
+      [%pass /bind %arvo %e %connect [~ /'~mars-manual'] %mars]
+      [%pass /bind %arvo %e %connect [~ /'~mars-managed'] %mars]
   ==
 ++  on-save
   ^-  vase
@@ -54,10 +55,18 @@
     ?+    mark  (on-poke:def mark vase)
         %mars-action  (handle-action !<(action:mars vase))
         %handle-http-request
-      =+  !<([id=@ta req=inbound-request:eyre] vase)
-      :_  state
+      ::  plan
+      ::  1. test url of request
+      ::  2. if it's mars-dynamic, send response
+      ::  3. if it's manual, do the rest
+      =+  !<([id=@ta =inbound-request:eyre] vase)
+      ~&  >>  "{<url.request.inbound-request>}"
+      ?:  =(url.request.inbound-request '/~mars-manual')
+        (open-manual-stream id)
+      ?>  =(url.request.inbound-request '/~mars-managed')
+        :_  state
       %+  give-simple-payload:app:srv  id
-      %+  require-authorization:app:srv  req
+      %+  require-authorization:app:srv  inbound-request
       handle-http-request
     ==
   [cards this]
@@ -70,11 +79,33 @@
       :_  state
       :~  [%pass /[url.action] %arvo %i %request (get-url url.action) *outbound-config:iris]
       ==
+      ::
+        %http-stream-close
+      ?~  last-id.state
+        `state
+      :_  state(last-id ~)
+      :~  [%give %kick ~[/http-response/[u.last-id.state]] ~]
+      ==
     ==
   ++  get-url
     |=  =url
     ^-  request:http
     [%'GET' url ~ ~]
+  ++  open-manual-stream
+    |=  id=@ta
+    ^-  (quip card _state)
+    :_  state(last-id `id)
+    =/  octs
+      %-  json-to-octs:srv
+      (json [%s 'Notice that your browser is still \'loading\'; close connection using %http-stream-close action'])
+    =/  header-cage
+      [%http-response-header !>([200 ['content-type' 'application/json']~])]
+    =/  data-cage
+    [%http-response-data !>(`octs)]
+    :~
+      [%give %fact ~[/http-response/[id]] header-cage]
+      [%give %fact ~[/http-response/[id]] data-cage]
+    ==
   ++  handle-http-request
     |=  req=inbound-request:eyre
     ^-  simple-payload:http
@@ -82,6 +113,7 @@
     =,  enjs:format
     %-  json-response:gen:srv
     %-  json-to-octs:srv
+
     %-  pairs
     :~
       [%msg [%s 'hello my friends']]
@@ -117,6 +149,7 @@
 ++  on-watch
   |=  =path
   ?:  ?=([%http-response *] path)
+    ~&  >>>  "watch request on path: {<path>}"
     `this
   (on-watch:def path)
 ++  on-leave  on-leave:def

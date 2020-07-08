@@ -25,6 +25,11 @@ Usually caused by adding a new state, but not having a `?-` case to handle it.
 As soon as you execute `|start %yourapp`, **the app is started forever.**  It doesn't matter whether it had errors upon loading. The only way to "remove" an app and have Gall stop monitoring it is to create a new ship and load the code in there.
 
 ### I Don't See an Error, but My App Doesn't Work
+
+#### Doesn't Throw Same Error Twice
 Once Gall throws an error in compilation, it won't throw the same error again.  This means that even if your app still has problems, you won't see an error after '|commit'.
 
-Becasue of this, I usually leave an `on-load` print debug in while developing. If I see the 'on-load' message print, it means that my app compiled successfully. If not, it means that I need to keep debugging the prior error.
+Because of this, I usually leave an `on-load` print debug in while developing. If I see the 'on-load' message print, it means that my app compiled successfully. If not, it means that I need to keep debugging the prior error.
+
+#### Needs to Reload a Dependency
+Sometimes dependencies, like a recently updated types file in `/sur`, don't get recognized. In these cases, just run `:goad %force`, and the dependencies will reload, throwing any new errors that may arise.
