@@ -1,3 +1,4 @@
+
 # Ford: Imports, Files and Marks
 
 For nearly all Gall apps, you'll want to use some outside libraries, your own types, and static resources (like HTML and image files). To do this, you need to use Arvo's Ford build system, which Gall automatically calls for you whenever it sees certain runes in your app files.
@@ -15,14 +16,14 @@ Note: these Ford (`/`) runes only work in Hoon files evaluated in Gall apps and 
 
 ## Example Code
 * to `/app/`
-  - [fordexample.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/examples/app/fordexample.hoon)
+  - [fordexample.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/example-code/app/fordexample.hoon)
 to `/app/fordexample/`
-  - [example.html](https://github.com/timlucmiptev/gall-guide/blob/master/examples/app/fordexample/example.html)
+  - [example.html](https://github.com/timlucmiptev/gall-guide/blob/master/example-code/app/fordexample/example.html)
 * to `/mar/fordexample/`
-  - [name.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/examples/mar/fordexample/name.hoon)
+  - [name.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/example-code/mar/fordexample/name.hoon)
 * to `/sur/`
-  - [fordexample.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/examples/sur/fordexample.hoon)
-  - [fordexample2.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/examples/sur/fordexample2.hoon)
+  - [fordexample.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/example-code/sur/fordexample.hoon)
+  - [fordexample2.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/example-code/sur/fordexample2.hoon)
 
 Now go ahead and run `|commit %home`. You should see a message that `fordexample initialized successfully`.
 

@@ -8,7 +8,19 @@ That said, your Urbit is meant to be a personal *server*. That means that we nee
 In this lesson, you will learn how to:
 * serve static files to Earth (the outside internet)
 * handle dynamic inbound requests from Earth on the server-side
-* 
+* call out to Earth HTTP resources
+
+## Example Code
+* to `/app/`
+  - [mars.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/example-code/app/mars.hoon)
+* to `/app/mars/public/`
+  - [index.html](https://github.com/timlucmiptev/gall-guide/blob/master/example-code/app/mars/public/index.html)
+* to `/app/mars/private/`
+  - [index.html](https://github.com/timlucmiptev/gall-guide/blob/master/example-code/app/mars/private/index.html)
+* to `/mar/mars/`
+  - [action.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/example-code/mar/mars/action.hoon)
+* to `/sur/`
+  - [mars.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/example-code/sur/mars.hoon)
 
 ## `%file-server`: Serve Static Resources to Earth
 In `on-init`, we return a couple cards that open up directories to the world. Those are the `public-filea` and `private-filea` faces. Here are the action types of the `%file-server` agent that we pass them to:
