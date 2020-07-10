@@ -82,6 +82,15 @@
       :_  state(last-id ~)
       :~  [%give %kick ~[/http-response/[u.last-id.state]] ~]
       ==
+      ::
+        %serve-gen
+      :_  state
+      [[%pass /bind %arvo %e %serve [~ pax.action] %home gen.action ~]]~
+      ::
+        %disconnect
+      ~&  >>>  "disconnecting at {<bind.action>}"
+      :_  state
+      [[%pass /bind %arvo %e %disconnect bind.action]]~
     ==
   ++  get-url
     |=  =url

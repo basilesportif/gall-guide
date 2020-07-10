@@ -5,6 +5,7 @@ then
     exit;
 fi
 
+cp -r gen/* $1/gen
 cp -r app/* $1/app/
 cp -r lib/* $1/lib/
 cp -r mar/* $1/mar/

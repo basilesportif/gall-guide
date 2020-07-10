@@ -21,6 +21,8 @@ In this lesson, you will learn how to:
   - [action.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/example-code/mar/mars/action.hoon)
 * to `/sur/`
   - [mars.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/example-code/sur/mars.hoon)
+* to `/gen/`
+  - [myinfo.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/example-code/gen/myinfo.hoon)
 
 ## `%file-server`: Serve Static Resources to Earth
 In `on-init`, we return a couple cards that open up directories to the world. Those are the `public-filea` and `private-filea` faces. Here are the action types of the `%file-server` agent that we pass them to:
@@ -74,12 +76,12 @@ The binding card does the initial work, but Eyre also requires some other arms i
 The type of the vase passed is `[id=@ta =inbound-request:eyre]`. We can process this `inbound-request` in whatever way we want, and return a card to Eyre if we want to pass a response immediately (discussed below in "How It Works").
 
 #### on-arvo
-Eyre will send an acknowledgement that our binding worked (or an error if it didn't), and we must process that in `on-arvo`, or else we'll get an error. We do this in line 122. 
+Eyre will send an acknowledgement that our binding worked (or an error if it didn't), and we must process that in `on-arvo`, or else we'll get an error. We do this in line 131. 
 
 `sign-arvo` is documented in the [types appendix](gall_types.md)--its head is the letter of the vane sending the message, and the tail is type `gift:able:$VANE`. If we search for `++  eyre` in `zuse`, we find that the response to a `%connect` or `%serve` will be a boolean saying whether it was accepted as well as the binding site requested.
 
 #### on-watch
-This, in line 145, is the strangest requirement: why do we need to handle a subscription request from Eyre?
+This, in line 154, is the strangest requirement: why do we need to handle a subscription request from Eyre?
 
 In fact, all responses to HTTP in Eyre are handled by passing responses to a subscription path.
 The answer is that not all HTTP requests are handled synchronously, and we also might want to return streaming data, as with a websocket/`EventSource`. Eyre opens a subscription on path `%http-response` whenever a request is made, and then `leave`s it after the connection is finished. Until that time, we can push data out by `%give`ing `%fact`s to that path. In this app, we simply handle the subscription to avoid errors, but treat it as a no-op.
@@ -103,11 +105,11 @@ Let's follow the data flow and see what happens here. If you look in your Dojo, 
 >>> "watch request on path: [i=%~.http-response t=/~.eyre_0v4.jolo0.qjl1a.73gr8.40fll.ivird]"
 >>  "'/~mars-manual'"
 ```
-The first message is from line 146 and corresponds to (1) above: Eyre subscribes on the `/http-response/...` path. The second is from line 59 in the code, and corresponds to (2) above: Eyre poked our app.
+The first message is from line 155 and corresponds to (1) above: Eyre subscribes on the `/http-response/...` path. The second is from line 59 in the code, and corresponds to (2) above: Eyre poked our app.
 
 Because our incoming URL matches `'~/mars-manual'`, we call `open-manual-stream` and pass the Eyre id. This will let us respond by passing a message to the subscription.
 
-In line 90, we have `open-manual-stream`. It sets a state variable with the Eyre `id` so that we can close the connection later, and then it `%give`s two `%fact`s: an HTTP header and a response body. Eyre is subscribing on the path here, so it gets these and prints the body in the browser.
+In line 99, we have `open-manual-stream`. It sets a state variable with the Eyre `id` so that we can close the connection later, and then it `%give`s two `%fact`s: an HTTP header and a response body. Eyre is subscribing on the path here, so it gets these and prints the body in the browser.
 
 Let's inspect our app state, and then close the connection:
 ```
@@ -156,11 +158,43 @@ So `give-simple-payload` takes an `eyre-id` (needed to pass data to a subscripti
 Instead of passing a payload directly, in line 65 we use `require-authorization` from `server.hoon`. This takes two parameters: a request and a gate to run on the request. It only runs the gate if the user is currently logged in to the ship. This is a common pattern used to protect private resources and require a login.
 
 ### Response Types
-You can return many types of responses by using the `*-response` arms in `lib/server.hoon` (eg `html-response`). You simply pass the data you want to return as bytes (`octs` in Urbit-ese) to the appropriate gate. In line 110 we use `json-to-octs`, but we could just as easily generate `html` with `as-octt:mimes:html` from `zuse`:
+You can return many types of responses by using the `*-response` arms in `lib/server.hoon` (eg `html-response`). You simply pass the data you want to return as bytes (`octs` in Urbit-ese) to the appropriate gate. In line 119 we use `json-to-octs`, but we could just as easily generate `html` with `as-octt:mimes:html` from `zuse`:
 ```
 > ^-  octs  (as-octt:mimes:html "<html></html>")
 [p=13 q='<html></html>']
 ```
+
+## Using Eyre with Generators
+Sometimes you want your ship to produce a dynamic response, but just a simple one, like the current ship's name or hash. In those cases, it's better to server a generator rather than a full Gall app, just for ease of creation and maintenance.
+
+To do so, we simply use a `%serve` task from `task:able:eyre`, rather than a `%connect` task.
+
+We already put a generator in `/gen/myinfo/hoon`, so now we start it:
+```
+> :mars &mars-action [%serve-gen /'~myinfo' /gen/myinfo/hoon]
+```
+This matches the action in line 86, which returns a card to Eyre of the form below, which can be found in the `eyre` section of `zuse.hoon`:
+```
+::  [%serve =binding =generator]
+::  generator is [desk path optional-args]
+[%pass /bind %arvo %e %serve [~ pax.action] %home gen.action ~]
+```
+Now if you go to `localhost/~myinfo`, you'll see a JSON printout as created in `/gen/myinfo.hoon`.
+
+There's also a direct Dojo command to serve generators--the below is equivalent to the card we passed:
+```
+> |serve /'~myinfo' %home /gen/myinfo/hoon
+```
+If you open `/gen/hood/serve.hoon`, you'll see that this generator just expands to the same type of card we made in our Gall app, and is then fed to the `hood` Gall app where it is passed to Eyre.
+
+## Disconnecting Eyre Bindings
+We can disconnect both Gall and generator Eyre bindings by using an Eyre `%disconnect` task (again, found in the `++  eyre` section of `zuse`). Let's disconnect our generator:
+```
+> :mars &mars-action [%disconnect [~ /'~myinfo']]
+```
+Now if you browse to `localhost/~myinfo`, it will give a 404.
+
+You could do the same process to disconnect the `~mars-manual` and `~mars-managed`; the only requirement is that your app be the one that initially bound them.
 
 ## Iris: HTTP Client to Call Out to Earth
 Calling out to Earth using the Iris (`%i`) vane is very straightforward. Let's do it, and then check how the code works:
@@ -178,7 +212,7 @@ Above, we used the `%http-get` `mars-action`, which we handle in line 74. We pas
 We pass `[%'GET' url ~ ~]` as the `request:http` parameter, and use the bunt value for the `outbound-config`. For the wire to pass on, we use the `url.action` so that we'll have access to it when we receive the response.
 
 ### Response Handling in `on-arvo`
-The response will come back in `on-arvo`. In line 125 we catch anything coming from Iris, and then only continue if the head of the tail is an `%http-response`. Then we run `handle-response`, passing the head of `wire`, which is our `url`, as well as the response itself.
+The response will come back in `on-arvo`. In line 134 we catch anything coming from Iris, and then only continue if the head of the tail is an `%http-response`. Then we run `handle-response`, passing the head of `wire`, which is our `url`, as well as the response itself.
 
 ### Possible Iris Responses (from `zuse.hoon`)
 `client-response:iris` in `zuse` can have the following values:
