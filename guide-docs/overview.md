@@ -5,7 +5,7 @@ This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101
 
 ## Table of Contents
 
-### Basic Backend
+### Backend Foundation
 * [Workflow Setup](workflow.md)
 * [The 10 Arms of Gaal: App Structure](arms.md)
 * [App Lifecycle and State](lifecycle.md)
@@ -14,7 +14,7 @@ This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101
 * [HTTP & Static Files](http.md)
 * [Call from Outside: JSON & channel.js](chanel.md)
 
-### Basic Frontend
+### Frontend with React
 * [Landscape: GUI for Gall](landscape.md)
 * [Walkthrough: Landscape Skeleton]()
 * [Communicating with Landscape (Pokes & Subscriptions)]()
