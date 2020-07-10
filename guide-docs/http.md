@@ -231,10 +231,15 @@ We assume that we'll get a `%finished` response--if we don't, we just print the 
 
 Once we get `%finished`, we store it in a map keyed by `url`, which is what we saw at the top of this section when we printed the `dbug` state.
 
+### Further Reading
+The [official Iris docs](https://urbit.org/docs/reference/vane-apis/iris/) go into slightly more detail on possible actions.
+
 ## Summary
 We covered all of the key ways to communicate with Earth resources over HTTP from Mars.  Now that `%file-server` has been added, you'll be able to handle most web interactions with your server simply by serving static files and using the JSON pokes and subscription pushes you'll learn in the [channels lesson](chanel.md).
 
 However, there are definitely times when you need to access outside resources or serve custom logic from an endpoint, and in those cases, Eyre and Iris are your not-so-hard-to-use friends.
+
+We also saw how we can serve generators for simple data output.
 
 ## Exercises
 1. Serve your ship's name and the current time from an `/~info` endpoint
