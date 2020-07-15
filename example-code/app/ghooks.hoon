@@ -54,7 +54,24 @@
         (scry-group:grp rid.action)
       ~&  >>>  "scry me a river: {<g>}"
       `state
+      ::
+        %scry-all
+      =/  gs=(set @t)  scry-all-groups
+      ~&  >>>  "scry: {<gs>}"
+      `state
+      ::`state(local-groups (~(gas in state.local-groups) gs))
     ==
+  ++  scry-all-groups
+    ^-  (set @t)
+    =/  a=arch
+      .^  arch
+        %gy
+        (scot %p our.bowl)
+        %group-store
+        (scot %da now.bowl)
+        /groups
+      ==
+    ~(key by dir.a)
   --
 ::
 ++  on-watch  on-watch:def
