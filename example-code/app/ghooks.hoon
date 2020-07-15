@@ -75,7 +75,8 @@
   ++  path-to-resource
     |=  =path
     ?>  ?=([%ship @ta @tas ~] path)
-    (resource [(ship (slav %p i.t.path)) (term i.t.t.path)])
+    ^-  resource
+    [(ship (slav %p i.t.path)) (term i.t.t.path)]
   --
 ::
 ++  on-watch  on-watch:def
