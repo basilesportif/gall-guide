@@ -22,7 +22,7 @@ This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101
 
 ### More Backend
 * [scry & on-peek](peek.md) 
-* [Groups & Hooks](groups.md)
+* [Groups & Hooks](ghooks.md)
 * [Store/Hook/View]()
 * [Calling the OS (Arvo)]()
 

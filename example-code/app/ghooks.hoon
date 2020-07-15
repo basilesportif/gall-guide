@@ -1,7 +1,7 @@
 ::  mars.hoon
 ::  Groups and hooks
 ::
-/-  ghooks, *group
+/-  ghooks, *group, *resource
 /+  default-agent, dbug, store=group-store, group-lib=group
 |%
 +$  versioned-state
@@ -56,13 +56,12 @@
       `state
       ::
         %scry-all
-      =/  gs=(set @t)  scry-all-groups
-      ~&  >>>  "scry: {<gs>}"
+      =/  gs=(set resource)  scry-all-groups
+      ~&  >>>  "scry:  {<gs>}"
       `state
-      ::`state(local-groups (~(gas in state.local-groups) gs))
     ==
   ++  scry-all-groups
-    ^-  (set @t)
+    ^-  (set resource)
     =/  a=arch
       .^  arch
         %gy
@@ -71,7 +70,12 @@
         (scot %da now.bowl)
         /groups
       ==
-    ~(key by dir.a)
+    %-  ~(run in ~(key by dir.a))
+      (cork stab path-to-resource)
+  ++  path-to-resource
+    |=  =path
+    ?>  ?=([%ship @ta @tas ~] path)
+    (resource [(ship (slav %p i.t.path)) (term i.t.t.path)])
   --
 ::
 ++  on-watch  on-watch:def
