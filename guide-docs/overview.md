@@ -21,9 +21,9 @@ This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101
 * [Everything about React for Landscape]()
 
 ### More Backend
-* [on-peek & Data Model/Store](model.md) 
+* [scry & on-peek](peek.md) 
+* [Groups & Hooks](groups.md)
 * [Store/Hook/View]()
-* [Using Existing Data like Groups]()
 * [Calling the OS (Arvo)]()
 
 ### Appendix

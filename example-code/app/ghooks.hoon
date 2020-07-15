@@ -1,8 +1,8 @@
 ::  mars.hoon
 ::  Groups and hooks
 ::
-/-  ghooks, group
-/+  default-agent, dbug, store=group-store
+/-  ghooks, *group
+/+  default-agent, dbug, store=group-store, group-lib=group
 |%
 +$  versioned-state
     $%  state-0
@@ -19,8 +19,9 @@
 =|  state=versioned-state
 ^-  agent:gall
 |_  =bowl:gall
-+*  this      .
++*  this  .
     def   ~(. (default-agent this %|) bowl)
+    grp   ~(. group-lib bowl)
 ::
 ++  on-init
   ^-  (quip card _this)
@@ -49,7 +50,9 @@
     ^-  (quip card _state)
     ?-    -.action
         %scry-group
-      ~&  >>>  "scry me a river"
+      =/  g=(unit group)
+        (scry-group:grp rid.action)
+      ~&  >>>  "scry me a river: {<g>}"
       `state
     ==
   --
