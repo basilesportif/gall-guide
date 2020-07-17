@@ -1,4 +1,4 @@
-# Talk to Ships: Poke and Watch
+# Talk to Ships: poke, watch and Marks
 Back in the [App Structure lesson](arms.md), we said that the `on-poke` and `on-watch` arms listen for input/calls. We're going to use them both to do that in this lesson, as well as work with the `on-agent` and `on-leave` arms that handle responses from those calls.
 
 Both `on-poke` and `on-watch` allow outside processes on the same ship or other ships to call your ship. The difference is that poke is for "one-time" calls, and watch is for subscriptions.
@@ -39,6 +39,17 @@ Notice below that the `state` of `this` will be updated by `some-action-handler`
 =^  cards  state  (some-action-handler:helper-core !<(action-type vase))
 [cards this]
 ```
+
+### `+` syntax
+This is easiest to demonstrate with examples:
+```
+> noun+[1 %hello]
+[%noun 1 %hello]
+> =a "yo"
+> txt+a
+[%txt "yo"]
+```
+The thing before `+` gets turned into a `@tas`, and the thing after is interpreted normally. This is a handy shortcuut we'll sometimes use with custom action types later, since if we have a type like `[%increase-counter step=@ud]` we can write things like `increase-counter+20` and have it interpret as `[%increase-counter 20]`.
 
 ## poke: One-Time Call
 Sending a poke to a Gall agent is easy; you can do it directly from the Dojo. Let's poke our app and examine what happens.
@@ -146,17 +157,18 @@ Our `grab` here just handles nouns, and converts them to the `action` type in `s
 
 So with that all in hand, we can see our custom mark in action!  All we have to do is use `&` before the name of our custom mark, and the Dojo will treat it as a custom mark, and try to render the following value from noun to it. Try out the following commands at the Dojo from `~zod`:
 ```
-> :poketime &poketime-action [%poke-remote ~timluc]
+::  using our '+' syntax from the intro
+> :poketime &poketime-action poke-remote+~timluc
 ::  you'll see a successful poke-ack locally, and a message on ~timluc
 
-> :poketime &poketime-action [%poke-self ~zod]
+> :poketime &poketime-action poke-self+~zod
 ::  this will work
 
 > :poketime &poketime-action [%poke-self ~timluc]
 ::  this will fail with a "poke failed" error
 ::  this is because the %poke-self case uses ?>  (team:title our.bowl src.bowl) to block outside ships
 
-> :poketime &poketime-action [%increase-counter 7]
+> :poketime &poketime-action increase-counter+7
 > :poketime %print-state
 ::  you'll see that the counter went up by 7, and that wex and sup in bowl are empty
 
