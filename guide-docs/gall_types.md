@@ -8,30 +8,22 @@ Building Gall apps is a matter of building the Gall arms you need. And building 
 
 If you can answer those questions, you'll feel like you always have solid ground under your feet, and can build whatever you need to in Gall.
 
-## How to Use This Document
-Whenever you hit a type you don't understand in Gall source, search for it here.
+## Note on Finding Type Source Code
+Anytime you see a type that you don't recognize, it either has to come from the Ford imports at the top of the file (`/-` and `/+`) or from the standard library. Just search for `++  <TYPE-NAME>`  or `+$  <TYPE-NAME>` in the 3 `/sys` Hoon files (`hoon`, `arvo`, and `zuse`), and you'll generally find what you need.
 
-## Note on Finding Source Code
-This guide is intended to clearly show what types do, but the source code for them is also quite clear, and I want to empower users to go to that source code. All types indicate the file they come from, and unless stated otherwise, you can find these structures in the files by searching for them as arms:
-```
-::  any of the below searches will work (without quotes)
-"++  quip"
-"++  wind"
-"++  note-arvo"
-```
+Remember to put two spaces ("gap") after `++`/`+$` when searching.
 
 ## Standard Library Types
 These are types found in `hoon.hoon`, `arvo.hoon`, and `zuse.hoon`
 
 ### Standard Library Organization
 * `hoon.hoon`: general Hoon language types and functions
-* `arvo.hoon`: 
+* `arvo.hoon`: base kernel that loads the vanes and has some types in it
 * `zuse.hoon`: the "public" interface (models and code) for each vane. These can be called by other vanes and user code, and aren't used for internal vane implementation.
 
-### Types Used by Gall
-
+### Key Standard Library Types that Gall Uses
 * `quip` (`sys/hoon.hoon`)
-  - head is an item (often `cards`), tail is usually a core with data
+  - usually in the form `(quip card _this)` or `(quip card _state_)`, where `_this` is the type of the current Gall agent, and `_state` is the type of its state variable
   - `(quip item state)`
   - `[(list item) state]`
 
@@ -46,86 +38,88 @@ These are types found in `hoon.hoon`, `arvo.hoon`, and `zuse.hoon`
 
 * `cage`/`cask` (`sys/arvo.hoon`)
   - `cask` is the general version of `[@tas any-data]`
-  -  `cage` is a specific version: `[@tas vase]`
+  - `cage` is a specific version: `[@tas vase]`, where `@tas` should be a mark
 
 * `wind` (`sys/arvo.hoon`)
-  - tagged union
-  - `a` is the type for `%pass`, `b` the type for `%give`
-  - `(wind a b)`
+Gall `card`s are of type `(wind note gift)`
 ```
 ::  wind is a tagged union of:
 [%pass p=path q=a]
 [%slip p=a]
 [%give p=b]
 ```
+What this means in practice is that to make a Gall card, you make it as one of:
+* `[%pass p=path q=note:agent:gall]`
+* `[%give p=gift:agent:gall]`
+In the "Gall Types" section below, we'll see what `note:agent:gall` and `gift:agent:gall` consist of.
 
+#### `note-arvo` and `sign-arvo`
+These types are used, respectively, to pass calls to Arvo vanes and receive returns from vanes. To find their full source, just search for `++  note-arvo` or `++  sign-arvo` in `zuse.hoon`.
 * `note-arvo` (`sys/zuse.hoon`)
   - tagged union of the notes that each Arvo vane can create
-  - format: `[<vane-letter> task:able:<vane-name>]
+  - format: `[<vane-letter> task:able:<vane-name>]`
   - example: `[%g task:able:gall]`
+
+* `sign-arvo` (`sys/zuse.hoon`)
+  - tagged union of values that vanes can produce and send back to Gall apps in the `on-arvo` arm
+  - format: `[<vane-letter> task:able:<vane-name>]`
+  - example: `[%e gift:able:eyre]`
   
-### Eyre
-```
-::  app is the Gall app to bind to
-[%connect =binding app=term]
-[%disconnect =binding]
-```
-```
-+$  binding
-    $:  ::  site: the site to match.
-        ::    A ~ will match the Urbit's identity site (your.urbit.org). Any
-        ::    other value will match a domain literal.
-        site=(unit @t)
-        ::  path: matches this prefix path
-        ::    /~myapp will match /~myapp or /~myapp/longer/path
-        path=(list @t)
-    ==
-```
+### `path` and `wire`
+These types often use a shortcut syntax that we can check in the dojo. A `path` is just a `(list knot)`, and `wire` is an alias for `path`.
 
-### sign-arvo
+Examples of creating `path`s and pattern-matching them are below. Note the use of `/[<expression>]` syntax to insert evaluated expressions as parts of the `path`.
 ```
- $%  {$a gift:able:ames}
-      $:  $b
-          $%  gift:able:behn
-              $>(%wris gift:able:clay)
-              $>(%writ gift:able:clay)
-              $>(%mere gift:able:clay)
-              $>(%unto gift:able:gall)
-          ==
-      ==
-      {$c gift:able:clay}
-      {$d gift:able:dill}
-      [%e gift:able:eyre]
-      {$g gift:able:gall}
-      [%i gift:able:iris]
-      {$j gift:able:jael}
-```
+> /example/path
+[%example %path ~]
 
-### Wires and Paths
-These types often use a shortcut syntax that we can check in the dojo.
-TODO: EXAMPLE
+> `path`[%example %path ~]
+/example/path
+
+> `path`[%example %ship (scot %p ~timluc-miptev) ~]
+/example/ship/~timluc-miptev
+
+> /example/ship/[(scot %p ~timluc-miptev)]
+[%example %ship ~.~timluc-miptev ~]
+
+> =my-path [/example/[(scot %p ~timluc-miptev)]]
+
+::  how to pattern-match against paths
+> ?=([%example @ ~] my-path)
+%.y
+
+> ?=([%example ~] my-path)
+%.n
+```
 
 ## Gall Types
 These include anything like `...:agent:gall`. They are defined in `sys/zuze.hoon`.
-Search for `++  gall` in `zuze.hoon` to find the start of that core definition
-* `bowl`
+Search for `++  gall` in `zuze.hoon` to find the start of that core definition.
 
 ### Gall `agent`
-`agent` is an iron core that contains the 10 arms used for the app, which in turn rely on 
+`agent` is an iron core that contains the 10 arms used for the app. It also has some types under it.  Search for `++  agent` to find this part.
 
-* `note`
+* `bowl:agent:gall`
+  - holds the current metainformation about the Gall app
+  - passed to every agent which in turn can pass it to children
+
+* `note:agent:gall`
   - can start with `%arvo` and hold a `note-arvo` note (for "calling" arvo vanes) 
-  - or can start with `%agent` and send a poke or subscribe to an agent
+  - or can start with `%agent` and send a poke or subscribe to a Gall agent on any ship
 ```
 +$  note
       $%  [%arvo =note-arvo]
           [%agent [=ship name=term] =task]
       ==
 ```
- * `card`
+ * `card:agent:gall`
    - used heavily in Gall apps--the return type of most apps is `[(list card) agent]` (or `(quip card agent)`
    - `(wind note gift)`
    - think of a `wind` as an instruction to an Arvo vane or to another Gall agent
 
-* `default-agent`
-  - `types` 
+* `task:agent:gall`
+  - used in `%agent` notes to send messages to other Gall ships  
+
+* `gift:agent:gall`
+  - "return" types from a Gall agent's `on-watch` and `on-poke` arms
+  - used most often to send a `%kick` and remove subscriber(s), or to send a `%fact` to subscribers on a `path`
