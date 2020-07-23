@@ -76,6 +76,15 @@ And...that's it! You now know how to set and cancel Behn timers.  If you wanted 
 ## Writing to Clay
 gets called from `on-arvo` timer or `add-group`
 
+## Trying It Out
+
+```
+::  command to add group to monitored
+
+::  reset-timer
+
+```
+
 ## Summary
 If you've done any Unix sysadmin before, you'll recognize that this task would be a) maybe possible b) really annoying c) *very* unstructured. You'd need a chron job (have fun!), find out the configuration format for the group program running (likely a proprietary database), and then write some Bash scripts to wire it all together. Type-checking? Ha.
 
