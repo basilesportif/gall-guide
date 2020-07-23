@@ -1,5 +1,5 @@
 # The Complete Guide to Gall: Overview
-This guide will give you a full, working knowledge of every aspect of creating Gall apps in Urbit. Over the course of the guide, we will build up a code review/homework submission app that uses all aspects of Gall and a Landscape frontend.
+This guide will give you a full, working knowledge of every aspect of creating Gall modules in Urbit. Over the course of the guide, we will build up a code review/homework submission app that uses all aspects of Gall and a Landscape frontend.
 
 This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101 should be enough). To write Gall apps that interact with the frontend, you'll also need some knowledge of Javascript.
 
@@ -7,6 +7,7 @@ This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101
 
 ### Backend Foundation
 * [Workflow Setup](workflow.md)
+
 * [The 10 Arms of Gaal: App Structure](arms.md)
 * [App Lifecycle and State](lifecycle.md)
 * [Importing Code and Static Resources](ford.md)
@@ -21,10 +22,10 @@ This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101
 * [Everything about React for Landscape]()
 
 ### More Backend
-* [scry & on-peek](peek.md) 
+* [scry & on-peek](peek.md)
+* [backy: a Program to Call the OS (Arvo)](backy.md)
 * [Groups & Hooks](ghooks.md)
 * [Store/Hook/View]()
-* [Calling the OS (Arvo)]()
 
 ### Appendix
 * [Tips & Tricks](tips.md)
@@ -32,9 +33,21 @@ This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101
 * [Types Used in Gall Apps](appendix_types.md)
 
 ## What Is Gall?
-Gall is a program (OS kernel or "vane") that runs in the background on Urbit's operating system, Arvo. It manages most of the programs you think of as Urbit's apps. Most Urbit apps know and love, like Chat and Publish, are Gall applications. 
+Gall is a progrfam (OS kernel or "vane") that runs in the background on Urbit's operating system, Arvo. It manages most of the programs you think of as Urbit's apps. 
 
-Gall passes all messages going into your app, and processes all messages going out from your app.
+### Platforms, Not Just Applications
+
+Gall's capabilities go well beyond what you normally think of as "standalone applications."  Because of Urbit's design, Gall apps/modules can [cleanly interact](https://ngnghm.github.io/blog/2015/12/25/chapter-7-platforms-not-applications/) with other apps/modules on the local ship or remote ones. They also can call the operating system in ways that are much more manageable than you may be used to in Unix programming (if you have that background).
+
+Gall modules can, for example:
+- run background chron jobs that periodically check your data
+- coordinate data sources from other Gall apps
+- provide full-blown user experiences with frontend
+- run database resources that back multiple services
+
+Most of the Urbit apps know and love, like Chat and Publish, are Gall applications, but so are the "background" modules that coordinate your experience, like the `group` data store and logic.
+
+Gall handles all messages going into your app, and routes all messages going out from your app to the correct destination.
 
 ### Gall's Responsibilities
 * App Registration: Gall listens for commands to register new user applications and start watching them.
