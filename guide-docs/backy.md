@@ -105,7 +105,7 @@ In line 148, we make a cage marked `txt` (which stores its data as a `wain`), an
 (Note that we use the syntax `txt+!>(lines)` to mean `[%txt !>(lines)]`)
 
 #### Reading Marked Data from Clay
-TODO: fill
+When Clay reads marked data, it uses the file extension mark (i.e. `/txt`) to choose the mark to `re-inflate` it with.
 
 ### Turning `monitored` Groups into Write `card`s
 In line 127, we `run` the `group-info` gate on all members of the `monitored.state` `set`. `++group-info` produces `[path wain]`, i.e. a `path` we want to write to, and a `wain` of all the text lines we will write.
