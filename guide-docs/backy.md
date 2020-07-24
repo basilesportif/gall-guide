@@ -79,16 +79,40 @@ We'll start in line 150, where we see the final form of the `card` passed to Cla
 ```
 `write-users` is the wire we are sending on (although Clay doesn't return anything on a write), and then `%arvo %c` indicates this card is for Clay, as we've seen with other vanes. The `%info` task edits something in Clay, and takes a `[des=desk dit=nori]` as its tail. This data structure represents an edit to a point in Clay's path, and we can generate one representing a write by using the `foal:space:userlib` gate.
 
+(Note that `foal:space:userlib` returns a `toro`, but that's just a `[@ta nori]`, and a `desk` is a `@tas`, so `toro` nests under `[desk nori]`).
+
 Inside the `write-file` arm, we use the provided `path` and `wain` sample to create a `card` for Clay.
 
 ### Clay and `cage`s
-You'll note that we pass `foal` a `path` and a `cage`. Clay generally uses `cage`s (`[mark vase]`) structures to write data. The way this works is that you provide a `mark
-**TODO** explain exactly
+
+#### Writing Marked Data to Clay
+You'll note that we pass `foal` a `path` and a `cage`. Clay uses `cage`s (`[mark vase]`) structures to write data.
+
+The final element in the `path` you pass will be the `mark` that Clay stores (e.g. `txt` in `/my/clay/file/txt`). If the `cage`'s mark is different from the destination `mark`, Clay tries to find a path from cage mark to destination mark.
+
+Example:
+```
+::  example path -- mark is `%txt`
+/my/clay/file/txt
+
+::  example cage -- mark is `%noun`
+[%noun a-vase]
+```
+In the above, Clay tries to find a path from `%noun` to `%txt`, which it can, because `mar/txt/hoon` has a `grab` arm for `noun`.
+
+In line 148, we make a cage marked `txt` (which stores its data as a `wain`), and our `path` also ends in `txt`, so no conversion is needed. However, line 148 could just as easily have been `noun+!>(lines)`, because there is a conversion path from `%noun` to `%txt`.
+
+(Note that we use the syntax `txt+!>(lines)` to mean `[%txt !>(lines)]`)
+
+#### Reading Marked Data from Clay
+TODO: fill
 
 ### Turning `monitored` Groups into Write `card`s
-In line 127, we `run` the `group-info` gate on all members of the `monitored.state` `set`. `group-info` produces `[path wain]`, i.e. a `path` we want to write to, and a `wain` of all the text lines we will write.
+In line 127, we `run` the `group-info` gate on all members of the `monitored.state` `set`. `++group-info` produces `[path wain]`, i.e. a `path` we want to write to, and a `wain` of all the text lines we will write.
 
-TODO
+In `++group-info` we make a path based on the `resource`'s info, and then we `scry` for the group associated with the `resource`, turn its usernames into `cord`s, and return a `(list cord)`, i.e. a `wain`.
+
+In line 128 we `turn` that list with gate `write-file`, which produces a Clay write `card` for each `path` and list of usernames (the `wain`). Then those Clay `card`s are passed back to Gall by `on-arvo` and `add-group`.
 
 ## Adding a Group
 This is very straightforward. We simply take an `%add-group` action `card` with a `resource`, add that `resource` to `monitored.state` in the `add-group` arm. In line 117 we scry `group-store` for the `resourc` and throw an error if it doesn't exist.
@@ -96,21 +120,40 @@ This is very straightforward. We simply take an `%add-group` action `card` with 
 Finally, as seen in the prior section, we write all groups to Clay whenever a new group is added to monitoring
 
 ## Trying It Out
+We can see this in action now. We just need to add a couple groups as seed data, and then we'll run some commands against `%backy` and see what they do.
 
 ### Seed Some Group Data
-The below commands will add a new group to the `group-store` Gall agent, and then add 2 members to it.
+The below commands will add 2 new groups to the `group-store` Gall agent, and then add some members to them.
 ```
 :group-store &group-action [%add-group [~zod %fakegroup] [%invite *(set ship)] %.n]
+:group-store &group-action [%add-group [~zod %secondgroup] [%invite *(set ship)] %.n]
 :group-push-hook &group-update [%add-members [~zod %fakegroup] (sy ~[~zod ~timluc ~dopzod])]
+:group-push-hook &group-update [%add-members [~zod %secondgroup] (sy ~[~zod ~timluc ~bislut])]
 ```
 
 And these commands run operations within `%backy`:
 ```
 ::  command to add a group to `monitored`
-:backy &backy-action [%add-group [~zod %fakegroup]]
+::  you'll see this group written to Clay
+> :backy &backy-action [%add-group [~zod %fakegroup]]
+
+::  add %secondgroup to monitored
+::  both groups will be written to Clay
+> :backy &backy-action [%add-group [~zod %secondgroup]]
 
 ::  reset-timer
+::  you'll start to see files written every 20 seconds after this
+::  you'll also see a "timer cancelled" message: that's the prior 5min timer
+> :backy &backy-action [%reset-timer ~s20]
 
+::  go to 10 minute write intervals
+> :backy &backy-action [%reset-timer ~m10]
+
+::  verify that timer is 10 minutes in the future
+> :backy +dbug
+
+::  verify file existence
+> +ls %/bak-groups/~zod
 ```
 
 ## Summary
@@ -119,6 +162,3 @@ If you've done any Unix sysadmin before, you'll recognize that this task would b
 `%backy` is about 150 lines long, but it's very clearly organized, all the messages it sends to itself and Arvo are typed, and it's very clean to modify.  We were also able to reuse and compose actions like `reset-timer` and `write-users` while being confident in their types.
 
 Gall fully supports [platforms, not applications](https://ngnghm.github.io/blog/2015/12/25/chapter-7-platforms-not-applications), and so enables entirely new, structured ways of interacting with other agents and the operating system.
-
-## Exercise
-* write files with Clay?
