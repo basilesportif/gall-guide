@@ -67,6 +67,8 @@ Note that we use the `/timer` wire here also, as in `start-timer`. Cancelling a 
 And...that's it! You now know how to set and cancel Behn timers.  If you wanted to set multiple timers, you'd just use different wire names and handle them separately in `on-arvo`.
 
 ## Writing to Clay
+(*Note*: throughout this section we'll use the `wain` data structure, which is just `(list cord)`. This represents the lines of a text file.)
+
 `%backy`'s helper core has a `write-users` arm that returns the `card`s needed to write usernames in each group to Clay.  It is called in two places: line 79 in `on-arvo` (when the timer goes off) and in line 120 in `add-group` (when a new group is added to `monitored.state`). In `on-arvo` we `weld` these `card`s together with `card`s to reset the timer, and in `add-group` we simply return them along with the altered `state`.
 
 By doing our writes in this way, we've abstracted them out as simple `card`s passed to Arvo/Clay, which lets us combine them with other Arvo operations (like the Behn timer call in `on-arvo`). So let's look now at how our write `card`s are created.
@@ -77,11 +79,21 @@ We'll start in line 150, where we see the final form of the `card` passed to Cla
 ```
 `write-users` is the wire we are sending on (although Clay doesn't return anything on a write), and then `%arvo %c` indicates this card is for Clay, as we've seen with other vanes. The `%info` task edits something in Clay, and takes a `[des=desk dit=nori]` as its tail. This data structure represents an edit to a point in Clay's path, and we can generate one representing a write by using the `foal:space:userlib` gate.
 
-Inside the `write-file` arm, we use the provided `path` and `wain` (`(list cord)`) sample to create a `card` for Clay.
+Inside the `write-file` arm, we use the provided `path` and `wain` sample to create a `card` for Clay.
 
 ### Clay and `cage`s
 You'll note that we pass `foal` a `path` and a `cage`. Clay generally uses `cage`s (`[mark vase]`) structures to write data. The way this works is that you provide a `mark
 **TODO** explain exactly
+
+### Turning `monitored` Groups into Write `card`s
+In line 127, we `run` the `group-info` gate on all members of the `monitored.state` `set`. `group-info` produces `[path wain]`, i.e. a `path` we want to write to, and a `wain` of all the text lines we will write.
+
+TODO
+
+## Adding a Group
+This is very straightforward. We simply take an `%add-group` action `card` with a `resource`, add that `resource` to `monitored.state` in the `add-group` arm. In line 117 we scry `group-store` for the `resourc` and throw an error if it doesn't exist.
+
+Finally, as seen in the prior section, we write all groups to Clay whenever a new group is added to monitoring
 
 ## Trying It Out
 
