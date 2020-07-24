@@ -1,4 +1,4 @@
-# backy: a Program to Call the OS (Arvo)
+# backy: a Program to Call the Arvo OS
 Gall isn't just for making "full" applications; it also comes in very handy for clearly coordinating actions and data flows that are tricky and fragile in normal operating systems like Unix. 
 
 So far, we've made the following types of calls to Arvo:
@@ -28,13 +28,6 @@ To see concretely what we're trying to do, run `|start %dbug` on a real ship you
 You'll see a big list of all the groups you're in and their members. If we open `/sur/group.hoon`, we see that `groups` is a `(map resource group)`, and in `/sur/resource.hoon`, we see that `resource` is a [ship term].
 
 So we want `%backy` to accept pokes with `resource`s, monitor the `group` associated with that `resource`, and then every time a timer goes off, write the users from each monitored group to Clay (and to Unix, if mounted).
-
-### Seed Some Data
-The below commands will add a new group to the `group-store` Gall agent, and then add 2 members to it.
-```
-:group-store &group-action [%add-group [~zod %fakegroup] [%invite *(set ship)] %.n]
-:group-push-hook &group-update [%add-members [~zod %fakegroup] (sy ~[~zod ~timluc ~dopzod])]
-```
 
 We're now ready to see how `%backy` backs up our data.
 
@@ -74,12 +67,35 @@ Note that we use the `/timer` wire here also, as in `start-timer`. Cancelling a 
 And...that's it! You now know how to set and cancel Behn timers.  If you wanted to set multiple timers, you'd just use different wire names and handle them separately in `on-arvo`.
 
 ## Writing to Clay
-gets called from `on-arvo` timer or `add-group`
+`%backy`'s helper core has a `write-users` arm that returns the `card`s needed to write usernames in each group to Clay.  It is called in two places: line 79 in `on-arvo` (when the timer goes off) and in line 120 in `add-group` (when a new group is added to `monitored.state`). In `on-arvo` we `weld` these `card`s together with `card`s to reset the timer, and in `add-group` we simply return them along with the altered `state`.
+
+By doing our writes in this way, we've abstracted them out as simple `card`s passed to Arvo/Clay, which lets us combine them with other Arvo operations (like the Behn timer call in `on-arvo`). So let's look now at how our write `card`s are created.
+
+We'll start in line 150, where we see the final form of the `card` passed to Clay:
+```
+[%pass /write-users %arvo %c %info (foal:space:userlib pax cay)]
+```
+`write-users` is the wire we are sending on (although Clay doesn't return anything on a write), and then `%arvo %c` indicates this card is for Clay, as we've seen with other vanes. The `%info` task edits something in Clay, and takes a `[des=desk dit=nori]` as its tail. This data structure represents an edit to a point in Clay's path, and we can generate one representing a write by using the `foal:space:userlib` gate.
+
+Inside the `write-file` arm, we use the provided `path` and `wain` (`(list cord)`) sample to create a `card` for Clay.
+
+### Clay and `cage`s
+You'll note that we pass `foal` a `path` and a `cage`. Clay generally uses `cage`s (`[mark vase]`) structures to write data. The way this works is that you provide a `mark
+**TODO** explain exactly
 
 ## Trying It Out
 
+### Seed Some Group Data
+The below commands will add a new group to the `group-store` Gall agent, and then add 2 members to it.
 ```
-::  command to add group to monitored
+:group-store &group-action [%add-group [~zod %fakegroup] [%invite *(set ship)] %.n]
+:group-push-hook &group-update [%add-members [~zod %fakegroup] (sy ~[~zod ~timluc ~dopzod])]
+```
+
+And these commands run operations within `%backy`:
+```
+::  command to add a group to `monitored`
+:backy &backy-action [%add-group [~zod %fakegroup]]
 
 ::  reset-timer
 

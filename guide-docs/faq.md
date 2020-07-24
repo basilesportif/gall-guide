@@ -10,13 +10,21 @@
   - if there's a compile error, it will run an old version until a new version successfully compiles. 
   - Gall will **not** throw the same compile error twice in a row. This can be confusing if you don't get an error message, but still see that you're running the same version
 
+### Helper Core Note
+If you have a helper core, you'll generally declare it inside your agent like so:
+```
++*  hc    ~(. +> bowl)
+```
+If you have an arm inside the helper core like `write-file`, remember to access it inside your agent as `write-file:hc`, and not just `write-file`. Your agent *would* find the `write-file` arm in the subject, but it wouldn't have its sample set to the current `bowl`--it would just have the default `bowl` sample. This can cause some weird errors and unexpected behavior.
+
+If you are referring to a helper core arm *from another helper core arm*, then the `bowl` sample will already be replaced, and so you should just refer to `write-arm` (or whatever the arm's name is).
+
 ### scry errors
 ```
 scry failed for
 ford: %hood failed for /~zod/home/0/app/...
 ```
 Solution: run `|commit %home`
-
 
 ### mint-lost: Handle All State Cases
 Usually caused by adding a new state, but not having a `?-` case to handle it.

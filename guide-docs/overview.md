@@ -1,3 +1,5 @@
+*Note*: the "Backend Foundation" part of the guide is complete. The remaining sections are a work-in-progress.
+
 # The Complete Guide to Gall: Overview
 This guide will give you a full, working knowledge of every aspect of creating Gall modules in Urbit. Over the course of the guide, we will build up a code review/homework submission app that uses all aspects of Gall and a Landscape frontend.
 
@@ -7,7 +9,6 @@ This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101
 
 ### Backend Foundation
 * [Workflow Setup](workflow.md)
-
 * [The 10 Arms of Gaal: App Structure](arms.md)
 * [App Lifecycle and State](lifecycle.md)
 * [Importing Code and Static Resources](ford.md)
@@ -22,8 +23,8 @@ This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101
 * [Everything about React for Landscape]()
 
 ### More Backend
-* [scry & on-peek](peek.md)
-* [backy: a Program to Call the OS (Arvo)](backy.md)
+* [scry & on-peek](scry.md)
+* [backy: a Program to Call the Arvo OS](backy.md)
 * [Groups & Hooks](ghooks.md)
 * [Store/Hook/View]()
 
