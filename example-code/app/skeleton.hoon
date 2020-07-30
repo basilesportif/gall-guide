@@ -1,8 +1,7 @@
-::  mars.hoon
-::  Groups and hooks
+::  skeleton.hoon
+::  Skeleton of a gall app
 ::
-/-  ghooks, group
-/+  default-agent, dbug, store=group-store
+/+  dbug, default-agent
 |%
 +$  versioned-state
     $%  state-0
@@ -16,7 +15,8 @@
 ::
 --
 %-  agent:dbug
-=|  state=versioned-state
+=|  state-0
+=*  state  -
 ^-  agent:gall
 |_  =bowl:gall
 +*  this      .
@@ -24,7 +24,7 @@
 ::
 ++  on-init
   ^-  (quip card _this)
-  ~&  >  '%ghooks initialized successfully'
+  ~&  >  '%skeleton initialized successfully'
   `this
 ++  on-save
   ^-  vase
@@ -32,27 +32,12 @@
 ++  on-load
   |=  old-state=vase
   ^-  (quip card _this)
-  ~&  >  '%ghooks recompiled successfully'
+  ~&  >  '%skeleton recompiled successfully'
   `this(state !<(versioned-state old-state))
 ++  on-poke
   |=  [=mark =vase]
   ^-  (quip card _this)
-  |^
-  =^  cards  state
-    ?+    mark  (on-poke:def mark vase)
-        %ghooks-action  (handle-action !<(action:ghooks vase))
-    ==
-  [cards this]
-  ::
-  ++  handle-action
-    |=  =action:ghooks
-    ^-  (quip card _state)
-    ?-    -.action
-        %scry-group
-      ~&  >>>  "scry me a river"
-      `state
-    ==
-  --
+  `this
 ::
 ++  on-watch  on-watch:def
 ++  on-leave  on-leave:def
