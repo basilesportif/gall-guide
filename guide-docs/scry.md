@@ -62,13 +62,15 @@ These should use a mold of type `arch`
 .^(noun %gx /=group-store=/groups/ship/~zod/fakegroup/noun)
 
 ::  full group info for the same group, but with `(unit group)` mold
+::  below line imports the `group.hoon` library
 =g -build-file %/sur/group/hoon
 .^((unit group:g) %gx /=group-store=/groups/ship/~zod/fakegroup/noun)
 ```
 
 ## `on-peek` Mechanics
-How do Gall apps
+When Gall receives a scry request with `%gx` or `%gy`, it translates the request and forwards it to the appropriate agent's `on-peek` arm. Once that arm produces a result, it passes it back to Gall, which does a check and then passes it back to the caller.
 
+- happens in `++  ap-peek`, line 1223 of `sys/vane/gall.hoon`
 - explain examples above
 - explain the `(unit (unit cage))` translation
 
