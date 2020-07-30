@@ -123,4 +123,13 @@ To test this, run `:fordexample %custom-mark-example` in the Dojo, and you'll se
 ```
 Which confirms that our toy `html` `grab` gate was used to do the proper mark renderings.
 
+## Doing Imports in the Dojo
+The runes we've looked at here only work inside Gall agents. If you want to import a library in the Dojo, use `-build-file`:
+```
+> =default-agent -build-file %/lib/default-agent/hoon
+
+::  when you enter this, you'll see the compiled core at `default-agent.hoon` printed out
+> default-agent
+```
+
 [Prev: App Lifecycle and State](lifecycle.md) | [Home](overview.md) | [Next: Poke and Watch](poke.md)
