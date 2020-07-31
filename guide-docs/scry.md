@@ -131,7 +131,8 @@ Sometimes these scry paths are documented, but often they're not. No problem! Yo
 Below, we walk through the `on-peek` arms for `%group-store` and `%chat-store` and see how we can extract information from them.
 
 ### `%group-store` Walkthrough
-TODO: link
+We'll refer to [this version](https://github.com/urbit/urbit/blob/9f46f4ce24a0a3650aa3d2317a20fb9713cff7d4/pkg/arvo/app/group-store.hoon) of `/app/group-store.hoon`.
+
 This is the Gall agent that stores group member and owner/admin data. In its `on-peek` arm, we see that it matches 3 paths:
 ```
 [%y %groups ~]
@@ -162,8 +163,44 @@ The first 2 atoms are turned into a `resource` as above (representing a group), 
 So we now have determined that this scry path returns a `loobean` representing whether the `ship` can join the group.
 
 ### `%chat-store` Walkthrough
-- show how `envelopes` parses negative/positive number
+We'll use [this version](https://github.com/urbit/urbit/blob/9f46f4ce24a0a3650aa3d2317a20fb9713cff7d4/pkg/arvo/app/chat-store.hoon) of `/app/chat-store.hoon`.
 
-## Exercises
-* Figure out 
-* Write successful Gall scry requests to 5 different agents on your main ship. Use both `%x` and `%y`.
+There's no `%y` queries here. The `%x` queries are:
+```
+[%x %all ~]
+[%x %keys ~]
+[%x %envelopes *]
+[%x %mailbox *]
+[%x %config *]
+```
+
+#### `[%x %all ~]`
+Simple, just produces the whole `inbox`.
+
+#### `[%x % keys ~]`
+Also straightforward: returns the keys of the `inbox`, which, if we look in `sur/chat-store.hoon`, are `path`s representing chat names. If we look up the `key by` arm, we see it produces a `set`, so we could cast our result to that.
+
+#### `[%x %envelopes *]`
+This is the most complex one (although not difficult), and is left as an exercise for the reader.
+
+#### `[%x mailbox *]`
+The code for this path throws out the static elements, and looks up the remaining `path` in `inbox`. Since `inbox` is a `(map path mailbox)`, this produces a `(unit mailbox)` (result of `get` is a `unit`).
+
+#### ` [%x %config *]`
+This also throws out static elements, fetches the `(unit mailbox)` at the remaining `path`, and returns its `config` if it exists. So the result here will be a `config` (NOT a `(unit config)`: note how the vase is formed in line 139).
+
+## Summary
+In this lesson, you saw how to write your own `on-peek` arms to respond to scry queries of your app's state.
+
+Even more importantly, you learned how to use `.^` to scry any Gall agent that exposes its data through `on-peek`, and also how to understand their source code. This will allow you to query any agent you wish, and build up apps that operate on pre-existing user information to create rich experiences.
+
+## Code-Reading Exercises
+* Figure out what the `[%x %envelopes]` query in `app/chat-store.hoon` does exactly, and what type of value is in its vase.
+* Write successful Gall scry requests to 4 different agents on your main ship. Use both `%x` and `%y`. Some possible agents to query in `/app`:
+  - `contact-store.hoon`
+  - `eth-watcher.hoon`
+  - `hood.hoon`
+  - `link-store.hoon`
+  - `publish.hoon`
+  - `launch.hoon`
+  - `metadata-store.hoon`
