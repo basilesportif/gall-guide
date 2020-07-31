@@ -8,7 +8,7 @@
     ==
 ::
 +$  state-0
-    $:  [%0 counter=@]
+    $:  [%0 friend=ship]
     ==
 ::
 +$  card  card:agent:gall
@@ -25,7 +25,7 @@
 ++  on-init
   ^-  (quip card _this)
   ~&  >  '%iscry initialized successfully'
-  `this
+  `this(friend.state ~timluc-miptev)
 ++  on-save
   ^-  vase
   !>(state)
@@ -37,7 +37,20 @@
 ++  on-peek
   |=  pax=path
   ^-  (unit (unit cage))
-  ``noun+!>(2)
+  ?+    pax  (on-peek:def pax)
+      [%y %result ~]
+    =/  =arch
+      :-  ~
+      %-  ~(put by *(map @ta ~))
+        ['fake-dir' ~]
+    ``arch+!>(arch)
+    ::
+      [%x %friend ~]
+    ``noun+!>(friend.state)
+    ::
+      [%x %no-result ~]
+    [~ ~]
+  ==
 ++  on-poke   on-poke:def
 ++  on-watch  on-watch:def
 ++  on-leave  on-leave:def

@@ -7,6 +7,7 @@ In this lesson, in addition to our own `on-peek` arm, we'll examine some that al
 
 ## Example Code
 * [/app/iscry.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/example-code/app/iscry.hoon)
+Copy the file to your ship's `app` directory, and install it as usual: `|start %iscry`.
 
 ## `scry` Mechanics
 `scry` uses a special rune, `.^` to query the Arvo namespace. This means that it can ask any vane a question about its current state, and get an answer, if the query is supported. `scry` is fast relative to other Urbit operations, since it's a read-only operation; this means that it doesn't have to write an event to disk.
@@ -36,7 +37,7 @@ The `x` or `y` after the vane letter is called the `care`. The care indicates th
 ### Using `.^`
 The first argument to `.^` is a mold used to cast the response. For `y` queries, this should be `arch`. For `x` ones, you generally put mark `noun` at the end of the path, and then cast with a mold that you know will work for the data inside the produced `vase`. We'll see examples of how to figure this out below.
 
-### Example Queries
+### Example Dojo Queries
 Since some of these queries are sent to `%group-store`, we need to add a dummy group so that they'll return data:
 ```
 :group-store &group-action [%add-group [~zod %fakegroup] [%invite *(set ship)] %.n]
@@ -47,58 +48,80 @@ Since some of these queries are sent to `%group-store`, we need to add a dummy g
 These should use a mold of type `arch`
 ```
 ::  all dirs and files in the root path
-.^(arch %cy %)
+> .^(arch %cy %)
 
 ::  all groups in the `%group-store` agent
-.^(arch %gy /=group-store=/groups)
+> .^(arch %gy /=group-store=/groups)
 ```
 
 #### `%x` Queries
 ```
 ::  paths of all chats we're in
-.^((set path) %gx /=chat-store=/keys/noun)
+> .^((set path) %gx /=chat-store=/keys/noun)
 
 ::  full group info for one group (with noun mold and noun mark)
-.^(noun %gx /=group-store=/groups/ship/~zod/fakegroup/noun)
+> .^(noun %gx /=group-store=/groups/ship/~zod/fakegroup/noun)
 
 ::  full group info for the same group, but with `(unit group)` mold
 ::  below line imports the `group.hoon` library
-=g -build-file %/sur/group/hoon
-.^((unit group:g) %gx /=group-store=/groups/ship/~zod/fakegroup/noun)
+> =g -build-file %/sur/group/hoon
+> .^((unit group:g) %gx /=group-store=/groups/ship/~zod/fakegroup/noun)
 ```
 
 ## `on-peek` Mechanics
-When Gall receives a scry request with `%gx` or `%gy`, it translates the request and forwards it to the appropriate agent's `on-peek` arm. Once that arm produces a result, it passes it back to Gall, which does a check and then passes it back to the caller.
+When Gall receives a scry request with `%gx` or `%gy`, it:
+1. translates the request and forwards it to the appropriate agent's `on-peek` arm
+2. waits for that arm to produce a result
+3. processes the result and, if it's valid, passes it back to the caller
+
+### Translating the Request
+Gall scrys have the forms below, where capitalized names are meant to be replaced with values:
+```
+[%gx /SHIP/GALL-AGENT/TIME/example/path/mark]
+::  OR
+[%gy /SHIP/GALL-AGENT/TIME/example/path]
+
+```
+Gall translates `[%gy /SHIP/GALL-AGENT/TIME/example/path]` into `[%y /example/path]` and passes that value to the `on-peek` of agent `GALL-AGENT`.
+
+Gall translates `[%gx /SHIP/GALL-AGENT/TIME/example/path/mark]` into `[%x /example/path]`, and remembers the mark.
+
+### Inside `on-peek`
+Look at the `on-peek` arm in `iscry.hoon`. It matches against the incoming paths, of which we match two:
+1. `[%y %result ~]`
+2. `[%x %friend %ship ~]`
+
+#### Example Requests
+```
+> .^(arch %gy /=iscry=/result)
+
+> .^(ship %gx /=iscry=/friend/noun)
+
+> .^(ship %gx /=iscry=/no-result/noun)
+```
+
+#### Note on Marks
+Generally in Gall agent source, you'll see `%x` queries use a `%noun` mark, the caller will look at their source or documentation to know what type is "really" inside the vase, and will pass that type as the mold to `.^`.
+
+### Processing the Result
+
+`on-peek` arms take a sample of a `path`, and produce a `(unit (unit cage))`. If the `cage` has a value, 
 
 - happens in `++  ap-peek`, line 1223 of `sys/vane/gall.hoon`
 - explain examples above
 - explain the `(unit (unit cage))` translation
+- mark translation
 
-## start our app for chat admin
-- walk through the on-peek in chat-store
+## Querying Existing Data
+Very often, programmers want to make extensions to Urbit that are variations on "query existing data about chats/groups, and then do something." The "query" part of these use cases is done with scry. A bot to monitor chats for invite requests, for example, needs to be able to scry a particular chat's path and check for certain patterns in the messages sent there.
 
-- generally speaking, use `noun` and then coerce it
+Sometimes these scry paths are documented, but often they're not. No problem! You just need to open up the source of the Gall app that stores the data you want, see what types of scrys its `on-peek` arm takes, what form it produces data in, and build your query accordingly.
 
-## look at gen/cat.hoon
+Below, we walk through the `on-peek` arms for `%group-store` and `%chat-store` and see how we can extract information from them.
 
-## Code examples
-- do `y` examples with Clay and group-store
-```
-.^(arch %cy pax)
-?~(fil.dir ~ [~ .^(* %cx pax)])
+### `%group-store` Walkthrough
 
-::  gets all the chat names/paths
-.^((set path) %gx /=chat-store=/keys/noun)
-
-::  gets all groups
-.^(arch %gy /=group-store=/groups)
-```
-
-* `%y` means it returns `arch`, shallow filesystem node
-```
-+$  arch  [fil=(unit @uvI) dir=(map @ta ~)]
-```
-This is analogous to ++ankh:clay except that the we have neither our contents nor the ankhs of our children. The other fields are exactly the same, so p is a hash of the associated ankh, u.q, if it exists, is a hash of the contents of this node, and the keys of r are the names of our children. r is a map to null rather than a set so that the ordering of the map will be equivalent to that of r:ankh, allowing efficient conversion.
+### `%chat-store` Walkthrough
 
 ## Exercises
-* implement an `on-peek`
+* Write successful Gall scry requests to 5 different agents on your main ship. Use both `%x` and `%y`.
