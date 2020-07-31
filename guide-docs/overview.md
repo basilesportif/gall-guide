@@ -25,8 +25,7 @@ This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101
 ### More Backend
 * [scry & on-peek](scry.md)
 * [backy: a Program to Call the Arvo OS](backy.md)
-* [Groups & Hooks](ghooks.md)
-* [Store/Hook/View]()
+* [Store/Hook/View](ghooks.md)
 
 ### Appendix
 * [Tips & Tricks](tips.md)

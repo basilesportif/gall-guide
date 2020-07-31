@@ -18,7 +18,7 @@ Copy the file to your ship's `app` directory, and install it as usual: `|start %
 [%cy /example/path]
 
 ::  query for Gall (%g) + %x
-[%gx /ship/gall-agent-name/time/example/path]
+[%gx /SHIP/GALL-AGENT-NAME/TIME/example/path]
 ```
 In all cases, the query starts with a `@tas` with the vane letter followed by `x` or `y`.
 
@@ -68,6 +68,14 @@ These should use a mold of type `arch`
 > .^((unit group:g) %gx /=group-store=/groups/ship/~zod/fakegroup/noun)
 ```
 
+## Dealing with Ship and Time
+From the Dojo, we can use `/=AGENT-NAME=`, and the Dojo will fill in `=` with ship name and time.
+
+If we're calling from a Gall app, we'd use our `bowl` to supply those values, like so:
+```
+.^((unit group:g) %gx /[(scot %p our.bowl)]/%group-store/[(scot %da now.bowl)]/groups/ship/~zod/fakegroup/noun
+```
+
 ## `on-peek` Mechanics
 When Gall receives a scry request with `%gx` or `%gy`, it:
 1. translates the request and forwards it to the appropriate agent's `on-peek` arm
@@ -108,12 +116,14 @@ When the result is produced by `on-peek`, Gall returns it directly to caller if 
 
 So `.^(ship %gx /=iscry=/friend/noun)` is passed to `on-peek` as `[%x %friend ~]`, and then it returns `friend.state` inside a `noun` `cage`. Because it is a `ship/@p`, our mold of `ship` succeeds, and it returns `~timluc-miptev`. We could just as easily pass a mold of `noun`: `.^(ship %gx /=iscry=/friend/noun)`, which would produce `3.690.144`.
 
-`on-peek` returns `(unit (unit cage))`. A return of `~` is meant to represent the value maybe existing, and `[~ ~]`. In either case, Gall produces a crash if `~` or `[~ ~]` is returned by `on-peek`.
+`on-peek` returns `(unit (unit cage))`. A return of `~` is meant to represent the value maybe existing, and `[~ ~]`. In either case, Gall produces a crash if `~` or `[~ ~]` is returned by `on-peek`. This is what we see above with the `/no-result` path.
 
 #### Note on Marks
 Generally in Gall agent source, you'll see `%x` queries use a `%noun` mark, the caller will look at their source or documentation to know what type is "really" inside the vase, and will pass that type as the mold to `.^`. In the next section, we'll see how to examine source to see what type is expected inside a given vase.
 
 ## Querying Existing Data
+Understanding the `on-peek`s of *other* Gall agents is a big part of Gall development.
+
 Very often, programmers want to make extensions to Urbit that are variations on "query existing data about chats/groups, and then do something." The "query" part of these use cases is done with scry. A bot to monitor chats for invite requests, for example, needs to be able to scry a particular chat's path and check for certain patterns in the messages sent there.
 
 Sometimes these scry paths are documented, but often they're not. No problem! You just need to open up the source of the Gall app that stores the data you want, see what types of scrys its `on-peek` arm takes, what form it produces data in, and build your query accordingly.
@@ -121,9 +131,39 @@ Sometimes these scry paths are documented, but often they're not. No problem! Yo
 Below, we walk through the `on-peek` arms for `%group-store` and `%chat-store` and see how we can extract information from them.
 
 ### `%group-store` Walkthrough
+TODO: link
+This is the Gall agent that stores group member and owner/admin data. In its `on-peek` arm, we see that it matches 3 paths:
+```
+[%y %groups ~]
+[%x %groups %ship @ @ ~]
+[%x %groups %ship @ @ %join @ ~]
+```
+
+#### `[%y %groups ~]`
+This is the most straightforward. It creates an `arch` (since it's a `%y` scry), and then runs `turn` on all the groups, changing the unique `resource` for each group into a `path`. Finally, it runs `malt` to turn the result into a `(map @ta ~)`.
+
+#### `[%x %groups %ship @ @ ~]`
+This is a common form for scrys: some static `path` elements to start (`%groups` and `%ship`), followed by parameters, which are 2 atoms here. We take the tail of the tail of the path (another common pattern: everything following the static elements), turn it into a `resource` (`[=ship name=term]`) and then pass that `resource` to the `peek-group` arm.
+
+`peek=group` simply `get`s the `group` represented by the resource, and thus produces a `(unit group)`. This is thrown into a vase, given a `noun` mark, and returned.
+
+*Key Point*: because the value in the vase is a `(unit group)`, our scry command for this path would look like:
+```
+.^((unit group) %gx /=group-store=/groups/ship/SHIP/GROUP-NAME/noun)
+```
+
+#### `[%x %groups %ship @ @ %join @ ~]`
+Here we have 2 static path components, two atom parameters, another static component (`%jonin`), and one more atom.
+
+The first 2 atoms are turned into a `resource` as above (representing a group), and then the final atom is parsed as a ship name and we call `(peek-group-join u.rid ship)`.
+
+`peek-group-join` gets the group at `rid`, and then branches on the group policy type. If the group is `%invite`, the `ship` must be a member or in `pending`. If it's an `%open` group, the ship or its clan cannot be banned.
+
+So we now have determined that this scry path returns a `loobean` representing whether the `ship` can join the group.
 
 ### `%chat-store` Walkthrough
 - show how `envelopes` parses negative/positive number
 
 ## Exercises
+* Figure out 
 * Write successful Gall scry requests to 5 different agents on your main ship. Use both `%x` and `%y`.
