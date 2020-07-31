@@ -87,30 +87,31 @@ Gall translates `[%gy /SHIP/GALL-AGENT/TIME/example/path]` into `[%y /example/pa
 Gall translates `[%gx /SHIP/GALL-AGENT/TIME/example/path/mark]` into `[%x /example/path]`, and remembers the mark.
 
 ### Inside `on-peek`
-Look at the `on-peek` arm in `iscry.hoon`. It matches against the incoming paths, of which we match two:
+Look at the `on-peek` arm in `iscry.hoon`. It matches against the incoming paths, of which we match three:
 1. `[%y %result ~]`
-2. `[%x %friend %ship ~]`
+2. `[%x %friend ~]`
+3. `[%x %no-result ~]`
 
 #### Example Requests
 ```
 > .^(arch %gy /=iscry=/result)
 
+::  returns the ship
 > .^(ship %gx /=iscry=/friend/noun)
 
-> .^(ship %gx /=iscry=/no-result/noun)
+::  crashes
+> .^(noun %gx /=iscry=/no-result/noun)
 ```
 
-#### Note on Marks
-Generally in Gall agent source, you'll see `%x` queries use a `%noun` mark, the caller will look at their source or documentation to know what type is "really" inside the vase, and will pass that type as the mold to `.^`.
-
 ### Processing the Result
+When the result is produced by `on-peek`, Gall returns it directly to caller if it was a `%y` scry. If it was an `%x`, Gall runs the mark passed at the end of its path on it, and then returns it to the caller, which runs the mold passed as the first argument to `.^`. 
 
-`on-peek` arms take a sample of a `path`, and produce a `(unit (unit cage))`. If the `cage` has a value, 
+So `.^(ship %gx /=iscry=/friend/noun)` is passed to `on-peek` as `[%x %friend ~]`, and then it returns `friend.state` inside a `noun` `cage`. Because it is a `ship/@p`, our mold of `ship` succeeds, and it returns `~timluc-miptev`. We could just as easily pass a mold of `noun`: `.^(ship %gx /=iscry=/friend/noun)`, which would produce `3.690.144`.
 
-- happens in `++  ap-peek`, line 1223 of `sys/vane/gall.hoon`
-- explain examples above
-- explain the `(unit (unit cage))` translation
-- mark translation
+`on-peek` returns `(unit (unit cage))`. A return of `~` is meant to represent the value maybe existing, and `[~ ~]`. In either case, Gall produces a crash if `~` or `[~ ~]` is returned by `on-peek`.
+
+#### Note on Marks
+Generally in Gall agent source, you'll see `%x` queries use a `%noun` mark, the caller will look at their source or documentation to know what type is "really" inside the vase, and will pass that type as the mold to `.^`. In the next section, we'll see how to examine source to see what type is expected inside a given vase.
 
 ## Querying Existing Data
 Very often, programmers want to make extensions to Urbit that are variations on "query existing data about chats/groups, and then do something." The "query" part of these use cases is done with scry. A bot to monitor chats for invite requests, for example, needs to be able to scry a particular chat's path and check for certain patterns in the messages sent there.
@@ -122,6 +123,7 @@ Below, we walk through the `on-peek` arms for `%group-store` and `%chat-store` a
 ### `%group-store` Walkthrough
 
 ### `%chat-store` Walkthrough
+- show how `envelopes` parses negative/positive number
 
 ## Exercises
 * Write successful Gall scry requests to 5 different agents on your main ship. Use both `%x` and `%y`.
