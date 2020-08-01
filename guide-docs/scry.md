@@ -25,6 +25,7 @@ In all cases, the query starts with a `@tas` with the vane letter followed by `x
 ### `%x` or `%y`?
 The `x` or `y` after the vane letter is called the `care`. The care indicates the response type expected
 * queries with `%y` produce a `cage` with mark `%arch` and vase type `arch`
+  - in practice, not all Gall agents return `arch` as the type: `%y` is often used to query for lists of `path`s.
 * queries with `%x` produce a cage with the mark at the end of the `path` queried; generally this mark will be `noun`
 
 ### Notes on `arch`
@@ -35,7 +36,7 @@ The `x` or `y` after the vane letter is called the `care`. The care indicates th
 `@uvI` is the aura for a hash (of a file), and `dir` is a map of `knot`s representing `path`s or directories. This type is used by Clay for returning files/directories, and by Gall apps (such as `%group-store`) for returning all group paths in the store.
 
 ### Using `.^`
-The first argument to `.^` is a mold used to cast the response. For `y` queries, this should be `arch`. For `x` ones, you generally put mark `noun` at the end of the path, and then cast with a mold that you know will work for the data inside the produced `vase`. We'll see examples of how to figure this out below.
+The first argument to `.^` is a mold used to cast the response. For `y` queries, this will usually be `arch`. For `x` ones, you generally put mark `noun` at the end of the path, and then cast with a mold that you know will work for the data inside the produced `vase`. We'll see examples of how to figure this out below.
 
 ### Example Dojo Queries
 Since some of these queries are sent to `%group-store`, we need to add a dummy group so that they'll return data:
