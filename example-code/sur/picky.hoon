@@ -1,0 +1,6 @@
+|%
++$  action
+  $%  [%load-chats ~]
+      [%dummy ~]
+  ==
+--
