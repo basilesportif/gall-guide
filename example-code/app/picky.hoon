@@ -1,7 +1,7 @@
 ::  picky.hoon
 ::  chat admin dashboard backend
 ::
-/-  picky, md=metadata-store
+/-  picky, md=metadata-store, store=chat-store
 /+  dbug, default-agent, group-lib=group
 |%
 +$  versioned-state
@@ -52,8 +52,9 @@
     ^-  (quip card _state)
     ?-    -.action
         %load-chats
-      ~&  >>  my-chats:hc
+      ~&  >>  (~(run by my-chats:hc) |=(rs=(set md-resource:md) (~(run in rs) scry-mailbox:hc)))
       `state
+      ::
         %dummy
       `state
     ==
@@ -68,18 +69,22 @@
 --
 |_  =bowl:gall
 +*  grp  ~(. group-lib bowl)
-+$  group-info
++$  group-apps
   [group-path:md (list md-resource:md)]
 ++  my-chats
-  =/  my-groups=(list group-info)
+  ^-  (jug group-path:md md-resource:md)
+  =/  my-groups=(list group-apps)
     (skim groups-metadata is-my-group)
-  =/  with-chats=(list group-info)
+  =/  only-chats=(list group-apps)
     %+  skim
       (turn my-groups yank-chats)
       has-chat
-  with-chats
+  %-  ~(gas by *(jug group-path:md md-resource:md))
+    %+  turn  only-chats
+    |=  gi=group-apps
+    [-.gi (sy +.gi)]
 ++  is-my-group
-  |=  gi=group-info
+  |=  gi=group-apps
   ?&
     ?=([%ship @ *] -.gi)
     =(i.t.-.gi (scot %p our.bowl))
@@ -88,14 +93,14 @@
   |=  rs=md-resource:md
   =(app-name.rs %chat)
 ++  has-chat
-  |=  gi=group-info
+  |=  gi=group-apps
   ?~(+.gi %.n %.y)
 ++  yank-chats
-  |=  gi=group-info
-  ^-  group-info
+  |=  gi=group-apps
+  ^-  group-apps
   [-.gi (skim +.gi is-chat)]
 ++  groups-metadata
-  ^-  (list group-info)
+  ^-  (list group-apps)
   %-  denest-groups
   .^
     (jug group-path:md md-resource:md)
@@ -107,9 +112,20 @@
   ==
 ++  denest-groups
   |=  ginfo=(jug group-path:md md-resource:md)
-  ^-  (list group-info)
+  ^-  (list group-apps)
   %~  tap  by
   %-  ~(run by ginfo)
     |=  ms=(set md-resource:md)
   ~(tap in ms)
+++  scry-mailbox
+  |=  r=md-resource:md
+  .^
+    (unit mailbox:store)
+    %gx
+    (scot %p our.bowl)
+    %chat-store
+    (scot %da now.bowl)
+    %mailbox
+    (snoc `path`app-path.r %noun)
+  ==
 --
