@@ -13,6 +13,14 @@
     ==
 ::
 +$  card  card:agent:gall
++$  chat-path  path
++$  user-summary
+  $:  msgs=(list envelope:store)
+      num-week=@
+      num-month=@
+  ==
++$  chat-summary
+  [=chat-path length=@ activity=(map ship user-summary)]
 ::
 --
 %-  agent:dbug
@@ -52,7 +60,10 @@
     ^-  (quip card _state)
     ?-    -.action
         %load-chats
-      ~&  >>  (~(run by my-chats:hc) |=(rs=(set md-resource:md) (~(run in rs) scry-mailbox:hc)))
+      =/  v
+        %-  ~(run by my-chats:hc)
+        |=  cs=(set chat-path)
+        (~(run in cs) |=([pax=chat-path] (stats:hc pax)))
       `state
       ::
         %dummy
@@ -72,29 +83,33 @@
 +$  group-apps
   [group-path:md (list md-resource:md)]
 ++  my-chats
-  ^-  (jug group-path:md md-resource:md)
+  ^-  (jug group-path:md chat-path)
   =/  my-groups=(list group-apps)
     (skim groups-metadata is-my-group)
   =/  only-chats=(list group-apps)
     %+  skim
       (turn my-groups yank-chats)
       has-chat
-  %-  ~(gas by *(jug group-path:md md-resource:md))
-    %+  turn  only-chats
-    |=  gi=group-apps
-    [-.gi (sy +.gi)]
+  %-  ~(gas by *(jug group-path:md chat-path))
+  %+  turn  only-chats
+    |=  ga=group-apps
+    [-.ga (sy (turn +.ga app-to-chat))]
 ++  is-my-group
-  |=  gi=group-apps
+  |=  ga=group-apps
   ?&
-    ?=([%ship @ *] -.gi)
-    =(i.t.-.gi (scot %p our.bowl))
+    ?=([%ship @ *] -.ga)
+    =(i.t.-.ga (scot %p our.bowl))
   ==
+++  app-to-chat
+  |=  r=md-resource:md
+  ^-  chat-path
+  app-path.r
 ++  is-chat
   |=  rs=md-resource:md
   =(app-name.rs %chat)
 ++  has-chat
-  |=  gi=group-apps
-  ?~(+.gi %.n %.y)
+  |=  ga=group-apps
+  ?~(+.ga %.n %.y)
 ++  yank-chats
   |=  gi=group-apps
   ^-  group-apps
@@ -118,7 +133,7 @@
     |=  ms=(set md-resource:md)
   ~(tap in ms)
 ++  scry-mailbox
-  |=  r=md-resource:md
+  |=  pax=chat-path
   .^
     (unit mailbox:store)
     %gx
@@ -126,6 +141,35 @@
     %chat-store
     (scot %da now.bowl)
     %mailbox
-    (snoc `path`app-path.r %noun)
+    (snoc `path`pax %noun)
   ==
+++  stats
+  |=  pax=chat-path
+  ^-  chat-summary
+  =/  m=(unit mailbox:store)
+    (scry-mailbox pax)
+  ?~  m  *chat-summary
+  :*  pax
+      length.config.u.m
+      (chat-activity envelopes.u.m)
+  ==
+++  after-date
+  |=  [interval=@dr d=@da]
+  (gte d (sub now.bowl interval))
+++  chat-activity
+  |=  es=(list envelope:store)
+  ^-  (map ship user-summary)
+  =/  msg-cutoff=@  20
+  =|  acc=(map ship user-summary)
+  |-
+  ?~  es  acc
+  =*  e  i.es
+  =/  us=user-summary
+    (~(gut by acc) author.e *user-summary)
+  =.  us
+    :*  ?:((lth (lent msgs.us) msg-cutoff) (snoc msgs.us e) msgs.us)
+        ?:((after-date ~d7 when.e) +(num-week.us) num-week.us)
+        ?:((after-date ~d30 when.e) +(num-month.us) num-month.us)
+    ==
+  $(es t.es, acc (~(put by acc) author.e us))
 --
