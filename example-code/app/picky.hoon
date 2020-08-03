@@ -1,8 +1,8 @@
 ::  picky.hoon
 ::  chat admin dashboard backend
 ::
-/-  picky, md=metadata-store, store=chat-store
-/+  dbug, default-agent, group-lib=group
+/-  *picky, md=metadata-store, store=chat-store, group
+/+  dbug, default-agent, group-lib=group, resource
 |%
 +$  versioned-state
     $%  state-0
@@ -13,14 +13,6 @@
     ==
 ::
 +$  card  card:agent:gall
-+$  chat-path  path
-+$  user-summary
-  $:  msgs=(list envelope:store)
-      num-week=@
-      num-month=@
-  ==
-+$  chat-summary
-  [=chat-path length=@ activity=(map ship user-summary)]
 ::
 --
 %-  agent:dbug
@@ -52,18 +44,15 @@
   =^  cards  state
   ?+    mark  (on-poke:def mark vase)
       %picky-action
-    (poke-action !<(action:picky vase))
+    (poke-action !<(action vase))
   ==
   [cards this]
   ++  poke-action
-    |=  =action:picky
+    |=  =action
     ^-  (quip card _state)
     ?-    -.action
         %load-chats
-      =/  v
-        %-  ~(run by my-chats:hc)
-        |=  cs=(set chat-path)
-        (~(run in cs) |=([pax=chat-path] (stats:hc pax)))
+      ~&  >>  groups-summary:hc
       `state
       ::
         %dummy
@@ -80,60 +69,47 @@
 --
 |_  =bowl:gall
 +*  grp  ~(. group-lib bowl)
-+$  group-apps
-  [group-path:md (list md-resource:md)]
-++  my-chats
-  ^-  (jug group-path:md chat-path)
-  =/  my-groups=(list group-apps)
-    (skim groups-metadata is-my-group)
-  =/  only-chats=(list group-apps)
-    %+  skim
-      (turn my-groups yank-chats)
-      has-chat
-  %-  ~(gas by *(jug group-path:md chat-path))
-  %+  turn  only-chats
-    |=  ga=group-apps
-    [-.ga (sy (turn +.ga app-to-chat))]
-++  is-my-group
-  |=  ga=group-apps
-  ?&
-    ?=([%ship @ *] -.ga)
-    =(i.t.-.ga (scot %p our.bowl))
-  ==
-++  app-to-chat
-  |=  r=md-resource:md
-  ^-  chat-path
-  app-path.r
-++  is-chat
-  |=  rs=md-resource:md
-  =(app-name.rs %chat)
-++  has-chat
-  |=  ga=group-apps
-  ?~(+.ga %.n %.y)
-++  yank-chats
-  |=  gi=group-apps
-  ^-  group-apps
-  [-.gi (skim +.gi is-chat)]
-++  groups-metadata
-  ^-  (list group-apps)
-  %-  denest-groups
-  .^
-    (jug group-path:md md-resource:md)
-    %gy
-    (scot %p our.bowl)
-    %metadata-store
-    (scot %da now.bowl)
-    /group-indices
-  ==
-++  denest-groups
-  |=  ginfo=(jug group-path:md md-resource:md)
-  ^-  (list group-apps)
-  %~  tap  by
-  %-  ~(run by ginfo)
-    |=  ms=(set md-resource:md)
-  ~(tap in ms)
+++  groups-summary
+  ^-  group-summaries
+  =/  xs=(list [gp=group-path:md cp=app-path:md])
+    my-group-chats
+  =|  gs=group-summaries
+  |-
+  ?~  xs  gs
+  =/  rid=resource
+    (de-path:resource gp.i.xs)
+  =*  chat-path  cp.i.xs
+  =/  m=(unit mailbox:store)
+    (scry-mailbox chat-path)
+  ?~  m  $(xs t.xs)
+  =/  g=(unit group:group)
+    (scry-group:grp rid)
+  ?~  g  $(xs t.xs)
+  =/  =group-summary
+    ?:  (~(has by gs) rid)
+      (~(got by gs) rid)
+    (init-group-summary u.g)
+  =.  chats.group-summary
+    (~(put in chats.group-summary) chat-path)
+  =.  stats.group-summary
+    (calc-stats stats.group-summary envelopes.u.m)
+  $(xs t.xs, gs (~(put by gs) rid group-summary))
+++  init-group-summary
+  |=  [g=group:group]
+  ^-  group-summary
+  :-  *(set path)
+  %-  malt
+  %+  turn  ~(tap in (all-members g))
+  |=(user=ship [user *user-summary])
+::  includes admins members to handle DM case
+::
+++  all-members
+  |=  g=group:group
+  =/  admins=(set ship)
+    (~(gut by tags.g) %admin *(set ship))
+  (~(uni in admins) members.g)
 ++  scry-mailbox
-  |=  pax=chat-path
+  |=  pax=path
   .^
     (unit mailbox:store)
     %gx
@@ -143,33 +119,47 @@
     %mailbox
     (snoc `path`pax %noun)
   ==
-++  stats
-  |=  pax=chat-path
-  ^-  chat-summary
-  =/  m=(unit mailbox:store)
-    (scry-mailbox pax)
-  ?~  m  *chat-summary
-  :*  pax
-      length.config.u.m
-      (chat-activity envelopes.u.m)
-  ==
+++  calc-stats
+  |=  [stats=(map ship user-summary) es=(list envelope:store)]
+  ^-  (map ship user-summary)
+  |-
+  ?~  es  stats
+  ?.  (~(has by stats) author.i.es)
+    $(es t.es)
+  ?.  (after-date ~d30 when.i.es)
+    stats
+  =/  us=user-summary
+    (~(got by stats) author.i.es)
+  =.  stats
+    %+  ~(put by stats)
+      author.i.es
+    :*  ?:((after-date ~d7 when.i.es) +(num-week.us) num-week.us)
+        +(num-month.us)
+    ==
+  $(es t.es)
 ++  after-date
   |=  [interval=@dr d=@da]
   (gte d (sub now.bowl interval))
-++  chat-activity
-  |=  es=(list envelope:store)
-  ^-  (map ship user-summary)
-  =/  msg-cutoff=@  20
-  =|  acc=(map ship user-summary)
-  |-
-  ?~  es  acc
-  =*  e  i.es
-  =/  us=user-summary
-    (~(gut by acc) author.e *user-summary)
-  =.  us
-    :*  ?:((lth (lent msgs.us) msg-cutoff) (snoc msgs.us e) msgs.us)
-        ?:((after-date ~d7 when.e) +(num-week.us) num-week.us)
-        ?:((after-date ~d30 when.e) +(num-month.us) num-month.us)
-    ==
-  $(es t.es, acc (~(put by acc) author.e us))
+++  is-my-group
+  |=  gp=group-path:md
+  ?&
+    ?=([%ship @ @ ~] gp)
+    =(i.t.gp (scot %p our.bowl))
+  ==
+++  my-group-chats
+  ^-  (list [group-path:md app-path:md])
+  =/  xs=(list [group-path:md app-path:md])
+    %~  tap  in
+    =/  ai=(jug app-name:md [group-path:md app-path:md])
+      .^
+       (jug app-name:md [group-path:md app-path:md])
+       %gy
+       (scot %p our.bowl)
+       %metadata-store
+       (scot %da now.bowl)
+       /app-indices
+      ==
+    (~(gut by ai) %chat *(set [group-path:md app-path:md]))
+  %+  skim  xs
+  |=([g=group-path:md *] (is-my-group g))
 --
