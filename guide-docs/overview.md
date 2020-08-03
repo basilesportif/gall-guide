@@ -7,7 +7,7 @@ This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101
 
 ## Table of Contents
 
-### Backend Foundation
+### Backend Foundation (Gall 101)
 * [Workflow Setup](workflow.md)
 * [The 10 Arms of Gaal: App Structure](arms.md)
 * [App Lifecycle and State](lifecycle.md)
@@ -15,17 +15,13 @@ This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101
 * [Talk to Ships: poke, watch and Marks](poke.md)
 * [HTTP & Static Files](http.md)
 * [Call from Outside: JSON & channel.js](chanel.md)
-
-### Frontend with React
-* [Landscape: GUI for Gall](landscape.md)
-* [Walkthrough: Landscape Skeleton]()
-* [Communicating with Landscape (Pokes & Subscriptions)]()
-* [Everything about React for Landscape]()
-
-### More Backend
 * [scry & on-peek](scry.md)
-* [backy: a Program to Call the Arvo OS](backy.md)
+
+### Putting It All Together (Gall 201)
+* [picky: Chat Admin Dashboard]
+* [Add a Frontend: Using React]
 * [Store/Hook/View](ghooks.md)
+* [backy: a Program to Call the Arvo OS](backy.md)
 
 ### Appendix
 * [Tips & Tricks](tips.md)
