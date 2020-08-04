@@ -7,9 +7,7 @@
     $%  state-0
     ==
 ::
-+$  state-0
-    $:  [%0 counter=@]
-    ==
++$  state-0  [%0 counter=@]
 ::
 +$  card  card:agent:gall
 ::
