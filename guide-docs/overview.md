@@ -18,7 +18,7 @@ This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101
 * [scry & on-peek](scry.md)
 
 ### Putting It All Together (Gall 201)
-* [picky: Chat Admin Dashboard]
+* [picky backend: Chat Admin Dashboard](picky_backend.md)
 * [Add a Frontend: Using React]
 * [Store/Hook/View](ghooks.md)
 * [backy: a Program to Call the Arvo OS](backy.md)
