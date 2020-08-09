@@ -22,6 +22,7 @@ This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101
 * [Add a Frontend: Using React]
 * [Store/Hook/View](ghooks.md)
 * [backy: a Program to Call the Arvo OS](backy.md)
+* [Generators in Gall]
 
 ### Appendix
 * [Tips & Tricks](tips.md)

@@ -1,7 +1,9 @@
 # picky backend: Chat Admin Dashboard
 
 ## Example Code
-`picky-backend.hoon`
+* `/app/picky-backend.hoon`
+* `/sur/picky-backend.hoon`
+* `/mar/picky/action.hoon`
 
 ## Our Data Model
 
