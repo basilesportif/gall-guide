@@ -11,7 +11,7 @@ Below is a completely valid but *very* simple Gall program. You don't need to un
 +$  versioned-state
     $%  state-0
     ==
-+$  state-0  [%0 counter=@]
++$  state-0  [%1 counter=@]
 --
 %-  agent:dbug
 =|  state-0
@@ -28,10 +28,10 @@ Below is a completely valid but *very* simple Gall program. You don't need to un
   ^-  vase
   !>(state)
 ++  on-load
-  |=  old-state=vase
   ~&  >  'on-load'
-  `this
+  on-load:default
 ++  on-poke  on-poke:default
+::
 ++  on-watch  on-watch:default
 ++  on-leave  on-leave:default
 ++  on-peek   on-peek:default
