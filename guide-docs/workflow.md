@@ -79,7 +79,7 @@ There are 3 primary workflows we can use to handle this issue.
 3. Use the `create-landscape-app` scripts to watch your project and sync files to your pier
 
 ### Edit Files Directly in Your Pier
-This will be familiar to anyone who has written simple Hoon generators. You write the code, commit it, and then run it. Unfortunately, this makes it tricky to put our code in version control and to save it even when we make a new `~zod`. I usually use this 
+This will be familiar to anyone who has written simple Hoon generators. You write the code, commit it, and then run it. Unfortunately, this makes it tricky to put our code in version control and to save it even when we make a new `~zod`. I usually use this for really quick, one-off changes.
 
 ### Create a Separate Folder/Project
 If you are writing a Gall app without a frontend (for example, a web server), you can create a separate folder somewhere in your filesystem, edit files and track changes there, and then copy them to your pier.

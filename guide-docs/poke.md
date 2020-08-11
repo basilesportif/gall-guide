@@ -124,7 +124,7 @@ When you send a `%poke` or `%watch`, your agent also gets a `%poke-ack` or `%wat
 ```
 `wire` is a path that is used mainly for `watch` and subscriptions. I set it as `/poke-wire` here, but we could have used anything. Usually you won't need or want to handle the `%poke-ack`--this is just for demonstration of all the possibilities.
 
-It's considered best practice to switch first on the wire, and then on the sign (see [here in B3 for discussion](https://urbit.org/blog/precepts-discussion)).  So we switch on the wire, match `[%pokepath ~]`, and then match when the head of `sign` is `%poke-ack**.
+It's considered best practice to switch first on the wire, and then on the sign (see [here in B3 for discussion](https://urbit.org/blog/precepts-discussion)).  So we switch on the wire, match `[%pokepath ~]`, and then match when the head of `sign` is `%poke-ack`.
 
 
 ## Custom Marks for Poke
