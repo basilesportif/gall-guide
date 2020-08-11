@@ -13,9 +13,9 @@ This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101
 * [App Lifecycle and State](lifecycle.md)
 * [Importing Code and Static Resources](ford.md)
 * [Talk to Ships: poke, watch and Marks](poke.md)
+* [scry & on-peek](scry.md)
 * [HTTP & Static Files](http.md)
 * [Call from Outside: JSON & channel.js](chanel.md)
-* [scry & on-peek](scry.md)
 
 ### Putting It All Together (Gall 201)
 * [picky backend: Chat Admin Dashboard](picky_backend.md)
@@ -72,6 +72,9 @@ Gall apps are for when you want a longer running service, more like a daemon in 
 
 ## What Do I Need to Know?
 To write Gall programs, you need a decent understanding of Hoon. To write Gall programs that use Landscape, you need to know Javascript. For the JS part, we'll go over in a lot of detail, so that even if you haven't seen much React, you'll be able to follow along.
+
+## Creating a Real Application
+Over the course of the "Backend Foundation" series, we will create the backend for a group chat admin app, `picky` that allows monitoring and management of users in all chats you are an owner or admin of. In each lesson, the exercises will build on each other to progressively create the application.
 
 ## Final Notes
 Throughout this guide, I generally use "prose" explanations. When a certain section is very code-heavy (such as breaking down all pieces of a type), I put the whole thing in a code block and use comments (`::`) to explain.

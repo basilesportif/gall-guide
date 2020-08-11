@@ -74,7 +74,7 @@ The install and editing process shown above will always be the same. However, if
 
 There are 3 primary workflows we can use to handle this issue.
 
-1. YOLO: edit files directly in your mounted pier
+1. Edit files directly in your mounted pier
 2. Create a separate folder, edit files there, and copy them to your pier
 3. Use the `create-landscape-app` scripts to watch your project and sync files to your pier
 
@@ -88,6 +88,8 @@ This can be done at the command line like so:
 ```
 cp -r your_code_directory/* your_pier_directory/app/
 ```
+
+You can also use a [script like this one](https://github.com/timlucmiptev/gall-guide/blob/master/example-code/sync.sh) to copy all Gall directories to your pier.
 
 ### Use `create-landscape-app` to Sync Files to Your Pier
 Once we begin creating Landscape apps, we will able to use `create-landscape-app` to monitor our JS and Hoon files, and copy them to our ship as they're updated.
@@ -107,21 +109,39 @@ Since Gall apps communicate between ships, it's sometimes useful in testing to m
 > ./urbit -F zod
 
 # in another terminal window:
-> ./urbit -F timluc
+> ./urbit -F bus
 ```
-In the example above, `~zod` and `~timluc` can now see each other. We'll use this extensively starting in the [poke and watch lesson](poke.md).
+In the example above, `~zod` and `~bus` can now see each other. We'll use this extensively starting in the [poke and watch lesson](poke.md).
+
+## `-L` Ships
+Sometimes you want your development ships to have large datasets, such as the data in a real ship of yours. In these cases, the best option is to run a real ship with the `-L** command line flag, which turns off its networking so that you can do dangerous operations and then delete the ship when you're done.
+
+**Be careful with `-L` ships!**. If you don't follow the steps below (particulary copying the "real" directory or starting with the -L flag), you could have to breach.
+
+To run an `-L` ship, do the following steps:
+1. copy your existing ship's folder to a new folder, e.g.: `cp -r ~/ships/timluc-miptev ./fake-timluc`
+2. run like so: `./urbit -L fake-timluc`
+
+I generally use a secondary real planet for my `-L` ship: it has real data, but I'm not as scared to breach if I mess something up.
 
 ## Which Editor to Use?
 Any text editor/IDE is fine for Hoon. VSCode has support for Hoon syntax highlighting, if you want that. I generally keep a console with my Dojo open vertically next to my code, so that my editor takes up half the screen, and the console half the screen. This works well with Hoon's vertically-oriented syntax.
 
 ## Our Approach
-In the introductory documents here, we will use approach (1) (editing files directly in your pier). Once we get to the section on landscape apps, we will use those scripts. If you wish to create a separate directory for your files throughout this and use approach (2), that is totally fine and up to you. Just remember to copy them to your pier and commit each time you save.
+In the Backend Foundation, we will generally use approach (2), and copy our files into a pier as we edit them.
 
 ## Workflow Summary for Gall
 * Have a fake `~zod` running
 * Mount it to your Linux/Mac
 * get your file with Gall code into `app`, commit, and run `|start %YOURAPPNAME`
 * every time you edit, make sure your new file ends up in `app` and that you commit.
+
+## Exercises
+### Getting Familiar
+1. Make a new project with one directory, `/app`, and create an install script (or modify `sync.sh` above) so that you can copy the contents of `/app` to the `/app` directory in a pier of your choice.
+
+### First Steps for `picky`
+2. On a real planet, make sure that 
 
 
 [Home](overview.md) | [Next: The 10 Arms of Gaal: App Structure](arms.md)

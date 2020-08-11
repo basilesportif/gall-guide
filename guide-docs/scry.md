@@ -205,3 +205,5 @@ Even more importantly, you learned how to use `.^` to scry any Gall agent that e
   - `publish.hoon`
   - `launch.hoon`
   - `metadata-store.hoon`
+
+[Prev: Talk to Ships: poke, watch, and marks](poke.md) | [Home](overview.md) | [Next: HTTP and Static Files)](http.md)

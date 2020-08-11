@@ -344,4 +344,4 @@ When you see lines like this to run at the Dojo, bet they make a lot more sense 
 :file-server &file-server-action [%serve-dir /example-path /app/example %.y]
 ```
 
-[Prev: Importing Code & Static Resources](ford.md) | [Home](overview.md) | [Next: HTTP and Static Files)](http.md)
+[Prev: Importing Code & Static Resources](ford.md) | [Home](overview.md) | [Next: scry & on-peek)](scry.md)

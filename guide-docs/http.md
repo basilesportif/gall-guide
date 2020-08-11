@@ -246,4 +246,4 @@ We also saw how we can serve generators for simple data output.
 2. TODO: `file-server` code analysis
 
 
-[Prev: Talk to Ships: Poke & Watch](poke.md) | [Home](overview.md) | [Next: JSON & channel.js)](chanel.md)
+[Prev: scry & on-peek)](scry.md) | [Home](overview.md) | [Next: JSON & channel.js)](chanel.md)
