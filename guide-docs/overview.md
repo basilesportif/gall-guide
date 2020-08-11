@@ -12,7 +12,7 @@ This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101
 * [The 10 Arms of Gaal: App Structure](arms.md)
 * [App Lifecycle and State](lifecycle.md)
 * [Importing Code and Static Resources](ford.md)
-* [Talk to Ships: poke, watch and Marks](poke.md)
+* [Talk to Ships: poke, watch and marks](poke.md)
 * [scry & on-peek](scry.md)
 * [HTTP & Static Files](http.md)
 * [Call from Outside: JSON & channel.js](chanel.md)
