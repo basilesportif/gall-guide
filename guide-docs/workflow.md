@@ -6,27 +6,32 @@ I'll assume throughout this that we are using the `%home` desk in a fake `~zod`.
 ## Example Code
 Below is a completely valid but *very* simple Gall program. You don't need to understand it yet: this lesson is purely about our development workflow.
 ```
-/+  default-agent
+/+  default-agent, dbug
+|%
++$  versioned-state
+    $%  state-0
+    ==
++$  state-0  [%0 counter=@]
+--
+%-  agent:dbug
+=|  state-0
+=*  state  -
 ^-  agent:gall
-=|  state=@
 |_  =bowl:gall
-+*  this      .
++*  this     .
     default   ~(. (default-agent this %|) bowl)
 ::
-++  on-init   
-  ~&  >  'on-init'
-  on-init:default
-++  on-save   on-save:default
-++  on-load   
+++  on-init
+~&  >  'on-init'
+  `this(state [%1 3])
+++  on-save
+  ^-  vase
+  !>(state)
+++  on-load
+  |=  old-state=vase
   ~&  >  'on-load'
-  on-load:default
-++  on-poke
-  |=  [=mark =vase]
-  ~&  >  state=state
-  ~&  got-poked-with-data=mark
-  =.  state  +(state)
   `this
-::
+++  on-poke  on-poke:default
 ++  on-watch  on-watch:default
 ++  on-leave  on-leave:default
 ++  on-peek   on-peek:default
@@ -40,18 +45,18 @@ Below is a completely valid but *very* simple Gall program. You don't need to un
 To install a new program in Gall, you simply tell Gall its name with the `|start` command, and Gall will look for a Hoon file with that name in the `/app` directory. 
 
 ### Install
-To see this, create a Hoon file called `my-gall-program.hoon` in the `/app` directory of your pier (e.g. `home/app/my-gall-program.hoon`) and paste the code above into it. Run the commands:
+To see this, create a Hoon file called `workflow.hoon` in the `/app` directory of your pier (e.g. `zod/home/app/workflow.hoon`) and paste the code above into it. Run the commands:
 ```
 |commit %home
-|start %my-gall-program
+|start %workflow
 ```
 You will see the output:
 ```
 >   'on-init'
 > 
 >=
-activated app home/my-gall-program
-[unlinked from [p=~zod q=%my-gall-program]]
+activated app home/workflow
+[unlinked from [p=~zod q=%workflow]]
 ```
 
 ### Edit
@@ -63,11 +68,19 @@ Run `|commit %home`, and you should see:
 ```
 > |commit %home
 >=
-: /~zod/home/12/app/my-gall-program/hoon
+: /~zod/home/12/app/workflow/hoon
 >   'I just loaded'
 ```
 
 So we see here that once Gall has `start`ed an app, it auto-reloads it whenever a new version of that program is committed. We'll go more into this in the [lifecycle lesson](lifecycle.md)
+
+## Using `dbug`
+In line 2 of the code, we see `%-  agent:dbug`. We'll explain how this works in [the next lesson](arms.md), but for now, just know that it lets us run `:workflow +dbug` in the Dojo, and see the state of the agent.  `dbug` determines the state using the return value of our `on-save` arm.
+
+```
+> :workflow +dbug
+::  prints:  [%0 counter=3]
+```
 
 ## Three Workflow Options
 The install and editing process shown above will always be the same. However, if we simply develop apps in our pier, we have to take care not to lose them if we start up a new `~zod` for development. 
@@ -138,10 +151,11 @@ In the Backend Foundation, we will generally use approach (2), and copy our file
 
 ## Exercises
 ### Getting Familiar
-1. Make a new project with one directory, `/app`, and create an install script (or modify `sync.sh` above) so that you can copy the contents of `/app` to the `/app` directory in a pier of your choice.
+* Make a new project with one directory, `/app`, and create an install script (or modify `sync.sh` above) so that you can copy the contents of `/app` to the `/app` directory in a pier of your choice.
 
 ### First Steps for `picky`
-2. On a real planet, make sure that 
-
+* On a real planet, make sure that you have a group with at least two chats and a couple members of which you are an owner or an admin.
+  - copy that ship's pier to a separate directory as `fake-ship` or similar
+  - make sure you can run it with `./urbit -L fake-ship`
 
 [Home](overview.md) | [Next: The 10 Arms of Gaal: App Structure](arms.md)

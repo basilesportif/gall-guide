@@ -121,11 +121,19 @@ If you type `|start %dbug` at the Dojo, you'll be able to browse to `yourshipurl
 ## Summary
 You've now seen all the pieces that make up a complete Gall app, with a conceptual overview of the kinds of things that each of the arms handle. If this seems overwhelming, **don't panic**. I'll take you through each part of this program structure in great detail in the upcoming lessons.
 
-## Exercise
+## Exercises
+### Code Reading
 In your pier, browse to the `/app/` directory. Open up 4 random files there. See if you can find:
 * the Ford imports
 * the state definition
 * the 10 agent arms
-* the helper core
+* a helper core, if one exists
+
+TODO: Explanations 
+- explain what is happening in dbug and pull-hook
+- walk through Gall type source in `zuse.hoon`
+
+### `picky`
+- explain what each arm will probably do in it and what information it will need access to
 
 [Previous: Workflow](workflow.md) | [Home](overview.md) | [Next: App Lifecycle and State](lifecycle.md)
