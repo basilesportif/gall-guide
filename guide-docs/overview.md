@@ -30,7 +30,7 @@ This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101
 * [Types Used in Gall Apps](appendix_types.md)
 
 ## What Is Gall?
-Gall is a progrfam (OS kernel or "vane") that runs in the background on Urbit's operating system, Arvo. It manages most of the programs you think of as Urbit's apps. 
+Gall is a program (OS kernel or "vane") that runs in the background on Urbit's operating system, Arvo. It manages most of the programs you think of as Urbit's apps. 
 
 ### Platforms, Not Just Applications
 
@@ -61,7 +61,7 @@ You probably have written generators when learning Hoon. Generators are awesome!
 Generators are used to process data. They take in some simple input, like an argument or the current state of your ship, and return a value based on that. They're similar to command-line utilities in Unix.
 
 ### Gall
-Gall apps are for when you want a longer running service, more like a daemon in aUnix, something that's always running in the background, waiting for messages. Typical use cases:
+Gall apps are for when you want a longer running service, more like a daemon in Unix, something that's always running in the background, waiting for messages. Typical use cases:
 * HTTP handling
 * Work with the OS
 * Long-running application on your ship

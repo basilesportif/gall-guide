@@ -11,7 +11,7 @@ Below is a completely valid but *very* simple Gall program. You don't need to un
 +$  versioned-state
     $%  state-0
     ==
-+$  state-0  [%1 counter=@]
++$  state-0  [%0 counter=@]
 --
 %-  agent:dbug
 =|  state-0
@@ -23,7 +23,7 @@ Below is a completely valid but *very* simple Gall program. You don't need to un
 ::
 ++  on-init
 ~&  >  'on-init'
-  `this(state [%1 3])
+  `this(state [%0 3])
 ++  on-save
   ^-  vase
   !>(state)
