@@ -123,6 +123,10 @@ Since Gall apps communicate between ships, it's sometimes useful in testing to m
 
 # in another terminal window:
 > ./urbit -F bus
+
+::  In ~zod's Dojo, run
+> |hi ~bus
+::  you should see the hi confirmed
 ```
 In the example above, `~zod` and `~bus` can now see each other. We'll use this extensively starting in the [poke and watch lesson](poke.md).
 
@@ -154,7 +158,7 @@ In the Backend Foundation, we will generally use approach (2), and copy our file
 * Make a new project with one directory, `/app`, and create an install script (or modify `sync.sh` above) so that you can copy the contents of `/app` to the `/app` directory in a pier of your choice.
 
 ### First Steps for `picky`
-* On a real planet, make sure that you have a group with at least two chats and a couple members of which you are an owner or an admin.
+* On a real planet, make sure that you have a group with at least two chats and a couple members. You should be an owner or an admin or a group.
   - copy that ship's pier to a separate directory as `fake-ship` or similar
   - make sure you can run it with `./urbit -L fake-ship`
 

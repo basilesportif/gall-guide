@@ -3,7 +3,7 @@
 +$  versioned-state
     $%  state-0
     ==
-+$  state-0  [%0 counter=tape]
++$  state-0  [%0 counter=@]
 --
 %-  agent:dbug
 =|  state-0
@@ -11,20 +11,18 @@
 ^-  agent:gall
 |_  =bowl:gall
 +*  this     .
-    default  ~(. (default-agent this %.n) bowl)
+    default  ~(. (default-agent this %|) bowl)
 ::
 ++  on-init
   ~&  >  'on-init'
-  `this(state [%0 "skl"])
+  `this(state [%0 3])
 ++  on-save
   ^-  vase
   !>(state)
 ++  on-load
-  ~&  >  '%workflow loaded'
-  ::  something that sets new state to old state
+  ~&  >  'on-load'
   on-load:default
 ++  on-poke  on-poke:default
-::
 ++  on-watch  on-watch:default
 ++  on-leave  on-leave:default
 ++  on-peek   on-peek:default
