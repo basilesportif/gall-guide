@@ -13,16 +13,17 @@ We will modify the below code throughout the lesson. Paste it into a file in `ap
 /+  default-agen, dbug
 |%
 +$  versioned-state
-  $%  state-zero
+  $%  state-0
   ==
 ::
-+$  state-zero  [%0 val=@]
++$  state-0  [%0 val=@]
 ::
 +$  card  card:agent:gall
 ::
 --
 %-  agent:dbug
-=|  state=versioned-state
+=|  state-0
+=*  state  -
 ^-  agent:gall
 |_  =bowl:gall
 +*  this      .
@@ -454,6 +455,9 @@ We can print `bowl` for this app by entering at the Dojo:
   byk=[p=~zod q=%home r=[%da p=~2020.6.18..14.50.06..5bec]]
 ]
 ```
+
+## A Note on `on-save`
+`on-save` is mostly used by Gall itself to transition between state versions. However, it's also used by `dbug` to get the current state of the app wrapped by `dbug`. This is possible because `dbug` takes an `agent:gall` itself as an argument, so it has access to calling all of that `agent`'s arms.
 
 ## Summary: Full Gall Compilation Lifecycle
 We're now ready to explicitly state Gall's compiliation lifecycle.

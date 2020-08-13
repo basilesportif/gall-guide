@@ -35,6 +35,7 @@ Some arms take and return simple data types, but Gall also has a few key input a
 ### wire & path
 `wire` and `path` are the same type: a list of terms. A leading `/` is syntactic sugar for a list of terms.
 ```
+
 :: the below two lines are identical
 /this/is/a/path
 [%this %is %a %path ~]
@@ -118,10 +119,15 @@ Near the top of the file, you'll see the line `%-  agent:dbug`. This wraps our p
 
 If you type `|start %dbug` at the Dojo, you'll be able to browse to `yourshipurl/~debug` and see the current state of every app in the ship that uses `dbug`.
 
+How does this work? If you look at `/lib/dbug/hoon`, you'll see that its `agent` arm simply takes a Gall agent as the sample. Then it creates an `ag` alias that gives its bowl to that agent.  At the top of `on-poke`, we test whether the incoming mark is `%dbug`. If it's not, then it just forwards the `[mark vase]` sample to the agent. If it is, it does `dbug` stuff to print the agent's state.
+
+Because `dbug` takes the `agent` as an argument, it can call any of that `agent`'s arms. It calls them either to provide default behavior, or to get the agent's state using `on-save`.
+
 ## Summary
 You've now seen all the pieces that make up a complete Gall app, with a conceptual overview of the kinds of things that each of the arms handle. If this seems overwhelming, **don't panic**. I'll take you through each part of this program structure in great detail in the upcoming lessons.
 
 ## Exercises
+
 ### Code Reading
 In your pier, browse to the `/app/` directory. Open up 4 random files there. See if you can find:
 * the Ford imports
@@ -133,7 +139,8 @@ TODO: Explanations
 - explain what is happening in dbug and pull-hook
 - walk through Gall type source in `zuse.hoon`
 
-### `picky`
+### `picky` Implementation
+- describe all the features that an app will need
 - explain what each arm will probably do in it and what information it will need access to
 
 [Previous: Workflow](workflow.md) | [Home](overview.md) | [Next: App Lifecycle and State](lifecycle.md)

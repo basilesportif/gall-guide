@@ -1,16 +1,17 @@
 /+  default-agent, dbug
 |%
 +$  versioned-state
-  $%  state-zero
+  $%  state-0
   ==
 ::
-+$  state-zero  [%0 val=@]
++$  state-0  [%0 val=@]
 ::
 +$  card  card:agent:gall
 ::
 --
 %-  agent:dbug
-=|  state=versioned-state
+=|  state-0
+=*  state  -
 ^-  agent:gall
 |_  =bowl:gall
 +*  this      .
