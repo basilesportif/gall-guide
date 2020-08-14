@@ -338,6 +338,14 @@ Poking and subscribing have a lot of combinations and variants, and we've played
 * Gall handles most of the ceremony around subscribing and unsubscribing. Write new logic as your program needs it, but let the default handlers do the rest for `on-watch`, `on-agent`, and `on-leave`.
 * To figure out what a subscription does, search the source file for any `[%give %fact ...]` lines, since that's where it will send information out on various paths.
 
+### Only Allow Own `poke`s
+You'll see lines like this in the top of most `on-poke`s:
+```
+?>  (team:title [our src]:bowl)
+
+```
+This checks that the poker is either our own ship or one of its moons. We didn't use it in this lesson, because we wanted to demonstrate poking from other ships, but this is best practice for agents that don't want to expose all their poking functionality to outsiders.
+
 ## Bonus Knowledge
 When you see lines like this to run at the Dojo, bet they make a lot more sense now, right? Gall all the way down.
 ```
