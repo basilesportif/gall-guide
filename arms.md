@@ -135,6 +135,8 @@ In your pier, browse to the `/app/` directory. Open up 4 random files there. See
 * the 10 agent arms
 * a helper core, if one exists
 
+Submit the line numbers in each file for each part.
+
 ### `picky` Implementation
 - List all the features that a group chat admin app will need
 - For each feature, map it to one or more arms.
