@@ -147,8 +147,4 @@ To do a chat-admin app, you need to get data from 3 Gall agents:
 - For each feature, map it to one or more arms.
 - Spec out what data the app will need to store internally and what it will need to get from each external data source.
 
-TODO: Explanations 
-- explain what is happening in dbug and pull-hook
-- walk through Gall type source in `zuse.hoon`
-
 [Previous: Workflow](workflow.md) | [Home](overview.md) | [Next: App Lifecycle and State](lifecycle.md)
