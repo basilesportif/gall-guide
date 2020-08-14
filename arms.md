@@ -138,9 +138,14 @@ In your pier, browse to the `/app/` directory. Open up 4 random files there. See
 Submit the line numbers in each file for each part.
 
 ### `picky` Implementation
+To do a chat-admin app, you need to get data from 3 Gall agents:
+1. `chat-store`, stores all messages for all chats a ship is a member of
+2. `group-store`, stores all members and admins of a group
+3. `metadata-store`, stores all group->chat mappings
+
 - List all the features that a group chat admin app will need
 - For each feature, map it to one or more arms.
-- Spec out what data the app will need to store internally
+- Spec out what data the app will need to store internally and what it will need to get from each external data source.
 
 TODO: Explanations 
 - explain what is happening in dbug and pull-hook
