@@ -92,7 +92,7 @@ Let's look at [the source for the publish agent (as of June 17, 2020)](https://g
 Here are links to where the pieces above are defined in it:
 1. [type imports](https://github.com/urbit/urbit/blob/08e1abb1396e9fe0673f5696260a9bcf18b2fa0f/pkg/arvo/app/publish.hoon#L1), [library imports](https://github.com/urbit/urbit/blob/08e1abb1396e9fe0673f5696260a9bcf18b2fa0f/pkg/arvo/app/publish.hoon#L11)
 2. [state type definitions](https://github.com/urbit/urbit/blob/e931a473dd52614304b50c2dcbfc31a16fc82542/pkg/arvo/app/publish.hoon) lines 19-44
-3. 
+3. dbug, line 62
 4. [alias definitions](https://github.com/urbit/urbit/blob/08e1abb1396e9fe0673f5696260a9bcf18b2fa0f/pkg/arvo/app/publish.hoon#L66)
 5. [arm definitions](https://github.com/urbit/urbit/blob/08e1abb1396e9fe0673f5696260a9bcf18b2fa0f/pkg/arvo/app/publish.hoon#L70) lines 70-517
 6. [helper core](https://github.com/urbit/urbit/blob/08e1abb1396e9fe0673f5696260a9bcf18b2fa0f/pkg/arvo/app/publish.hoon#L519)
