@@ -135,12 +135,13 @@ In your pier, browse to the `/app/` directory. Open up 4 random files there. See
 * the 10 agent arms
 * a helper core, if one exists
 
+### `picky` Implementation
+- List all the features that a group chat admin app will need
+- For each feature, map it to one or more arms.
+- Spec out what data the app will need to store internally
+
 TODO: Explanations 
 - explain what is happening in dbug and pull-hook
 - walk through Gall type source in `zuse.hoon`
-
-### `picky` Implementation
-- describe all the features that an app will need
-- explain what each arm will probably do in it and what information it will need access to
 
 [Previous: Workflow](workflow.md) | [Home](overview.md) | [Next: App Lifecycle and State](lifecycle.md)
