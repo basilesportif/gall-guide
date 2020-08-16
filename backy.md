@@ -40,7 +40,7 @@ We're now ready to see how `%backy` backs up our data.
 ## Behn Timers
 Requesting a Behn timer is very simple: you send a card to Behn and tell it what time you want it to ping you back. That's it. Note that the only guarantee is that the ping will happen some time *after* the time you pass, so don't use this for ultra-precise timing needs.
 
-We set our timer first in `on-init`, in line 37, which calls the `reset-timer` arm in our helper core (line 100).  That code saves the old timer, updates the timer interval to the passed value, and updates the timer to a time in the future: `now + interval`.
+We set our timer first in `on-init`, in line 32, which calls the `reset-timer` arm in our helper core (line 88).  That code saves the old timer, updates the timer interval to the passed value, and updates the timer to a time in the future: `now + interval`.
 
 Then in line 107, we check whether the `old-timer` is in the past (less than now). If so, we just pass a `card` to Behn (`start-timer`), and if not we send Behn a message to cancel and then to start.
 
@@ -73,7 +73,7 @@ And...that's it! You now know how to set and cancel Behn timers.  If you wanted 
 
 By doing our writes in this way, we've abstracted them out as simple `card`s passed to Arvo/Clay, which lets us combine them with other Arvo operations (like the Behn timer call in `on-arvo`). So let's look now at how our write `card`s are created.
 
-We'll start in line 150, where we see the final form of the `card` passed to Clay:
+We'll start in line 160, where we see the final form of the `card` passed to Clay:
 ```
 [%pass /write-users %arvo %c %info (foal:space:userlib pax cay)]
 ```
@@ -100,12 +100,15 @@ Example:
 ```
 In the above, Clay tries to find a path from `%noun` to `%txt`, which it can, because `mar/txt/hoon` has a `grab` arm for `noun`.
 
-In line 148, we make a cage marked `txt` (which stores its data as a `wain`), and our `path` also ends in `txt`, so no conversion is needed. However, line 148 could just as easily have been `noun+!>(lines)`, because there is a conversion path from `%noun` to `%txt`.
+In line 148, we make a cage marked `txt` (which stores its data as a `wain`), and our `path` also ends in `txt`, so no conversion is needed. However, line 158 could just as easily have been `noun+!>(lines)`, because there is a conversion path from `%noun` to `%txt`.
 
 (Note that we use the syntax `txt+!>(lines)` to mean `[%txt !>(lines)]`)
 
+#### Checking for a Resource in Clay
+In line 165, we use `(? %cu p)` to scry Clay for a path's existence.
+
 #### Reading Marked Data from Clay
-When Clay reads marked data, it uses the file extension mark (i.e. `/txt`) to choose the mark to `re-inflate` it with.
+When Clay reads marked data, it uses the file extension mark (i.e. `/txt`) to choose the mark to `re-inflate` it with.  In line 166, we know that our incoming path is a `txt` mark, so we use a `%cx` scry to read the path, and then cast to a `wain`, since `txt` mark inflate to `wain`.
 
 ### Turning `monitored` Groups into Write `card`s
 In line 127, we `run` the `group-info` gate on all members of the `monitored.state` `set`. `++group-info` produces `[path wain]`, i.e. a `path` we want to write to, and a `wain` of all the text lines we will write.
@@ -115,7 +118,7 @@ In `++group-info` we make a path based on the `resource`'s info, and then we `sc
 In line 128 we `turn` that list with gate `write-file`, which produces a Clay write `card` for each `path` and list of usernames (the `wain`). Then those Clay `card`s are passed back to Gall by `on-arvo` and `add-group`.
 
 ## Adding a Group
-This is very straightforward. We simply take an `%add-group` action `card` with a `resource`, add that `resource` to `monitored.state` in the `add-group` arm. In line 117 we scry `group-store` for the `resourc` and throw an error if it doesn't exist.
+This is very straightforward. We simply take an `%add-group` action `card` with a `resource`, add that `resource` to `monitored.state` in the `add-group` arm. In line 117 we scry `group-store` for the `resource` and throw an error if it doesn't exist.
 
 Finally, as seen in the prior section, we write all groups to Clay whenever a new group is added to monitoring
 
@@ -159,6 +162,6 @@ And these commands run operations within `%backy`:
 ## Summary
 If you've done any Unix sysadmin before, you'll recognize that this task would be a) maybe possible b) really annoying c) *very* unstructured. You'd need a chron job (have fun!), find out the configuration format for the group program running (likely a proprietary database), and then write some Bash scripts to wire it all together. Type-checking? Ha.
 
-`%backy` is about 150 lines long, but it's very clearly organized, all the messages it sends to itself and Arvo are typed, and it's very clean to modify.  We were also able to reuse and compose actions like `reset-timer` and `write-users` while being confident in their types.
+`%backy` is about 170 lines long, but it's very clearly organized, all the messages it sends to itself and Arvo are typed, and it's very clean to modify and extend.  We were also able to reuse and compose actions like `reset-timer` and `write-users` while being confident in their types.
 
 Gall fully supports [platforms, not applications](https://ngnghm.github.io/blog/2015/12/25/chapter-7-platforms-not-applications), and so enables entirely new, structured ways of interacting with other agents and the operating system.
