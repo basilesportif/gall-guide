@@ -345,6 +345,26 @@ To illustrate this, make the following modifications to the code:
 <td>
 
 ```
+:~
+  [%pass /bind %arvo %e %connect [~ /'~lifecycle'] %lifecycle]
+==
+```
+
+</td>
+
+<td>
+
+```
+~
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+```
 ~&  >  'on-save v1'
 ```
 
@@ -466,10 +486,31 @@ We're now ready to explicitly state Gall's compiliation lifecycle.
 3. Run `on-init` the first time it compiles successfully, and never again after that.
 4. For all other successful compilations, call the *previous* version of `on-save` and pass its output to the *current* version of `on-load`.
 
+Remember, the point of `on-init` is to get fresh installs of your app into the correct state with the correct cards passed out.
+
 State transitions can be either actions passed to the system or updates to app state.
 
-Because `on-load` is executed after every successful recompilation, it's useful to put a debug print in `on-load` like `'app recompiled successfully'`, so that you can quickly see that things have worked.
+Because `on-load` is executed after every successful recompilation, it's useful to put a debug print in `on-load` like `'app recompiled successfully'`, so that you can quickly see that things have worked. You can just add a space in that text and re-`commit` if you want to force re-compilation.
 
 If you want to iterate until you get your `on-init` right, I recommend using the "Faster Fakeship Startup" method from the [workflow lesson](workflow.md).
+
+## Exercises
+
+### Code Reading
+1. Find 2 Gall agents in `app` that return cards as part of their `on-load`. 
+  - Explain what you think the cards are doing
+  - Is the action the cards are doing repeated in `on-init`? Why or why not? (The answer could vary from program to program).
+2. Refer to this version of [file-server.hoon](https://github.com/urbit/urbit/commit/0d1930b6ac4d2b001a973089f3999758ee09d7d0)
+  - Where are its `versioned-state` and `state-0` defined? 
+  - What is the advantage of this approach?
+  - What does the new version of the state (`state-1`) enable that `state-0` did not? (The transition in `on-load` gives some hints here)
+
+### Code Modification
+* Modify `app/chat-store.hoon` in a fake ship to have a new state, `state-4`. This state should include the `inbox` from the prior state, but add a `(set ship)` with face `bad-people`.
+* Get it to work in `on-load`, and initialize `bad-people` to contain the ship `~timluc-miptev`.
+* Update `on-init` to have `~timluc-miptev` in its initial `bad-people` if the app is installed from scratch.
+
+### `chat-admin` Planning
+List the types of cards that you think your chat admin app will need to pass in its `on-init`, either to Arvo or other agents. You should refer to your feature list from the prior lesson's exercises.
 
 [Prev: The 10 Arms of Gaal: App Structure](arms.md) | [Home](overview.md) | [Next: Importing Code and Static Resources](ford.md)
