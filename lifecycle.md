@@ -449,9 +449,11 @@ To illustrate this, make the following modifications to the code:
 </tr>
 </table>
 
-Our new `state-two` is the same as `state-one`--we're just going to add an action in the transition from `%1` to `%2`. 
+Our new `state-2` is the same as `state-1`--we're just going to add an action in the transition from `%1` to `%2`. 
 
 The `%1` case now returns a card that disconnects our app from Eyre (no more listening for incoming traffic at a URL), and updates its head to `%2`. We also alter the `%0` case to do *both* the state update and the card update, and bump our version all the way to `%2`, in case a user of our app missed the `%1` update.
+
+We update `on-init` to remove our Eyre call, since new installs shouldn't connect at all now.
 
 Let's commit and see the result of recompiling:
 ```
