@@ -171,7 +171,7 @@ Make the following changes to your code:
 
   ```
   +$  versioned-state
-    $%  state-zero
+    $%  state-0
   ==
     
   ```
@@ -181,8 +181,8 @@ Make the following changes to your code:
 
 ```
 +$  versioned-state
-  $%  state-zero
-    state-one
+  $%  state-0
+      state-1
 ==
 ```
 
@@ -192,19 +192,36 @@ Make the following changes to your code:
 <td>
 
 ```
-+$  state-zero  [%0 val=@]
++$  state-0  [%0 val=@]
 ```
 
 </td>
 <td>
 
 ```
-+$  state-zero  [%0 val=@]
-+$  state-one   [%1 val=@ msg=@t]
++$  state-0  [%0 val=@]
++$  state-1  [%1 val=@ msg=@t]
 ```
 
 </td>
 </tr>
+<tr>
+<td>
+
+```
+:_  this(state [%0 99])
+```
+
+</td>
+<td>
+
+```
+:_  this(state [%1 100])
+```
+
+</td>
+</tr>
+
 <tr>
 <td>
 
@@ -286,6 +303,8 @@ Because after each successful compilation, Gall calls:
 
 This allows Gall to move the data from a working prior version to our new version.
 
+We also change our `on-init`, so that users installing the app from scratch end up in a consistent state with those who upgrade via `on-load`.
+
 ### Adding an Action after `on-init` Has Already Run
 Let's say we want to undo the Eyre binding that we did in `on-init`. How is that possible, given that `on-init` only runs once?
 
@@ -304,8 +323,8 @@ To illustrate this, make the following modifications to the code:
 
 ```
 +$  versioned-state
-  $%  state-zero
-      state-one
+  $%  state-0
+      state-1
   ==
 ```
 
@@ -314,9 +333,9 @@ To illustrate this, make the following modifications to the code:
 
 ```
 +$  versioned-state
-  $%  state-zero
-      state-one
-      state-two
+  $%  state-0
+      state-1
+      state-2
   ==
 ```
 
@@ -326,17 +345,17 @@ To illustrate this, make the following modifications to the code:
 <td>
 
 ```
-+$  state-zero  [%0 val=@]
-+$  state-one   [%1 val=@ msg=@t]
++$  state-0  [%0 val=@]
++$  state-1   [%1 val=@ msg=@t]
 ```
 
 </td>
 <td>
 
 ```
-+$  state-zero  [%0 val=@]
-+$  state-one   [%1 val=@ msg=@t]
-+$  state-two   [%2 val=@ msg=@t]
++$  state-0   [%0 val=@]
++$  state-1   [%1 val=@ msg=@t]
++$  state-2   [%2 val=@ msg=@t]
 ```
 
 </td>
@@ -345,6 +364,7 @@ To illustrate this, make the following modifications to the code:
 <td>
 
 ```
+:_  this(state [%1 100])
 :~
   [%pass /bind %arvo %e %connect [~ /'~lifecycle'] %lifecycle]
 ==
@@ -355,6 +375,7 @@ To illustrate this, make the following modifications to the code:
 <td>
 
 ```
+:_  this(state [%2 100])
 ~
 ```
 
