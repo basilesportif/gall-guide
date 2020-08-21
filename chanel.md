@@ -36,8 +36,7 @@ In `mar/chanel/action.hoon`, we define a `%chanel-action` mark. It has a `json` 
 In order to parse, we use the `dejs:format` core found in `zuse.hoon`. Its arms let us create gates that will parse a given piece of JSON. There are two basic types of arms: arms that directly produce gates (like `so` and `ni`) and arms that require samples to produce gates (like `of` and `ot`)
 
 #### Simple Parsers
-These parsers all take jso
-n directly and produce various types like numbers and strings.  You can find all variants by searching for `++  dejs` in `sys/zuse.hoon`.
+These parsers all take json directly and produce various types like numbers and strings.  You can find all variants by searching for `++  dejs` in `sys/zuse.hoon`.
 ```
 > (so:dejs:format (json [%s 'hello']))
 'hello'
@@ -154,7 +153,7 @@ You interface with channel.js by calling `poke`, `subscribe` and `unsubscribe`.
 2. send their json to `ship/~/channel/$UID`
 3. Generate a new `outstandingPoke` or `outstandingSubscription`
 4. Open up an `EventSource` if one doesn't exist
-5. Poke will generate one response (basicallyy an ack); subscribe will create as many as the server generates. All will be handled in the `onmessage` function.
+5. Poke will generate one response (basically an ack); subscribe will create as many as the server generates. All will be handled in the `onmessage` function.
 
 #### poke Response
 If the response is to a poke, its data is disregarded, and we just run the poke `onSuccess` function and delete the `outstandingPoke`. This is like a `%poke-ack` in our [prior lesson](poke.md).

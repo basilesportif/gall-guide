@@ -132,4 +132,12 @@ The runes we've looked at here only work inside Gall agents. If you want to impo
 > default-agent
 ```
 
+## Exercises
+TODO
+### Handling More Types
+
+### Making a `grow` Arm
+
+### Understand Existing Marks
+
 [Prev: App Lifecycle and State](lifecycle.md) | [Home](overview.md) | [Next: Poke and Watch](poke.md)
