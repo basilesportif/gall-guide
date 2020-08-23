@@ -9,17 +9,18 @@
 /*  html-as-name  %fordexample-name  /app/fordexample/example/html
 |%
 +$  versioned-state
-  $%  state-zero
+  $%  state-0
   ==
 ::
-+$  state-zero
++$  state-0
   $:  [%0 name:fordex =age]
   ==
 ::
 +$  card  card:agent:gall
 ::
 --
-=|  state=versioned-state
+=|  state-0
+=*  state  -
 ^-  agent:gall
 |_  =bowl:gall
 +*  this      .

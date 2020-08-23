@@ -7,7 +7,7 @@
     ^-  name
     [first='NOUN' last=n]
   ++  html
-  |=  h=@t
+    |=  h=@t
     ^-  name
     [first='HTML' last=h]
   --

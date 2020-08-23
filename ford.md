@@ -133,8 +133,11 @@ The runes we've looked at here only work inside Gall agents. If you want to impo
 ```
 
 ## Exercises
-TODO
+
 ### Handling More Types
+* Add a `grab` arm to `mar/fordexample/name.hoon`
+  - the arm should handle `txt` marks
+  - in the `grab` arm, transform each line of the `txt` file to be a cell with the number of characters in the cord as the first element, and the cord as the last
 
 ### Making a `grow` Arm
 
