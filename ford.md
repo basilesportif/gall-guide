@@ -139,8 +139,14 @@ The runes we've looked at here only work inside Gall agents. If you want to impo
   - the arm should handle `txt` marks
   - in the `grab` arm, transform each line of the `txt` file to be a cell with the number of characters in the cord as the first element, and the cord as the last
 
-### Making a `grow` Arm
-
 ### Understand Existing Marks
+Refer to the `mar` directory in a ship for these exercises.
+1.`/mar/txt.hoon`
+  * What types can a `txt` mark come from?
+  * What types can it convert to?
+  * What is a `noun` turned into?
+2. `/mar/js.hoon`
+  * What do you think is happening in the `grow` arm for `elem`?
+  * What do the `grab` arms do?
 
 [Prev: App Lifecycle and State](lifecycle.md) | [Home](overview.md) | [Next: Poke and Watch](poke.md)
