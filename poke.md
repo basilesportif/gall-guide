@@ -49,7 +49,7 @@ This is easiest to demonstrate with examples:
 > txt+a
 [%txt "yo"]
 ```
-The thing before `+` gets turned into a `@tas`, and the thing after is interpreted normally. This is a handy shortcuut we'll sometimes use with custom action types later, since if we have a type like `[%increase-counter step=@ud]` we can write things like `increase-counter+20` and have it interpret as `[%increase-counter 20]`.
+The thing before `+` gets turned into a `@tas`, and the thing after is interpreted normally. This is a handy shortcut we'll sometimes use with custom action types later, since if we have a type like `[%increase-counter step=@ud]` we can write things like `increase-counter+20` and have it interpret as `[%increase-counter 20]`.
 
 ## poke: One-Time Call
 Sending a poke to a Gall agent is easy; you can do it directly from the Dojo. Let's poke our app and examine what happens.
@@ -96,7 +96,7 @@ Now we're going to send a poke directly from our agent. We'll poke ourselves, bu
 >>  [%poke-ack p=~]
 ```
 Three things happened here, and we'll look at them both in detail
-1. We sent an outgoing poke to ourselvess
+1. We sent an outgoing poke to ourselves.
 2. We handled the poke to ourselves.
 3. We got back a `%poke-ack` confirming the poke was received.
 
@@ -176,7 +176,7 @@ So with that all in hand, we can see our custom mark in action!  All we have to 
 > :poketime %print-subs
 ::  you'll see that the wex element of bowl now has a value where before it was empty
 
-> :poketime &poketime-action [%leave ~zod]
+> :poketime &poketime-action [%leave ~timluc]
 > :poketime %print-subs
 ::  you'll see that wex is empty again
 ```
@@ -215,6 +215,7 @@ Gall tracks incoming and outgoing subscriptions, and stores them in the `bowl` o
 * Gall adds the subscription to `wex` in the subscriber
 * Gall adds the subscription to `sup` in the host, calls `on-watch`, and sends a `%watch-ack` back to the subscriber
 * the subscriber receives the `%watch-ack` in `on-agent`
+* Gall sets `acked` to `%.y` in `wex` of the subscriber
 
 ### End Subscription Dataflow
 * subscriber sends a `%leave` card
@@ -351,5 +352,29 @@ When you see lines like this to run at the Dojo, bet they make a lot more sense 
 ```
 :file-server &file-server-action [%serve-dir /example-path /app/example %.y]
 ```
+
+## Exercises
+
+### Code Reading
+1. [app/chat-store.md](https://github.com/urbit/urbit/blob/b0d252fa7633ba030c555f690594d85c0d59b36f/pkg/arvo/app/chat-store.hoon)
+  - Which `path`s does it allow subscriptions on?
+  - Do any of those paths take "parameters"?
+  - Do any of the paths return data immediately? Which ones, and which data?
+  - What does the `/mailbox` path do?
+  - Where in the program does it send messages to subscribers? (*hint* search for `%give`)
+2. [/app/group-store.hoon](https://github.com/urbit/urbit/blob/b0d252fa7633ba030c555f690594d85c0d59b36f/pkg/arvo/app/group-store.hoon)
+  - In `on-load`, what happens to subscribers on the upgrade from `%0` to `%1`?
+  - What does `[%pass / %agent [our.bowl dap.bowl] %poke %noun !>(%perm-upgrade)]` do?
+3. [app/chat-hook.hoon](https://github.com/urbit/urbit/blob/b0d252fa7633ba030c555f690594d85c0d59b36f/pkg/arvo/app/chat-hook.hoon)
+In `on-agent`, `%watch-ack` is handled. What is it doing on a `%watch-ack`, roughly?
+
+### Chat Admin App
+Now that we know the basics of pokes, we can write the skeleton for our chat admin application.  Feel free to use `example-code/app/skeleton.hoon` as a quick starting point.
+
+* Create an `action` tagged union in a `sur` file, and give it tagged unions for all the poke actions you want your backend to handle.
+* In the same `sur` file, define any types you will need for your `state`, and create the `on-init`/`on-load`/`on-save` arms in the `app` file.
+* Make a custom mark file for your `action` type.
+* Handle each case of the custom mark in your `on-poke` (can just be debug prints for now).
+* Decide on `noun` pokes that you'll want in development (if any) and write their skeletons.
 
 [Prev: Importing Code & Static Resources](ford.md) | [Home](overview.md) | [Next: scry & on-peek)](scry.md)

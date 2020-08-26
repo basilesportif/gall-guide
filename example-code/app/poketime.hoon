@@ -58,7 +58,7 @@
       %poketime-action
       ~&  >>>  !<(action:poketime vase)
       =^  cards  state
-      (handle-action !<(action:poketime vase))
+      (handle-action:hc !<(action:poketime vase))
       [cards this]
   ==
 ::
@@ -78,7 +78,7 @@
   ^-  (quip card _this)
   ?+    wire  (on-agent:def wire sign)
       [%counter @ ~]
-      ?+  -.sign  (on-agent:def wire sign)
+    ?+  -.sign  (on-agent:def wire sign)
         %fact
       =/  val=@  !<(@ q.cage.sign)
       ~&  >>  "counter val on {<src.bowl>} is {<val>}"
