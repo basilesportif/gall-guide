@@ -195,7 +195,16 @@ In this lesson, you saw how to write your own `on-peek` arms to respond to scry 
 
 Even more importantly, you learned how to use `.^` to scry any Gall agent that exposes its data through `on-peek`, and also how to understand their source code. This will allow you to query any agent you wish, and build up apps that operate on pre-existing user information to create rich experiences.
 
-## Code-Reading Exercises
+### Key Points
+* `scry`s & subscriptions let you pull in data from other apps and then use that data programmatically in your agents.
+* `scry`s are fast, but processing the data you pull in could potentially be slow.
+
+### Note
+`scry`s can only be done on the current ship; you cannot `scry` remotely.
+
+## Exercises
+
+### Code-Reading and `scry` Writing
 * Figure out what the `[%x %envelopes]` query in `app/chat-store.hoon` does exactly, and what type of value is in its vase.
 * Write successful Gall scry requests to 4 different agents on your main ship. Use both `%x` and `%y`. Some possible agents to query in `/app`:
   - `contact-store.hoon`
@@ -205,5 +214,21 @@ Even more importantly, you learned how to use `.^` to scry any Gall agent that e
   - `publish.hoon`
   - `launch.hoon`
   - `metadata-store.hoon`
+  
+### Chat Admin
+For this exercise, you should build your own agent that you can send pokes to. Feel free to do the pokes as `%noun`s as in the [poke lesson](poke.md**.
+
+**You will likely want to use an [-L ship](workflow.md) with lots of pre-existing group/chat data for this exercise.**
+
+#### scry helpers
+In your agent, create 2 gates in the helper core. Both should take a sample of `[mold app-name path]`
+  1. A gate that does `%gy` `scry`s
+  2. A gate that does `%gx` `scry`s
+  
+#### `scry` pokes
+Create pokes that perform the following `scry`s:
+* get all groups that you are an owner or admin of (`metadata-store` and `group-store`)
+* get full chat mailboxes by their path (`chat-store`)
+* subscribe to updates from `chat-store`
 
 [Prev: Talk to Ships: poke, watch, and marks](poke.md) | [Home](overview.md) | [Next: HTTP and Static Files)](http.md)
