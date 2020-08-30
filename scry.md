@@ -115,12 +115,12 @@ Look at the `on-peek` arm in `iscry.hoon`. It matches against the incoming paths
 ### Processing the Result
 When the result is produced by `on-peek`, Gall returns it directly to caller if it was a `%y` scry. If it was an `%x`, Gall runs the mark passed at the end of its path on it, and then returns it to the caller, which runs the mold passed as the first argument to `.^`. 
 
-So `.^(ship %gx /=iscry=/friend/noun)` is passed to `on-peek` as `[%x %friend ~]`, and then it returns `friend.state` inside a `noun` `cage`. Because it is a `ship/@p`, our mold of `ship` succeeds, and it returns `~timluc-miptev`. We could just as easily pass a mold of `noun`: `.^(ship %gx /=iscry=/friend/noun)`, which would produce `3.690.144`.
+So `.^(ship %gx /=iscry=/friend/noun)` is passed to `on-peek` as `[%x %friend ~]`, and then it returns `friend.state` inside a `noun` `cage`. Because it is a `ship/@p`, our mold of `ship` succeeds, and it returns `~timluc-miptev`. We could just as easily pass a mold of `noun`: `.^(noun %gx /=iscry=/friend/noun)`, which would produce `3.690.144`.
 
-`on-peek` returns `(unit (unit cage))`. A return of `~` is meant to represent the value maybe existing, and `[~ ~]`. In either case, Gall produces a crash if `~` or `[~ ~]` is returned by `on-peek`. This is what we see above with the `/no-result` path.
+`on-peek` returns `(unit (unit cage))`. A return of `~` is meant to represent the value maybe existing, and `[~ ~]` means that the value does not and will not exist. In either case, Gall produces a crash if `~` or `[~ ~]` is returned by `on-peek`. This is what we see above with the `/no-result` path.
 
 #### Note on Marks
-Generally in Gall agent source, you'll see `%x` queries use a `%noun` mark, the caller will look at their source or documentation to know what type is "really" inside the vase, and will pass that type as the mold to `.^`. In the next section, we'll see how to examine source to see what type is expected inside a given vase.
+In Gall agents, you'll see `%x` queries use a `%noun` mark, the caller will look at their source or documentation to know what type is "really" inside the vase, and will pass that type as the mold to `.^`. In the next section, we'll see how to examine source to see what type is expected inside a given vase.
 
 ## Querying Existing Data
 Understanding the `on-peek`s of *other* Gall agents is a big part of Gall development.

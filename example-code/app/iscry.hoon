@@ -43,10 +43,10 @@
       :-  ~
       %-  ~(put by *(map @ta ~))
         ['fake-dir' ~]
-    ``arch+!>(arch)
+    ``noun+!>(arch)
     ::
       [%x %friend ~]
-    ``noun+!>(friend.state)
+    ``noun+!>(friend)
     ::
       [%x %no-result ~]
     [~ ~]

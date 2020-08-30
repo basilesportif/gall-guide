@@ -188,6 +188,26 @@ Make the following changes to your code:
 
 </td>
 </tr>
+
+<tr>
+<td>
+
+```
+=|  state-0
+
+```
+
+  </td>
+<td>
+
+```
+=|  state-1
+
+```
+
+</td>
+</tr>
+
 <tr>
 <td>
 
@@ -216,7 +236,7 @@ Make the following changes to your code:
 <td>
 
 ```
-:_  this(state [%1 100])
+:_  this(state [%1 100 'msg'])
 ```
 
 </td>
@@ -360,11 +380,31 @@ To illustrate this, make the following modifications to the code:
 
 </td>
 </tr>
+
 <tr>
 <td>
 
 ```
-:_  this(state [%1 100])
+=|  state-1
+
+```
+
+  </td>
+<td>
+
+```
+=|  state-2
+
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+```
+:_  this(state [%1 100 'msg'])
 :~
   [%pass /bind %arvo %e %connect [~ /'~lifecycle'] %lifecycle]
 ==
@@ -375,7 +415,7 @@ To illustrate this, make the following modifications to the code:
 <td>
 
 ```
-:_  this(state [%2 100])
+:_  this(state [%2 100 'msg'])
 ~
 ```
 
