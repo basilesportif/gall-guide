@@ -221,10 +221,10 @@ Great! We now have a clear way for our ship's Gall app to pass us any data about
 You can use Chrome/Brave/Safari developer tools to view the pokes that `channel.js` makes to your ship.  Here are examples, both for this lesson's code, and on a live ship:
 
 ### Example 1: `chanel.hoon`
-![Gall Diagram](gall_diagram.png)
+![Dev Tools: chanel.hoon](devtools_chanel.png)
 
 ### Example 2: Live Ship (`~timluc-miptev`)
-
+![Dev Tools: Live Ship](devtools_live.png)
 
 ## Summary
 * Logging in is a very "non-magical" process that simply involves making a `POST` call that sets a cookie.
