@@ -102,7 +102,7 @@ This can be done at the command line like so:
 cp -r your_code_directory/* your_pier_directory/app/
 ```
 
-You can also use a [script like this one](https://github.com/timlucmiptev/gall-guide/blob/master/example-code/sync.sh) to copy all Gall directories to your pier.
+You can also use a [script like this one](https://github.com/timlucmiptev/gall-guide/blob/master/example-code/install.sh) to copy all Gall directories to your pier.
 
 ### Use `create-landscape-app` to Sync Files to Your Pier
 Once we begin creating Landscape apps, we will able to use `create-landscape-app` to monitor our JS and Hoon files, and copy them to our ship as they're updated.
@@ -155,7 +155,7 @@ In the Backend Foundation, we will generally use approach (2), and copy our file
 
 ## Exercises
 ### Getting Familiar
-* Make a new project with one directory, `/app`, and create an install script (or modify `sync.sh` above) so that you can copy the contents of `/app` to the `/app` directory in a pier of your choice.
+* Make a new project with one directory, `/app`, and create an install script (or modify `install.sh` above) so that you can copy the contents of `/app` to the `/app` directory in a pier of your choice.
 
 ### First Steps for `picky`
 * On a real planet, make sure that you have a group with at least two chats and a couple members. You should be an owner or an admin or a group.

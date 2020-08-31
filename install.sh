@@ -1,13 +1,30 @@
 #!/bin/bash
-if [ -z "$1" ]
-then
-    echo "usage: sync.sh URBIT_PIER_DIRECTORY"
-    exit;
-fi
+usage() { printf "Usage: $0 [-w] URBIT_PIER_DIRECTORY  \n(-w: flag to watch and live copy code)\n" 1>&2; exit 1; }
 
-echo "Watching for changes to copy to ${1}..."
-while [ 0 ]
-do
-    sleep 0.7
-    rsync -r --exclude '.*' example-code/* $1
+if [ $# -eq 0 ]; then
+    usage
+    exit 2
+fi
+PIER=$1
+
+while getopts "w" opt; do
+    case ${opt} in
+        w) WATCH_MODE="true"
+           PIER=$2
+           ;;
+        *) usage
+           ;;
+    esac
 done
+
+if [ -z "$WATCH_MODE" ]; then
+    echo "Installed Gall Guide code"
+    rsync -r --exclude '.*' --exclude '*.sh' --exclude '*.md' * $PIER/
+else
+   echo "Watching for changes to copy to ${PIER}..."
+   while [ 0 ]
+   do
+    sleep 0.8
+    rsync -r --exclude '.*' --exclude '*.sh' --exclude '*.md' * $PIER/
+   done
+fi
