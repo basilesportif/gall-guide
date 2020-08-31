@@ -8,14 +8,14 @@ You'll also learn how to use the `:file-server` Gall agent to serve static files
 
 ## Example Code
 * to `/app/`
-  - [chanel.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/examples/app/chanel.hoon)
+  - [chanel.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/example-code/app/chanel.hoon)
 * to `/app/chanel/`
-  - [index.html](https://github.com/timlucmiptev/gall-guide/tree/master/examples/app/chanel/index.js)
-  - [index.js](https://github.com/timlucmiptev/gall-guide/tree/master/examples/app/chanel/index.js)
+  - [index.html](https://github.com/timlucmiptev/gall-guide/tree/master/example-code/app/chanel/index.html)
+  - [index.js](https://github.com/timlucmiptev/gall-guide/tree/master/example-code/app/chanel/index.js)
 * to `/mar/chanel/`
-  - [action.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/examples/mar/chanel/action.hoon)
+  - [action.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/example-code/mar/chanel/action.hoon)
 * to `/sur/`
-  - [chanel.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/examples/sur/chanel.hoon)
+  - [chanel.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/example-code/sur/chanel.hoon)
 
 ### to start
 Do `|commit %home`, then run `|start %chanel` 
@@ -216,6 +216,15 @@ Line 10 of `app/chanel/index.html` handles the onClick of that button: when pres
 You'll see the data get handled in the console with a message that it `"got response: $YOUR_MESSAGE"`.
 
 Great! We now have a clear way for our ship's Gall app to pass us any data about things in the app that have changed. This "frontend-updating" path is, by convention, usually called `/primary`, but as we see here, that name is just a parameter.
+
+## Debugging
+You can use Chrome/Brave/Safari developer tools to view the pokes that `channel.js` makes to your ship.  Here are examples, both for this lesson's code, and on a live ship:
+
+### Example 1: `chanel.hoon`
+![Gall Diagram](gall_diagram.png)
+
+### Example 2: Live Ship (`~timluc-miptev`)
+
 
 ## Summary
 * Logging in is a very "non-magical" process that simply involves making a `POST` call that sets a cookie.

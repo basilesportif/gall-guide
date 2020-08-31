@@ -68,7 +68,7 @@ Gall apps are for when you want a longer running service, more like a daemon in 
 * Hosting a remote service for other ships
 
 ## A Diagram
-![Gall Diagram](gall_diagram.png "Gall Diagram")
+![Gall Diagram](gall_diagram.png)
 
 ## What Do I Need to Know?
 To write Gall programs, you need a decent understanding of Hoon. To write Gall programs that use Landscape, you need to know Javascript. For the JS part, we'll go over in a lot of detail, so that even if you haven't seen much React, you'll be able to follow along.

@@ -29,7 +29,6 @@ const login =  async (pass) => {
     console.log("logged in");
 
     const res = await fetch('/~landscape/js/session.js');
-    console.log(res.headers.get('set-cookie'));
     const sessionCode = await res.text();
     eval(sessionCode);
 
