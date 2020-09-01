@@ -27,7 +27,7 @@ In this lesson, you will learn how to:
 ## `%file-server`: Serve Static Resources to Earth
 In `on-init`, we return a couple cards that open up directories to the world. Those are the `public-filea` and `private-filea` faces. Here are the action types of the `%file-server` agent that we pass them to:
 ```
-$%  [%serve-dir url-base=path clay-base=path public=?]
+$%  [%serve-dir url-base=path clay-base=path public=? spa=?]
     [%unserve-dir url-base=path]
     [%toggle-permission url-base=path]
     [%set-landscape-homepage-prefix prefix=(unit term)]

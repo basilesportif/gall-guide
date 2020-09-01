@@ -22,7 +22,7 @@
 ++  on-init
   ^-  (quip card _this)
   ~&  >  '%chanel initialized successfully'
-  =/  filea  [%file-server-action !>([%serve-dir /'~chanel' /app/chanel %.y])]
+  =/  filea  [%file-server-action !>([%serve-dir /'~chanel' /app/chanel %.y %.n])]
   =.  state  [%0 100]
   :_  this
   :~  [%pass /srv %agent [our.bowl %file-server] %poke filea]

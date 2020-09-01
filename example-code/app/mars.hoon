@@ -30,8 +30,8 @@
 ++  on-init
   ^-  (quip card _this)
   ~&  >  '%mars initialized successfully'
-  =/  public-filea  [%file-server-action !>([%serve-dir /'~mars-public' /app/mars/public %.y])]
-  =/  private-filea  [%file-server-action !>([%serve-dir /'~mars-private' /app/mars/private %.n])]
+  =/  public-filea  [%file-server-action !>([%serve-dir /'~mars-public' /app/mars/public %.y %.n])]
+  =/  private-filea  [%file-server-action !>([%serve-dir /'~mars-private' /app/mars/private %.n %.n])]
   =.  state  [%0 *files ~]
   :_  this
   :~  [%pass /srv %agent [our.bowl %file-server] %poke public-filea]
