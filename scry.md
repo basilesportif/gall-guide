@@ -216,7 +216,7 @@ Even more importantly, you learned how to use `.^` to scry any Gall agent that e
   - `metadata-store.hoon`
   
 ### Chat Admin
-For this exercise, you should build your own agent that you can send pokes to. Feel free to do the pokes as `%noun`s as in the [poke lesson](poke.md**.
+For this exercise, you should build your own agent that you can send pokes to. Feel free to do the pokes as `%noun`s as in the [poke lesson](poke.md).
 
 **You will likely want to use an [-L ship](workflow.md) with lots of pre-existing group/chat data for this exercise.**
 
