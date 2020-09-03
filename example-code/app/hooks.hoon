@@ -1,7 +1,7 @@
-::  mars.hoon
+::  hooks.hoon
 ::  Groups and hooks
 ::
-/-  ghooks, *group, *resource
+/-  hooks, *group, *resource
 /+  default-agent, dbug, store=group-store, group-lib=group
 |%
 +$  versioned-state
@@ -25,7 +25,7 @@
 ::
 ++  on-init
   ^-  (quip card _this)
-  ~&  >  '%ghooks initialized successfully'
+  ~&  >  '%hooks initialized successfully'
   `this
 ++  on-save
   ^-  vase
@@ -33,7 +33,7 @@
 ++  on-load
   |=  old-state=vase
   ^-  (quip card _this)
-  ~&  >  '%ghooks recompiled successfully'
+  ~&  >  '%hooks recompiled successfully'
   `this(state !<(versioned-state old-state))
 ++  on-poke
   |=  [=mark =vase]
@@ -41,12 +41,12 @@
   |^
   =^  cards  state
     ?+    mark  (on-poke:def mark vase)
-        %ghooks-action  (handle-action !<(action:ghooks vase))
+        %hooks-action  (handle-action !<(action:hooks vase))
     ==
   [cards this]
   ::
   ++  handle-action
-    |=  =action:ghooks
+    |=  =action:hooks
     ^-  (quip card _state)
     ?-    -.action
         %scry-group
