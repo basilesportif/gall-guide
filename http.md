@@ -71,7 +71,7 @@ For the path in `binding`, `/~myapp` will match `/~myapp` or `/~myapp/longer/pat
 ### Arm Requirements
 The binding card does the initial work, but Eyre also requires some other arms in your app to be set up for it.
 #### on-poke
-`on-poke` needs to handle a `%handle-http-requuest` mark (line 57). This allows it to 
+`on-poke` needs to handle a `%handle-http-request` mark (line 57). This allows it to 
 
 The type of the vase passed is `[id=@ta =inbound-request:eyre]`. We can process this `inbound-request` in whatever way we want, and return a card to Eyre if we want to pass a response immediately (discussed below in "How It Works").
 

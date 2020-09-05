@@ -40,7 +40,7 @@
       [%pass /bind %arvo %e %connect [~ /'~mars-managed'] %mars]
   ==
 ++  on-save
-  ^-  vase
+  ^-  vase 
   !>(state)
 ++  on-load
   |=  old-state=vase

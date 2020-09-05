@@ -18,6 +18,10 @@ We'll refer to the September 3, 2020 version of the files below:
 * [app/group-pull-hook.hoon](https://github.com/urbit/urbit/blob/3cce0f38300d2e9cae0b47ad1b6901050ba18152/pkg/arvo/app/group-pull-hook.hoon)
 * [lib/pull-hook.hoon](https://github.com/urbit/urbit/blob/3cce0f38300d2e9cae0b47ad1b6901050ba18152/pkg/arvo/lib/pull-hook.hoon)
 * [lib/push-hook.hoon](https://github.com/urbit/urbit/blob/3cce0f38300d2e9cae0b47ad1b6901050ba18152/pkg/arvo/lib/push-hook.hoon)
+* [app/chat-view.hoon](https://github.com/urbit/urbit/blob/3cce0f38300d2e9cae0b47ad1b6901050ba18152/pkg/arvo/app/chat-view.hoon)
+* [sur/chat-view.hoon](https://github.com/urbit/urbit/blob/3cce0f38300d2e9cae0b47ad1b6901050ba18152/pkg/arvo/sur/chat-view.hoon)
+* [lib/chat-view.hoon](https://github.com/urbit/urbit/blob/3cce0f38300d2e9cae0b47ad1b6901050ba18152/pkg/arvo/lib/chat-view.hoon)
+* [lib/chat-store.hoon](https://github.com/urbit/urbit/blob/3cce0f38300d2e9cae0b47ad1b6901050ba18152/pkg/arvo/lib/chat-store.hoon)
 
 ## Store
 Stores are databases that are intended to 
@@ -94,11 +98,36 @@ We can go even further and make "agent generators" for the push and pull hook pa
 These libraries are similar to `lib/dbug.hoon`: they are generators that take samples and create full Gall agents from them.
 
 TODO: 
+* **analyze** the `config`s of the state
 * `on-watch`
 * `on-poke`
 
+
+
+## A Hook Note
+If you want data that's in a store on your ship, you don't need to use a hook--you can just query the store directly with a `poke`, `scry`, or `watch`. Hooks are for intership communication.
+
 ## Views
-- coordinate multiple store and hook calls
+Views are responsible for receiving information from a frontend, translating that into backend calls to other agents, and returning information to the frontend.
+
+### Parse Data
+The first responsibility of views is to parse JSON data. [Here we see](https://github.com/urbit/urbit/blob/3cce0f38300d2e9cae0b47ad1b6901050ba18152/pkg/arvo/lib/chat-view.hoon#L9) code to parse JSON into `chat-view` actions. This lets the frontend either poke with JSON or the `chat-view-action` mark, and have it be useable.
+
+To return JSON data, `chat-view` [uses the JSON encoder](https://github.com/urbit/urbit/blob/3cce0f38300d2e9cae0b47ad1b6901050ba18152/pkg/arvo/app/chat-view.hoon#L106) for `chat-store`.
+
+### Handle Actions and Coordinate Agents
+In [sur/chat-view.hoon](https://github.com/urbit/urbit/blob/3cce0f38300d2e9cae0b47ad1b6901050ba18152/pkg/arvo/sur/chat-view.hoon), we see that `chat-view` can create chats, delete them, etc.
+
+The creation case is interesting, because it has to coordinate the `chat-store`, `metadata-store`, and `group-store`.  We see this in [line 224](https://github.com/urbit/urbit/blob/3cce0f38300d2e9cae0b47ad1b6901050ba18152/pkg/arvo/app/chat-view.hoon#L224), where `create-chat`, `create-group`, and `create-metadata` are all called if the group referenced doesn't exist. These in turn call the relevant stores to add the data, and hooks to monitor the new resources and expose them to others if necessary.
+
+### Pass Data Back to the Frontend
+In our [HTTP lesson](http.md), we saw how you can serve data from an HTTP endpoint on your ship. And in the [channels lesson](chanel.md), we saw how you can `%give` data to a subscription path to get it to the frontend.  View agents often use both of these.
+
+In [line 187](https://github.com/urbit/urbit/blob/3cce0f38300d2e9cae0b47ad1b6901050ba18152/pkg/arvo/app/chat-view.hoon#L187), `chat-view` listens to an HTTP endpoint and returns the contents of a mailbox to it, in JSON form.
+
+In [line 498](https://github.com/urbit/urbit/blob/3cce0f38300d2e9cae0b47ad1b6901050ba18152/pkg/arvo/app/chat-view.hoon#L498), it passes updates from `chat-store` to the `/primary` subscription path, which is listened for in [line 102](https://github.com/urbit/urbit/blob/3cce0f38300d2e9cae0b47ad1b6901050ba18152/pkg/arvo/app/chat-view.hoon#L102) of `on-watch`.
+
+Either of these methods are acceptable, and applications often use both (preferring HTTP requests for one-time calls, although that's by no means a hard-and-fast rule).
 
 ## Security Considerations
 - have to evaluate the code for a new hook (or really any agent) that is installed on your ship, since it can bypass the access controls of a store.
