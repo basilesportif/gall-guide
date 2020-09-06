@@ -97,12 +97,51 @@ We can go even further and make "agent generators" for the push and pull hook pa
 
 These libraries are similar to `lib/dbug.hoon`: they are generators that take samples and create full Gall agents from them.
 
-TODO: 
-* **analyze** the `config`s of the state
-* `on-watch`
-* `on-poke`
+The way to use these is
+1. Someone creates a Gall agent, e.g. `app/group-push-hook.hoon`
+2. Set the config to pass to the `push-hook` generator
+3. Call a gate in the generator, passing it the config *and* a Gall agent with *specific extra arms*. The generator uses those extra arms to return a new Gall agent with custom behavior.
 
+Let's dive right into an example.
 
+#### Push: `app/group-push-hook.hoon`
+In [app/group-push-hook.hoon](https://github.com/urbit/urbit/blob/3cce0f38300d2e9cae0b47ad1b6901050ba18152/pkg/arvo/app/group-push-hook.hoon), we see a `config` defined in line 13. This config's form is from [line 6 of `lib/push-hook.hoon`](https://github.com/urbit/urbit/blob/3cce0f38300d2e9cae0b47ad1b6901050ba18152/pkg/arvo/lib/push-hook.hoon#L6), and requires us to define:
+```
+$:  store-name=term       ::  store agent
+    store-path=path       ::  path to watch store-agent on
+    update=mold           ::  the mold of updates the store sends
+    update-mark=term      ::  the mark of updates the store sends
+    pull-hook-name=term   ::  the pull-hook for this store
+==
+```
+In line 19, `push-hook` defines a type: a door with all the Gall arms, plus 4 additional arms:
+- `resource-for-update`: figure out from an update which resource it affects (e.g. which group), so that we can send updates to those subscribed to that resource (probably `pull-hook`s).
+- `take-update`: handle a subscription update coming from the store. We use the `update` mold for this.
+- `should-proxy-update`: takes a vase with an update from the store and returns a true/false as to whether we should pass a poke to the store. The vizier uses this gate to decide whether to pass a poke to his king, the store.
+- `initial-watch**: define the initial state that will be passed back when another agent subscribes to us.
+
+When you make a new push-hook agent, **you need to implement those 4 arms**.
+
+From [line 31 on down](https://github.com/urbit/urbit/blob/3cce0f38300d2e9cae0b47ad1b6901050ba18152/pkg/arvo/app/group-push-hook.hoon#L31), `group-push-hook.hoon` defines an agent with the normal Gall arms, plus those 4. It then passes them as the sample to `agent:push-hook`, which constructs a normal, 10-armed, Gall agent that calls out to them.
+
+#### Pull
+`pull-hook` goes in much the same way as `push-hook`, except that it creates an agent that watches a remote `push-hook` for updates, processes those updates, and mirrors them to the appropriate local store.
+
+Its `config` is simpler, since it knows that `push-hook`s use the `[%resource resource]` path to send subscription updates:
+```
+$:  store-name=term
+    update=mold
+    update-mark=term
+    push-hook-name=term
+==
+```
+
+The `pull-hook` [agent generator](https://github.com/urbit/urbit/blob/3cce0f38300d2e9cae0b47ad1b6901050ba18152/pkg/arvo/lib/pull-hook.hoon) has 2 additional arms:
+- `on-pull-nack`: handle a subscription to a `push-hook` failing
+- `on-pull-kick`: handle being kicked from our subscription to a `push-hook`
+
+#### `group-push-hook` and `group-pull-hook`
+Analyzing the way in which these define their custom arms will be left as an exercise for the reader.
 
 ## A Hook Note
 If you want data that's in a store on your ship, you don't need to use a hook--you can just query the store directly with a `poke`, `scry`, or `watch`. Hooks are for intership communication.
@@ -134,3 +173,4 @@ Either of these methods are acceptable, and applications often use both (preferr
 
 ## Exercises
 * Outline how you would split `chat-hook` into a `push`/`pull` architecture.
+* Analyze `should-proxy-update` (and other 3 arms?) of `group-push-hook.hoon`
