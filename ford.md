@@ -35,9 +35,9 @@ Our code starts with:
 ```
 The `/-` rune looks up files in the `sur` directory with a name and `.hoon` extension, and then binds them in the current subject to the name passed. In that sense, it's similar to defining faces in the dojo.
 
-The syntax `fordex=fordexample` tells Ford to find the file `fordexample.hoon` in `sur` and assign its contents to the face `fordex`. To access its `name` arm in line 30, we need to use the syntax `name:fordex` (evaluate `name` with `fordex` as the subject).
+The syntax `fordex=fordexample` tells Ford to find the file `fordexample.hoon` in `sur` and assign its contents to the face `fordex`. To access its `name` arm in line 16, we need to use the syntax `name:fordex` (evaluate `name` with `fordex` as the subject).
 
-The syntax `*fordexample2*` tells Ford to find the file `fordexample2.hoon` in `sur` and put it into the current subject. Essentially this means that it's not "namespaced": we can access the `age` arm from its core directly, as we do in line 30.
+The syntax `*fordexample2*` tells Ford to find the file `fordexample2.hoon` in `sur` and put it into the current subject. Essentially this means that it's not "namespaced": we can access the `age` arm from its core directly, as we do in line 16.
 
 `sur` is used for data structures that are shared between apps.
 
@@ -46,7 +46,7 @@ This works in exactly the same way as `/+`, with the difference that it looks in
 
 `*server` is a really common import, because it handles all HTTP response functionality for returning results to requests. It's generally imported with `*` to expose everything, since it's so widely used. It's also sometimes given the face `srv`.
 
-We've seen `default-agent` a lot already. It just gets used once, on line 40.
+We've seen `default-agent` a lot already. It just gets used once, on line 27.
 
 ## `/=` Import the Evaluation of a Hoon File
 In line 4, we use `/=`. The `/=` rune imports the result of building a hoon file from a user-specified path (the second argument, `/lib/number-to-words`), wrapping it in a face specified by the first argument (`n2w`). The final /hoon at the end of the path must be omitted. This is similar to `` and `/-`, but just allows us to import from any directory.

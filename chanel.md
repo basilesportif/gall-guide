@@ -30,7 +30,7 @@ Do `|commit %home`, then run `|start %chanel`
 ### Action Type and JSON mark
 In `sur/chanel.hoon` we define our `action` type. It has 4 different elements, to showcase different ways of parsing JSON.
 
-In `mar/chanel/action.hoon`, we define a `%chanel-action` mark. It has a `json` arm in `grab`, so that we can take `json` sent in with a `%chanel-action` mark by the frontend, and properly parse it here. That parsing works by running `=<  (action jon)` on the incoming JSON, where `action` is an arm that produces a JSON parser (a gate). Let's look now at how that works
+In `mar/chanel/action.hoon`, we define a `%chanel-action` mark. It has a `json` arm in `grab`, so that we can take `json` sent in with a `%chanel-action` mark by the frontend, and properly parse it here. That parsing works by running `=<  (action jon)` on the incoming JSON, where `action` is an arm that produces a JSON parser (a gate). Let's look now at how that works.
 
 ### JSON Parsing, Explained
 In order to parse, we use the `dejs:format` core found in `zuse.hoon`. Its arms let us create gates that will parse a given piece of JSON. There are two basic types of arms: arms that directly produce gates (like `so` and `ni`) and arms that require samples to produce gates (like `of` and `ot`)
@@ -119,7 +119,7 @@ If you open the JS console, you'll see some messages with your current ship name
 In `index.html`, you'll see that we include `channel.js` and `index.js`. The latter is our custom logic, so let's start by learning about `channel.js`.
 
 ## channel.js
-`channel.js` is a library that lives under `/~landscape/js/channel.js` when you are logged in to your ship. We'll use the [May 28th verion](https://github.com/urbit/urbit/blob/4fded00005770a84a53ff77a81ba71353f84b4bd/pkg/arvo/app/landscape/js/channel.js) in this lesson and serve it directly from `app/chanel/channel.js`.
+`channel.js` is a library that lives under `/~landscape/js/channel.js` when you are logged in to your ship. We'll use the [May 28th version](https://github.com/urbit/urbit/blob/4fded00005770a84a53ff77a81ba71353f84b4bd/pkg/arvo/app/landscape/js/channel.js) in this lesson and serve it directly from `app/chanel/channel.js`.
 
 `channel.js` allows you to do pokes and subscribes to a running ship, similar to what we've seen from the Dojo. The only difference is that the data for the pokes will initially be passed as JSON, which is why we learned about parsing above.
 

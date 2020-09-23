@@ -74,7 +74,7 @@
   |=  =path
   ^-  (quip card _this)
   ?+    path  (on-watch:def path)
-      [%example ~]
+    [%example ~]
     ~&  >>>  "got %example subscription"
     `this
   ==
