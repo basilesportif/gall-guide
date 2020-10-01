@@ -19,12 +19,12 @@ This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101
 
 ### Putting It All Together (Gall 201)
 * [picky backend: Chat Admin Dashboard](picky_backend.md)
-* [Custom Frontends](frontend.md)
+* *WIP* [Custom Frontends](frontend.md)
 * [Store/Hook/View](hooks.md)
 * [backy: a Program to Call the Arvo OS](backy.md)
-* [Generators in Gall]
 
 ### Appendix
+* [Generators in Gall](generators.md)
 * [Tips & Tricks](tips.md)
 * [Troubleshooting & FAQ](faq.md)
 * [Types Used in Gall Apps](appendix_types.md)
