@@ -25,7 +25,6 @@ This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101
 
 ### Appendix
 * [Generators in Gall](generators.md)
-* [Tips & Tricks](tips.md)
 * [Troubleshooting & FAQ](faq.md)
 * [Types Used in Gall Apps](appendix_types.md)
 
