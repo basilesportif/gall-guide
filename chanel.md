@@ -12,6 +12,7 @@ You'll also learn how to use the `:file-server` Gall agent to serve static files
 * to `/app/chanel/`
   - [index.html](https://github.com/timlucmiptev/gall-guide/tree/master/example-code/app/chanel/index.html)
   - [index.js](https://github.com/timlucmiptev/gall-guide/tree/master/example-code/app/chanel/index.js)
+  - [channel.js](https://github.com/timlucmiptev/gall-guide/tree/master/example-code/app/chanel/channel.js)
 * to `/mar/chanel/`
   - [action.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/example-code/mar/chanel/action.hoon)
 * to `/sur/`
