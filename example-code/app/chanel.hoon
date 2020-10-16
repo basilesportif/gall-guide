@@ -76,7 +76,7 @@
   ?+    path  (on-watch:def path)
     [%example ~]
     ~&  >>>  "got %example subscription"
-    `thisx
+    `this
   ==
 ++  on-leave  on-leave:def
 ++  on-peek   on-peek:def
