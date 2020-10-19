@@ -74,6 +74,12 @@ Run `|commit %home`, and you should see:
 
 So we see here that once Gall has `start`ed an app, it auto-reloads it whenever a new version of that program is committed. We'll go more into this in the [lifecycle lesson](lifecycle.md)
 
+### Troubleshooting: `:goad %force`
+In some cases, Gall will not recompile your app. This can happen after an error is introduced and not fixed. To see the error again and force recompilation, run in the Dojo:
+```
+:goad %force
+```
+
 ## Using `dbug`
 In line 2 of the code, we see `%-  agent:dbug`. We'll explain how this works in [the next lesson](arms.md), but for now, just know that it lets us run `:workflow +dbug` in the Dojo, and see the state of the agent.  `dbug` determines the state using the return value of our `on-save` arm.
 
