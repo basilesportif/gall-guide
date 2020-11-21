@@ -116,7 +116,6 @@
     ^-  simple-payload:http
     =,  enjs:format
     %-  json-response:gen:srv
-    %-  json-to-octs:srv
     %-  pairs
     :~
       [%msg [%s 'hello my friends']]
