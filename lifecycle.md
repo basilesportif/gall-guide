@@ -10,7 +10,7 @@ We'll also get our sneak peak at calling out to Arvo for networking services.
 We will modify the below code throughout the lesson. Paste it into a file in `app/` called `lifecycle.hoon`.
 
 ```
-/+  default-agen, dbug
+/+  default-agent, dbug
 |%
 +$  versioned-state
   $%  state-0
