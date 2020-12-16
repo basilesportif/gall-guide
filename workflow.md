@@ -108,7 +108,7 @@ This can be done at the command line like so:
 cp -r your_code_directory/* your_pier_directory/app/
 ```
 
-You can also use a [script like this one](https://github.com/timlucmiptev/gall-guide/blob/master/example-code/install.sh) to copy all Gall directories to your pier.
+You can also use a [script like this one](https://github.com/timlucmiptev/gall-guide/blob/master/install.sh) to copy all Gall directories to your pier.
 
 ### Use `create-landscape-app` to Sync Files to Your Pier
 Once we begin creating Landscape apps, we will able to use `create-landscape-app` to monitor our JS and Hoon files, and copy them to our ship as they're updated.
