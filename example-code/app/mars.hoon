@@ -127,10 +127,10 @@
   |=  [=wire =sign-arvo]
   ^-  (quip card _this)
   |^
-  ?:  ?=(%e -.sign-arvo)
+  ?:  ?=(%eyre -.sign-arvo)
     ~&  >>  "Eyre returned: {<+.sign-arvo>}"
     `this
-  ?:  ?=(%i -.sign-arvo)
+  ?:  ?=(%iris -.sign-arvo)
   ?>  ?=(%http-response +<.sign-arvo)
     =^  cards  state
       (handle-response -.wire client-response.sign-arvo)
