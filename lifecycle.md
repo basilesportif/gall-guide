@@ -134,7 +134,7 @@ Let's look at the code of our `on-init` arm:
       [%pass /bind %arvo %e %connect [~ /'~lifecycle'] %lifecycle]
     ==
 ```
-We see that it returns a `(quip card _this)`. As mentioned in the [last lesson](arms.md), this type means a `list` of `card`, along with `_this_` at the end (short for `$_(this)`: the type of `this`, our core).
+We see that it returns a `(quip card _this)`. As mentioned in the [last lesson](arms.md), this type means a `list` of `card`, along with `_this` at the end (short for `$_(this)`: the type of `this`, our core).
 
 Gall arms that return this structure are passing 0 or more actions (`card`s) back to Gall to perform, and also return a new state of our app to Gall. You can see more detail on the structure of cards in the [types appendix](appendix_types.md)--this one is an `arvo-note`. It starts with `%pass`, which means it's like a function call. The `%e` is for "Eyre", the Arvo networking vane. This is a command to listen for incoming HTTP requests on address `/~lifecycle` of our ship. We'll explore this more in the [HTTP lesson](http.md).
 
