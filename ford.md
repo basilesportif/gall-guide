@@ -49,7 +49,7 @@ This works in exactly the same way as `/+`, with the difference that it looks in
 We've seen `default-agent` a lot already. It just gets used once, on line 27.
 
 ## `/=` Import the Evaluation of a Hoon File
-In line 4, we use `/=`. The `/=` rune imports the result of building a hoon file from a user-specified path (the second argument, `/lib/number-to-words`), wrapping it in a face specified by the first argument (`n2w`). The final /hoon at the end of the path must be omitted. This is similar to `` and `/-`, but just allows us to import from any directory.
+In line 4, we use `/=`. The `/=` rune imports the result of building a hoon file from a user-specified path (the second argument, `/lib/number-to-words`), wrapping it in a face specified by the first argument (`n2w`). The final /hoon at the end of the path must be omitted. This is similar to `/+` and `/-`, but just allows us to import from any directory.
 
 Run `:fordexample %evaluate-hoon-example`, and you'll see how we now have access to the `to-words` arm in `number-to-words`.
 
