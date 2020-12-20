@@ -42,7 +42,7 @@ The syntax `*fordexample2*` tells Ford to find the file `fordexample2.hoon` in `
 `sur` is used for data structures that are shared between apps.
 
 ## `/+` Import Libraries
-This works in exactly the same way as `/+`, with the difference that it looks in the `lib` directory. This lets us import existing and user-created libraries.
+This works in exactly the same way as `/-`, with the difference that it looks in the `lib` directory. This lets us import existing and user-created libraries.
 
 `*server` is a really common import, because it handles all HTTP response functionality for returning results to requests. It's generally imported with `*` to expose everything, since it's so widely used. It's also sometimes given the face `srv`.
 
