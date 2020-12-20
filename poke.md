@@ -109,7 +109,7 @@ When we run `:poketime %poke-self` from the Dojo, Gall receives that message, an
 ::  a cage is a [mark vase] tuple, so we give the %noun mark, and then use !> to put our data in the vase
 [%pass /pokepath %agent [~zod %poketime] %poke %noun !>([%receive-poke 2])]
 ```
-(You can look at the [Gall Types](gall_types) appendix to see full details on `card` format).
+(You can look at the [Gall Types](gall_types.md) appendix to see full details on `card` format).
 
 That poke is processed by Gall and sent to us. Note that there is *nothing* special about sending it to ourselves--we could have written any ship name and agent name in the card, as long as they accept pokes.
 
