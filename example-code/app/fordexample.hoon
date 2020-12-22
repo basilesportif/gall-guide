@@ -1,5 +1,5 @@
 /-  fordex=fordexample, *fordexample2
-/+  *server, default-agent, base=base64
+/+  *server, default-agent, group-lib=group
 ::  evaluate Hoon code
 /=  n2w  /lib/number-to-words
 ::  mark example
