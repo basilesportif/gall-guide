@@ -18,7 +18,7 @@ Note: these Ford (`/`) runes only work in Hoon files evaluated in Gall apps and 
 ## Example Code
 * to `/app/`
   - [fordexample.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/example-code/app/fordexample.hoon)
-to `/app/fordexample/`
+* to `/app/fordexample/`
   - [example.html](https://github.com/timlucmiptev/gall-guide/blob/master/example-code/app/fordexample/example.html)
 * to `/mar/fordexample/`
   - [name.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/example-code/mar/fordexample/name.hoon)
