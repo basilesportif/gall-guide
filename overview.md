@@ -9,7 +9,7 @@ This guide is for anyone with an intermediate knowledge of Hoon (Hoon School 101
 
 ### Backend Foundation (Gall 101)
 * [Workflow Setup](workflow.md)
-* [The 10 Arms of Gaal: App Structure](arms.md)
+* [The 10 Arms of Gall: App Structure](arms.md)
 * [App Lifecycle and State](lifecycle.md)
 * [Importing Code and Static Resources](ford.md)
 * [Talk to Ships: poke, watch and marks](poke.md)
@@ -40,7 +40,7 @@ Gall modules can, for example:
 - provide full-blown user experiences with frontend
 - run database resources that back multiple services
 
-Most of the Urbit apps know and love, like Chat and Publish, are Gall applications, but so are the "background" modules that coordinate your experience, like the `group` data store and logic.
+Most of the Urbit apps we know and love, like Chat and Publish, are Gall applications, but so are the "background" modules that coordinate your experience, like the `group` data store and logic.
 
 Gall handles all messages going into your app, and routes all messages going out from your app to the correct destination.
 
@@ -55,6 +55,7 @@ Gall handles all messages going into your app, and routes all messages going out
 
 ## Gall vs Generators
 You probably have written generators when learning Hoon. Generators are awesome! However, they have a different use-case from Gall apps, and it's important to understand when you want each of them.
+
 ### Generators
 Generators are used to process data. They take in some simple input, like an argument or the current state of your ship, and return a value based on that. They're similar to command-line utilities in Unix.
 
