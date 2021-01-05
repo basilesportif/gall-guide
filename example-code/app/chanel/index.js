@@ -23,7 +23,7 @@ const login =  async (pass) => {
         method: 'POST',
         body: `password=${pass}`
     });
-    if (loginRes.status != 200) {
+    if (loginRes.status != 204) {
         return;
     }
     console.log("logged in");
