@@ -576,7 +576,7 @@ Near the top of our `lifecycle.hoon` file, we have:
 
 The key here is `|_ =bowl:gall`, which says that our agent is a door that takes a parameter of type `bowl:gall` called `bowl`. We also pass that to `default-agent` when we initialize that core, and if you use a helper core, you'd pass it also (we'll see this is in later lessons).
 
-You can find the type definition of `bowl` in `/sys/zuze.hoon` if you search for `++ bowl`. For now, just know that it contains our ship name, the name of the ship that made the current call to us, the name of our agent, the current time, entropy, and data about any subscriptions our agent has made from or to it.
+You can find the type definition of `bowl` in `/sys/lull.hoon` if you search for `++ bowl`. For now, just know that it contains our ship name, the name of the ship that made the current call to us, the name of our agent, the current time, entropy, and data about any subscriptions our agent has made from or to it.
 
 We can print `bowl` for this app by entering at the Dojo:
 
