@@ -30,7 +30,7 @@ These 2 arms handle responses to requests we make to other agents or Arvo vanes.
 * `on-fail`: if a crash happens in any arm except `on-poke` or `on-watch`, Gall sends a crash report message to this arm. Most apps ignore this message.
 
 ## Arm Input and Output Types
-Some arms take and return simple data types, but Gall also has a few key input and output types that it constantly uses. You can really drill into them [here in the appendix](appendix_types.md), but let's introduce a couple key ones. I'll refresh them and go more in depth as I explain each arm later.
+Some arms take and return simple data types, but Gall also has a few key input and output types that it constantly uses. You can really drill into them [here](gall_types.md), but let's introduce a couple key ones. I'll refresh them and go more in depth as I explain each arm later.
 
 ### wire & path
 `wire` and `path` are the same type: a list of terms. A leading `/` is syntactic sugar for a list of terms.
