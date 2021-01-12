@@ -9,7 +9,7 @@ Building Gall apps is a matter of building the Gall arms you need. And building 
 If you can answer those questions, you'll feel like you always have solid ground under your feet, and can build whatever you need to in Gall.
 
 ## Note on Finding Type Source Code
-Anytime you see a type that you don't recognize, it either has to come from the Ford imports at the top of the file (`/-` and `/+`) or from the standard library. Just search for `++  <TYPE-NAME>`  or `+$  <TYPE-NAME>` in the 3 `/sys` Hoon files (`hoon`, `arvo`, and `zuse`), and you'll generally find what you need.
+Anytime you see a type that you don't recognize, it either has to come from the Ford imports at the top of the file (`/-` and `/+`) or from the standard library. Just search for `++  <TYPE-NAME>`  or `+$  <TYPE-NAME>` in the 4 `/sys` Hoon files (`hoon`, `arvo`, `lull` and `zuse`), and you'll generally find what you need.
 
 Remember to put two spaces ("gap") after `++`/`+$` when searching.
 
@@ -19,7 +19,8 @@ These are types found in `hoon.hoon`, `arvo.hoon`, and `zuse.hoon`
 ### Standard Library Organization
 * `hoon.hoon`: general Hoon language types and functions
 * `arvo.hoon`: base kernel that loads the vanes and has some types in it
-* `zuse.hoon`: the "public" interface (models and code) for each vane. These can be called by other vanes and user code, and aren't used for internal vane implementation.
+* `lull.hoon`: the "public" models for each vane. These can be called by other vanes and user code, and aren't used for internal vane implementation.
+* `zuse.hoon`: additional stdlib functions
 
 ### Key Standard Library Types that Gall Uses
 * `quip` (`sys/hoon.hoon`)
@@ -54,13 +55,13 @@ What this means in practice is that to make a Gall card, you make it as one of:
 In the "Gall Types" section below, we'll see what `note:agent:gall` and `gift:agent:gall` consist of.
 
 #### `note-arvo` and `sign-arvo`
-These types are used, respectively, to pass calls to Arvo vanes and receive returns from vanes. To find their full source, just search for `++  note-arvo` or `++  sign-arvo` in `zuse.hoon`.
-* `note-arvo` (`sys/zuse.hoon`)
+These types are used, respectively, to pass calls to Arvo vanes and receive returns from vanes. To find their full source, just search for `++  note-arvo` or `++  sign-arvo` in `lull.hoon`.
+* `note-arvo` (`sys/lull.hoon`)
   - tagged union of the notes that each Arvo vane can create
   - format: `[<vane-letter> task:able:<vane-name>]`
   - example: `[%g task:able:gall]`
 
-* `sign-arvo` (`sys/zuse.hoon`)
+* `sign-arvo` (`sys/lull.hoon`)
   - tagged union of values that vanes can produce and send back to Gall apps in the `on-arvo` arm
   - format: `[<vane-letter> task:able:<vane-name>]`
   - example: `[%e gift:able:eyre]`
