@@ -19,7 +19,7 @@ done
 
 if [ -z "$WATCH_MODE" ]; then
     echo "Installed Gall Guide code"
-    rsync -r --exclude '.*' --exclude '*.sh' --exclude '*.md' example-code/* $PIER/
+    rsync -r --ignore-existing --exclude '.*' --exclude '*.sh' --exclude '*.md' example-code/* $PIER/
 else
    echo "Watching for changes to copy to ${PIER}..."
    while [ 0 ]
