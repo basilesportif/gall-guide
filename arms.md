@@ -110,7 +110,7 @@ We have aliases for the `this`, the default agent, and the helper core are defin
 
 `default-agent` is a basic implementation of a Gall agent that returns valid but dummy responses for all arms. We give it the alias `def` here, and you'll see most Gall programs call it when they don't need a particular arm to have an action.
 
-Finally, note the `+>` in line 98. This is a very common idiom in Gall for referring to the helper core. In this case, we have the `=<` rune on line 94, which means that our Gall agent is defined with the helper core as the subject. Because our Gall agent is a door, the sample is in the head of the tail. So we select the tail of the tail, which is our helper core.
+Finally, note the `+>` in line 68. This is a very common idiom in Gall for referring to the helper core. In this case, we have the `=<` rune on line 64, which means that our Gall agent is defined with the helper core as the subject. Because our Gall agent is a door, the sample is in the head of the tail. So we select the tail of the tail, which is our helper core.
 
 Many applications now use `|^` instead of a helper core. This allows them to put the heavier functions below the main logic, while keeping helpers closer to their use place. You'll see both in these upcoming tutorials.
 
