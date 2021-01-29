@@ -35,7 +35,7 @@ $%  [%serve-dir url-base=path clay-base=path public=? spa=?]
 ```
 We use `%serve-dir` here. It takes a URL, a directory to serve, and a flag for whether the file should be served to requesters who are not logged in to this ship. The latter is useful for serving static resources like HTML files or images from an Urbit.
 
-You can run `:file-server +dbug` in the Dojo to see the current directories being served and the parameters they are served with (like public vs. private).
+You can run `:file-server +dbug [%state '[cfg=configuration srv=~(key by serving)]']` in the Dojo to see the current directories being served and the parameters they are served with (like public vs. private).
 
 ### Public and Private File Serving
 Make sure your ship is not logged in, and then navigate to [http://localhost/~mars-public/index.html](http://localhost/~mars-public/index.html). You should see the contents of `/app/mars/public/index.html` there.
