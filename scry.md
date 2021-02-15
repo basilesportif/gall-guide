@@ -46,13 +46,14 @@ Since some of these queries are sent to `%group-store`, we need to add a dummy g
 ```
 
 #### `%y` Queries
-These should use a mold of type `arch`
+Sometimes these use type `arch`, but for most Gall applications they now use custom molds.
 ```
 ::  all dirs and files in the root path
 > .^(arch %cy %)
 
 ::  all groups in the `%group-store` agent
-> .^(arch %gy /=group-store=/groups)
+> =r -build-file %/lib/resource/hoon
+> .^((set resource:r) %gy /=group-store=/groups)
 ```
 
 #### `%x` Queries
