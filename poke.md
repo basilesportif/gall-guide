@@ -152,8 +152,15 @@ And now, in order to send a custom mark called `poketime-action`, we created `ma
 ++  grab
   |%
   ++  noun  action:poketime
+  --
+++  grow
+  |%
+  ++  noun  act
+  --
+++  grad  %noun
+--
 ```
-Our `grab` here just handles nouns, and converts them to the `action` type in `sur/poketime.hoon`. Notice that we use Ford to import that `sur` library.
+Our `grab` here just handles nouns, and converts them to the `action` type in `sur/poketime.hoon`. `grow` converts the mark into another mark, like `noun`. `grad` handles diffs, between two marks of our type, here we delegate to the `%noun` mark. Notice that we use Ford to import that `sur` library.
 
 So with that all in hand, we can see our custom mark in action!  All we have to do is use `&` before the name of our custom mark, and the Dojo will treat it as a custom mark, and try to render the following value from noun to it. Try out the following commands at the Dojo from `~zod`:
 ```
