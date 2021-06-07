@@ -133,6 +133,7 @@ Now commit and restart the app again:
 |commit %home
 |start %lifecycle
 ```
+(If you commit but don't see any compilation messages, run `:goad %force` in the Dojo to force recompilation.)
 
 You'll see the following output:
 
