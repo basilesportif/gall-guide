@@ -113,27 +113,18 @@ ford: %core on /~zod/home/0/app/lifecycle/hoon failed:
 
 What happened? This message is telling us that it can't find something in `lib`: `default-agen/hoon`. This is because we spelled the name wrong. We'll learn about libraries in the [next lesson](ford.md).
 
-For now, let's continue working on fixing our code. To start we're going to kill our gall application using `|fade`.
-
-```
-|fade  %lifecycle
-```
-
-While this isn't strictly necessary in a perfect world, currently this gets around a bug which breaks gall apps if the first compile fails. This is a command you may find useful when testing/developing gall apps, so this is a good point to introduce it anyways.
-
-Once the lifecycle app is killed we can move onto fixing the spelling mistake on the very first line of our program:
+We need to fix the spelling mistake on the very first line of our program:
 
 ```
 /+  default-agent, dbug
 ```
 
-Now commit and restart the app again:
+Now commit:
 
 ```
 |commit %home
-|start %lifecycle
 ```
-(If you commit but don't see any compilation messages, run `:goad %force` in the Dojo to force recompilation.)
+(If you see the commit succeed but don't see any compilation messages, run `:goad %force` in the Dojo to force recompilation.)
 
 You'll see the following output:
 
