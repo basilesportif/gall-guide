@@ -70,11 +70,11 @@ We've used this syntax a lot in prior lessons, and it's time to walk through how
 
 When you type `:poketime %print-state` in the Dojo, it sends a `poke` to the agent `%poketime`. `on-poke` expects a `mark` and a `vase`. You can read more about these in [Gall Types](gall_types.md), but a `mark` is a `@tas` representing a Ford mark as we saw in the [prior lesson](ford.md), and a vase is the data structure created by running `!>(some-data)`. Its head is a type, and its tail is a noun.
 
-There are two formats you can type at the Dojo after `:agent-name` (`:poketime` in our case):
+There are two formats you can type at the Dojo after `:agent-name` (`:poketime` in our case) to directly poke an agent with some data:
 ```
 ::  pokes with mark %noun and [%some-tas optional-data] inside the vase
 > :poketime [%some-tas optional-data]
-
+::
 ::  note the '&' instead of '%'
 ::  mymark MUST be a mark in /mar
 ::  renders required data using mymark, passes mymark as the mark parameter
@@ -82,7 +82,23 @@ There are two formats you can type at the Dojo after `:agent-name` (`:poketime` 
 > :poketime &mymark required-data
 ```
 
-Our `:poketime %print-state` example pokes with a mark of `%noun`. In line 39 we switch on the mark, and see it's a noun. Then we switch on `q.vase`, i.e. the value inside the vase. It's `%print-state`, so we run that code, which prints the `state` and `bowl`.
+There is also some dojo-specific syntax for running a generator and poking an agent with its output rather than typing out the data directly:
+
+```
+:: poke %myagent with the output of the generator located at /gen/mygen/hoon
+> :myagent +mygen [generator-arguments]
+::
+:: poke %myagent with the output of the generator located at /gen/myagent/mygen/hoon
+:: i.e. the generator in the sub-directory of /gen with the same name as the agent
+> :myagent|mygen [generator-arguments]
+::
+:: in both cases, if it's a naked generator, the agent will be poked with a %noun mark
+:: if it's a %say generator, the agent will be poked with the generator's output mark
+:: note that unlike the &somemark syntax, the %say generator's output mark can be anything
+:: ...it needn't exist in /mar
+```
+
+Returning to our original example, `:poketime %print-state` pokes our agent with a mark of `%noun`. In line 39 we switch on the mark, and see it's a noun. Then we switch on `q.vase`, i.e. the value inside the vase. It's `%print-state`, so we run that code, which prints the `state` and `bowl`.
 
 ### Poking from an Agent
 Now we're going to send a poke directly from our agent. We'll poke ourselves, but, as you'll see, we can send pokes to any agent on any ship.
@@ -104,7 +120,7 @@ Three things happened here, and we'll look at them both in detail
 When we run `:poketime %poke-self` from the Dojo, Gall receives that message, and calls our `on-poke` arm with parameters `%noun` as the mark and `%poke-self` inside the vase. In line 39 we switch on the mark--in this case it's a `%noun`. Then in line 41 we switch on the value inside the vase; here it's `%poke-self`, so we do a check with `team:title` to make sure the poke source is us or one of our moons, and then we return the card below:
 ```
 ::  type: [%pass path %agent [ship agent-name] task]
-::  task will usually be %poke, %leave, or %watch
+  ::  task will usually be %poke, %leave, or %watch
 ::  when task starts with %poke, its format is [%poke cage]
 ::  a cage is a [mark vase] tuple, so we give the %noun mark, and then use !> to put our data in the vase
 [%pass /pokepath %agent [~zod %poketime] %poke %noun !>([%receive-poke 2])]
