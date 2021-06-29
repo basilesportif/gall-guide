@@ -120,7 +120,7 @@ Three things happened here, and we'll look at them both in detail
 When we run `:poketime %poke-self` from the Dojo, Gall receives that message, and calls our `on-poke` arm with parameters `%noun` as the mark and `%poke-self` inside the vase. In line 39 we switch on the mark--in this case it's a `%noun`. Then in line 41 we switch on the value inside the vase; here it's `%poke-self`, so we do a check with `team:title` to make sure the poke source is us or one of our moons, and then we return the card below:
 ```
 ::  type: [%pass path %agent [ship agent-name] task]
-  ::  task will usually be %poke, %leave, or %watch
+::  task will usually be %poke, %leave, or %watch
 ::  when task starts with %poke, its format is [%poke cage]
 ::  a cage is a [mark vase] tuple, so we give the %noun mark, and then use !> to put our data in the vase
 [%pass /pokepath %agent [~zod %poketime] %poke %noun !>([%receive-poke 2])]
