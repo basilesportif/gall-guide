@@ -11,4 +11,5 @@
     ^-  name
     [first='HTML' last=h]
   --
+++  grad  %noun
 --
