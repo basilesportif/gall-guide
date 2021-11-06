@@ -7,7 +7,7 @@ In this lesson, in addition to our own `on-peek` arm, we'll examine some that al
 
 ## Example Code
 * [/app/iscry.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/example-code/app/iscry.hoon)
-Copy the file to your ship's `app` directory, and install it as usual: `|start %iscry`.
+Copy the file to your ship's `app` directory, and install it as usual: `|rein %home [& %iscry]`.
 
 ## `scry` Mechanics
 `scry` uses a special rune, `.^` to query the Arvo namespace. This means that it can ask any vane a question about its current state, and get an answer, if the query is supported. `scry` is fast relative to other Urbit operations, since it's a read-only operation; this means that it doesn't have to write an event to disk.

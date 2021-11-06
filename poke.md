@@ -8,7 +8,7 @@ By the end of this lesson, you should feel very comfortable making calls and sub
 ## Example Code for the Lesson
 For this lesson, we will be using two fake ships to demonstrate communication between them. Make a fake `zod` and a fake `timluc`, mount them, and copy all code below to both of them.
 
-After the code is copied, start our Gall agent on each with `|start %poketime`
+After the code is copied, start our Gall agent on each with `|rein %home [& %poketime]`
 
 * to `/app/`
   - [poketime.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/example-code/app/poketime.hoon)

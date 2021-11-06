@@ -1,6 +1,6 @@
 # App Lifecyle and State
 
-Once you register an app with Gall using `|start`, Gall calls specific arms of the app when the app changes.
+Once you register an app with Gall using `|rein`, Gall calls specific arms of the app when the app changes.
 
 In this lesson, you'll see everything about how Gall handles compilation, state, resource initialization, and app upgrades. The main action here will take place in the `on-init`, `on-save`, and `on-load` arms.
 
@@ -101,7 +101,7 @@ Let's register the above application with Gall:
 + /~zod/home/2/app/lifecycle/hoon
 
 ::  register the app with Gall
-> |start %lifecycle
+> |rein %home [& %lifecycle]
 >=
 activated app home/lifecycle
 %path: no matches for /~zod/home/~2020.6.11..15.15.55..b397/lib/default-agen/hoon
@@ -143,7 +143,7 @@ Notice that `on-init` runs on the first _successful_ compilation.
 
 ### Explanation
 
-When Gall registers an app with `|start`, it tries to compile it. If the compilation succeeds, it runs `on-init`. If it fails, it keeps recompiling each time the code is updated with `|commit`. Once compilation succeeds, it runs `on-init`.
+When Gall registers an app with `|rein`, it tries to compile it. If the compilation succeeds, it runs `on-init`. If it fails, it keeps recompiling each time the code is updated with `|commit`. Once compilation succeeds, it runs `on-init`.
 
 After that first time, it never runs `on-init` ever again for that app; it only uses `on-save` and `on-load` after app recompilations, as we will soon see.
 

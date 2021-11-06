@@ -42,13 +42,13 @@ Below is a completely valid but *very* simple Gall program. You don't need to un
 ```
 
 ## Install Your First Gall App
-To install a new program in Gall, you simply tell Gall its name with the `|start` command, and Gall will look for a Hoon file with that name in the `/app` directory. 
+To install a new program in Gall, you simply tell Gall its name with the `|rein` command, and Gall will look for a Hoon file with that name in the `/app` directory.
 
 ### Install
 To see this, create a Hoon file called `workflow.hoon` in the `/app` directory of your pier (e.g. `zod/home/app/workflow.hoon`) and paste the code above into it. Run the commands:
 ```
 |commit %home
-|start %workflow
+|rein %home [& %workflow]
 ```
 You will see the output:
 ```
@@ -156,7 +156,7 @@ In the Backend Foundation, we will generally use approach (2), and copy our file
 ## Workflow Summary for Gall
 * Have a fake `~zod` running
 * Mount it to your Linux/Mac
-* get your file with Gall code into `app`, commit, and run `|start %YOURAPPNAME`
+* get your file with Gall code into `app`, commit, and run `|rein %home [& %YOURAPPNAME]`
 * every time you edit, make sure your new file ends up in `app` and that you commit.
 
 ## Exercises

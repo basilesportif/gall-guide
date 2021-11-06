@@ -30,7 +30,7 @@ Solution: run `|commit %home`
 Usually caused by adding a new state, but not having a `?-` case to handle it.
 
 ### Reloading an App
-As soon as you execute `|start %yourapp`, **the app is started forever.**  It doesn't matter whether it had errors upon loading. The only way to "remove" an app and have Gall stop monitoring it is to create a new ship and load the code in there.
+As soon as you execute `|rein %home [& %yourapp]`, **the app is started forever.**  It doesn't matter whether it had errors upon loading. The only way to "remove" an app and have Gall stop monitoring it is to create a new ship and load the code in there.
 
 ### My App Compiled, but then I Got an Error Right After
 Most likely you changed your state variable's structure without giving an `on-load` transition.  If this is a development app, just delete your ship and set it up again. If not, then write the proper transition in `on-load`.
