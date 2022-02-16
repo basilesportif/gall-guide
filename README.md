@@ -1,8 +1,8 @@
 ## Important notes:
 
-- This guide has been superseded by the [urbit.org Gall
+- **This guide has been superseded by the [urbit.org Gall
   Guide](https://urbit.org/docs/userspace/gall-guide/intro) and is no longer
-  actively maintained. Some parts of this guide are outdated, particularly in
+  actively maintained.** Some parts of this guide are outdated, particularly in
   the areas of front-end integration and desk management/distribution.
 
 - The "Backend Foundation" part of the guide is complete. The remaining
