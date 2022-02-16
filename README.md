@@ -1,4 +1,13 @@
-*Note*: the "Backend Foundation" part of the guide is complete. The remaining sections are a work-in-progress.
+## Important notes:
+
+- **This guide has been superseded by the [urbit.org Gall
+  Guide](https://urbit.org/docs/userspace/gall-guide/intro) and is no longer
+  actively maintained.** Some parts of this guide are outdated, particularly in
+  the areas of front-end integration and desk management/distribution.
+
+- The "Backend Foundation" part of the guide is complete. The remaining
+  sections are a work-in-progress.
+
 [![awesome urbit badge](https://img.shields.io/badge/~-awesome%20urbit-lightgrey)](https://github.com/urbit/awesome-urbit)
 
 # The Complete Guide to Gall: Overview
