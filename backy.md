@@ -18,12 +18,12 @@ To do this, we need to:
 ## Example Code
 The code for this lesson lives [here](https://github.com/timlucmiptev/backy). Follow the instructions in the README there to install (you can use the `install.sh` script, or just copy `app`, `mar`, and `sur` directories as usual).
 
-Once the code is committed, run `|start %backy`.
+Once the code is committed, run `|rein %home [& %backy]`.
 
 ## Getting Started
 
 ### A Peek at `group-store`
-To see concretely what we're trying to do, run `|start %dbug` on a real ship you use. Then navigate to `/~debug` on that ship, and click through to `apps` ->  `group-store` and then click the `query state` button there.
+To see concretely what we're trying to do, run `|rein %home [& %dbug]` on a real ship you use. Then navigate to `/~debug` on that ship, and click through to `apps` ->  `group-store` and then click the `query state` button there.
 
 You'll see a big list of all the groups you're in and their members. If we open `/sur/group.hoon`, we see that `groups` is a `(map resource group)`, and in `/sur/resource.hoon`, we see that `resource` is a [ship term].
 

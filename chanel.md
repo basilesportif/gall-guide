@@ -19,7 +19,7 @@ You'll also learn how to use the `:file-server` Gall agent to serve static files
   - [chanel.hoon](https://github.com/timlucmiptev/gall-guide/blob/master/example-code/sur/chanel.hoon)
 
 ### to start
-Do `|commit %home`, then run `|start %chanel` 
+Do `|commit %home`, then run `|rein %home [& %chanel]`
 
 ### notes
 * uses `%file-server` in `on-init` to statically serve the `app/chanel/` directory from endpoint `/~chanel`.

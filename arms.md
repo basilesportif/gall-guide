@@ -117,7 +117,7 @@ Many applications now use `|^` instead of a helper core. This allows them to put
 ## debugger: `dbug`
 Near the top of the file, you'll see the line `%-  agent:dbug`. This wraps our program in the `dbug` Gall agent, which lets us inspect the state of the program as it's running. We'll do this in more detail in the [lifecycle lesson](lifecycle.md).
 
-If you type `|start %dbug` at the Dojo, you'll be able to browse to `yourshipurl/~debug` and see the current state of every app in the ship that uses `dbug`.
+If you type `|rein %home [& %dbug]` at the Dojo, you'll be able to browse to `yourshipurl/~debug` and see the current state of every app in the ship that uses `dbug`.
 
 How does this work? If you look at `/lib/dbug/hoon`, you'll see that its `agent` arm simply takes a Gall agent as the sample. Then it creates an `ag` alias that gives its bowl to that agent.  At the top of `on-poke`, we test whether the incoming mark is `%dbug`. If it's not, then it just forwards the `[mark vase]` sample to the agent. If it is, it does `dbug` stuff to print the agent's state.
 
